@@ -16,11 +16,13 @@ public class Cell : MonoBehaviour
     public int r = 0;
     public int c = 0;
     public bool isClickable;
+    public TableObj.pieceType type;
 
     public void Init(TableObj.pieceType type, int r, int c, TableGenerator tGen)
     {
         color = renderer.material.GetColor("_Color");
         this.tGen = tGen;
+        this.type = type;
         switch (type) 
         {
             case TableObj.pieceType.OBSTACLE:
