@@ -22,10 +22,14 @@ public class TableGenerator : MonoBehaviour
     public Cell[] p1Revives;
     public Cell[] p2Revives;
 
+    public List<Piece> p1Pieces;
+    public List<Piece> p2Pieces;
+
     private int curPlayer;
     private Piece curPiece;
     private int cellPos = 1;
     private bool initialTurn = true;
+    private bool gameOver = false;
 
     private Piece.pieces[] pieceOrder = { Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.ROOK, Piece.pieces.ROOK, Piece.pieces.KNIGHT, Piece.pieces.BISHOP, Piece.pieces.BISHOP, Piece.pieces.QUEEN };
 
@@ -49,6 +53,8 @@ public class TableGenerator : MonoBehaviour
         p2Keys = new List<Cell>();
         p1Revives = new Cell[3];
         p2Revives = new Cell[3];
+        p1Pieces = new List<Piece>();
+        p2Pieces = new List<Piece>();
         TableObj.pieceType type;
 
         for (int i = 0; i<numRows; i++) 
@@ -86,6 +92,7 @@ public class TableGenerator : MonoBehaviour
             c.ChangePiece(Instantiate(pieceRef, new Vector3(c.c, 1f, c.r), Quaternion.identity));
             c.getPiece().Init(pieceOrder[maxI-pI-1], c.r, c.c, this, 1);
             pI = (pI+1)%maxI;
+            p1Pieces.Add(c.getPiece());
         }
         pI = 0;
         foreach (Cell c in p2Start)
@@ -93,6 +100,7 @@ public class TableGenerator : MonoBehaviour
             c.ChangePiece(Instantiate(pieceRef, new Vector3(c.c, 1f, c.r), Quaternion.identity));
             c.getPiece().Init(pieceOrder[pI], c.r, c.c, this, 2);
             pI = (pI+1)%maxI;
+            p2Pieces.Add(c.getPiece());
         }
         foreach (JailCell jc in tableObj.p1JailCells)
         {
@@ -109,7 +117,7 @@ public class TableGenerator : MonoBehaviour
     public void SelectPiece(int r, int c) 
     {
         Piece piece = cells[r, c].getPiece();
-        if (piece.player != curPlayer) return;
+        if (piece.player != curPlayer || gameOver) return;
 
             curPiece?.SetChosen(false);
             curPiece = piece;
@@ -425,6 +433,8 @@ public class TableGenerator : MonoBehaviour
 
                 if (chosenJail[2].getPiece() != null)
                 {
+                    p1Pieces.Remove(chosenJail[2].getPiece());
+                    p2Pieces.Remove(chosenJail[2].getPiece());
                     Destroy(chosenJail[2].getPiece().gameObject);
                     chosenJail[2].ChangePiece(null);
                 }
@@ -477,112 +487,8 @@ public class TableGenerator : MonoBehaviour
         if (curPlayer == 1) curPlayer = 2;
         else curPlayer = 1;
         turnText.text = (curPlayer==1?"BLUE":"RED") + " PLAYER TURN";
-
-/*
-if (chosenJail[2].getPiece() != null)
-{
-    Destroy(chosenJail[2].getPiece().gameObject);
-    chosenJail[2].ChangePiece(null);
-}
-
-if (chosenJail[1].getPiece() != null)
-{
-    chosenJail[2].ChangePiece(chosenJail[1].getPiece());
-    chosenJail[2].getPiece().SetJailPosition(chosenJail[2]);
-    chosenJail[1].ChangePiece(null);
-}
-
-if (chosenJail[0].getPiece() != null)
-{
-    chosenJail[1].ChangePiece(chosenJail[0].getPiece());
-    chosenJail[1].getPiece().SetJailPosition(chosenJail[1]);
-    chosenJail[0].ChangePiece(null);
-}
-
-chosenJail[0].ChangePiece(eatenPiece);
-eatenPiece.SetJailPosition(chosenJail[0]);
-*/
+        
         bool found = false;
-        foreach (Cell c in p1Keys)
-        {
-            if (c.getPiece() != null)
-            {
-                if (c.getPiece().player == 2)
-                {
-                    found = true;
-                }
-            }
-        }
-
-        if (found)
-        {
-            if (p2Revives[0].getPiece() == null)
-            {
-                if (p1Jail[0].getPiece() != null)
-                {
-                    p2Revives[0].ChangePiece(p1Jail[0].getPiece());
-                    p2Revives[0].getPiece().SetPosition(p2Revives[0].r, p2Revives[0].c);
-                    p2Revives[0].getPiece().inJail = false;
-                    if (p1Jail[1].getPiece() != null)
-                    {
-                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
-                        p1Jail[1].ChangePiece(null);
-                    }
-                    if (p1Jail[2].getPiece() != null)
-                    {
-                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
-                        p1Jail[2].ChangePiece(null);
-                    }
-                }
-            }
-            if (p2Revives[1].getPiece() == null)
-            {
-                if (p1Jail[0].getPiece() != null)
-                {
-                    p2Revives[1].ChangePiece(p1Jail[0].getPiece());
-                    p2Revives[1].getPiece().SetPosition(p2Revives[1].r, p2Revives[1].c);
-                    p2Revives[1].getPiece().inJail = false;
-                    if (p1Jail[1].getPiece() != null)
-                    {
-                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
-                        p1Jail[1].ChangePiece(null);
-                    }
-                    if (p1Jail[2].getPiece() != null)
-                    {
-                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
-                        p1Jail[2].ChangePiece(null);
-                    }
-                }
-            }
-            if (p2Revives[2].getPiece() == null)
-            {
-                if (p1Jail[0].getPiece() != null)
-                {
-                    p2Revives[2].ChangePiece(p1Jail[0].getPiece());
-                    p2Revives[2].getPiece().SetPosition(p2Revives[2].r, p2Revives[2].c);
-                    p2Revives[2].getPiece().inJail = false;
-                    if (p1Jail[1].getPiece() != null)
-                    {
-                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
-                        p1Jail[1].ChangePiece(null);
-                    }
-                    if (p1Jail[2].getPiece() != null)
-                    {
-                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
-                        p1Jail[2].ChangePiece(null);
-                    }
-                }
-            }
-        }
-   
-
-        found = false;
         foreach (Cell c in p2Keys)
         {
             if (c.getPiece() != null)
@@ -596,13 +502,14 @@ eatenPiece.SetJailPosition(chosenJail[0]);
 
         if (found)
         {
-            if (p1Revives[0].getPiece() == null)
+            if (p2Revives[0].getPiece() == null)
             {
                 if (p2Jail[0].getPiece() != null)
                 {
-                    p1Revives[0].ChangePiece(p2Jail[0].getPiece());
-                    p1Revives[0].getPiece().SetPosition(p1Revives[0].r, p1Revives[0].c);
-                    p1Revives[0].getPiece().inJail = false;
+                    p2Revives[0].ChangePiece(p2Jail[0].getPiece());
+                    p2Revives[0].getPiece().SetPosition(p2Revives[0].r, p2Revives[0].c);
+                    p2Revives[0].getPiece().inJail = false;
+                    p2Jail[0].ChangePiece(null);
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
@@ -617,13 +524,14 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                     }
                 }
             }
-            if (p1Revives[1].getPiece() == null)
+            if (p2Revives[1].getPiece() == null)
             {
                 if (p2Jail[0].getPiece() != null)
                 {
-                    p1Revives[1].ChangePiece(p2Jail[0].getPiece());
-                    p1Revives[1].getPiece().SetPosition(p1Revives[1].r, p1Revives[1].c);
-                    p1Revives[1].getPiece().inJail = false;
+                    p2Revives[1].ChangePiece(p2Jail[0].getPiece());
+                    p2Revives[1].getPiece().SetPosition(p2Revives[1].r, p2Revives[1].c);
+                    p2Revives[1].getPiece().inJail = false;
+                    p2Jail[0].ChangePiece(null);
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
@@ -638,13 +546,14 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                     }
                 }
             }
-            if (p1Revives[2].getPiece() == null)
+            if (p2Revives[2].getPiece() == null)
             {
                 if (p2Jail[0].getPiece() != null)
                 {
-                    p1Revives[2].ChangePiece(p2Jail[0].getPiece());
-                    p1Revives[2].getPiece().SetPosition(p1Revives[2].r, p1Revives[2].c);
-                    p1Revives[2].getPiece().inJail = false;
+                    p2Revives[2].ChangePiece(p2Jail[0].getPiece());
+                    p2Revives[2].getPiece().SetPosition(p2Revives[2].r, p2Revives[2].c);
+                    p2Revives[2].getPiece().inJail = false;
+                    p2Jail[0].ChangePiece(null);
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
@@ -660,5 +569,164 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                 }
             }
         }
+   
+
+        found = false;
+        foreach (Cell c in p1Keys)
+        {
+            if (c.getPiece() != null)
+            {
+                if (c.getPiece().player == 2)
+                {
+                    found = true;
+                }
+            }
+        }
+
+        if (found)
+        {
+            if (p1Revives[0].getPiece() == null)
+            {
+                if (p1Jail[0].getPiece() != null)
+                {
+                    p1Revives[0].ChangePiece(p1Jail[0].getPiece());
+                    p1Revives[0].getPiece().SetPosition(p1Revives[0].r, p1Revives[0].c);
+                    p1Revives[0].getPiece().inJail = false;
+                    p1Jail[0].ChangePiece(null);
+                    if (p1Jail[1].getPiece() != null)
+                    {
+                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
+                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
+                        p1Jail[1].ChangePiece(null);
+                    }
+                    if (p1Jail[2].getPiece() != null)
+                    {
+                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
+                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
+                        p1Jail[2].ChangePiece(null);
+                    }
+                }
+            }
+            if (p1Revives[1].getPiece() == null)
+            {
+                if (p1Jail[0].getPiece() != null)
+                {
+                    p1Revives[1].ChangePiece(p1Jail[0].getPiece());
+                    p1Revives[1].getPiece().SetPosition(p1Revives[1].r, p1Revives[1].c);
+                    p1Revives[1].getPiece().inJail = false;
+                    p1Jail[0].ChangePiece(null);
+                    if (p1Jail[1].getPiece() != null)
+                    {
+                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
+                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
+                        p1Jail[1].ChangePiece(null);
+                    }
+                    if (p1Jail[2].getPiece() != null)
+                    {
+                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
+                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
+                        p1Jail[2].ChangePiece(null);
+                    }
+                }
+            }
+            if (p1Revives[2].getPiece() == null)
+            {
+                if (p1Jail[0].getPiece() != null)
+                {
+                    p1Revives[2].ChangePiece(p1Jail[0].getPiece());
+                    p1Revives[2].getPiece().SetPosition(p1Revives[2].r, p1Revives[2].c);
+                    p1Revives[2].getPiece().inJail = false;
+                    p1Jail[0].ChangePiece(null);
+                    if (p1Jail[1].getPiece() != null)
+                    {
+                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
+                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
+                        p1Jail[1].ChangePiece(null);
+                    }
+                    if (p1Jail[2].getPiece() != null)
+                    {
+                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
+                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
+                        p1Jail[2].ChangePiece(null);
+                    }
+                }
+            }
+        }
+
+        bool allDead;
+
+        if (p1Pieces.Count <= 3)
+        {
+            allDead = true;
+            foreach (Piece p in p1Pieces)
+            {
+                if (!p.inJail) allDead = false;
+            }
+            if (allDead)
+            {
+                SetWinner(2);
+                return;
+            }
+        }
+        if (p2Pieces.Count <= 3)
+        {
+            allDead = true;
+            foreach (Piece p in p2Pieces)
+            {
+                if (!p.inJail) allDead = false;
+            }
+            if (allDead)
+            {
+                SetWinner(1);
+                return;
+            }
+        }
+
+        bool finished = true;
+        foreach (Piece p in p1Pieces)
+        {
+            if (p.inJail) 
+            {
+                finished = false;
+                break;
+            }
+            Cell c = cells[p.r, p.c];
+            if (c.type != TableObj.pieceType.P2ZONE && c.type != TableObj.pieceType.P2KEY) {
+                finished = false;
+                break;
+            }
+        }
+        if (finished) 
+        {
+            SetWinner(1);
+            return;
+        }
+        
+        finished = true;
+        foreach (Piece p in p2Pieces)
+        {
+            if (p.inJail) 
+            {
+                finished = false;
+                break;
+            }
+            Cell c = cells[p.r, p.c];
+            if (c.type != TableObj.pieceType.P1ZONE && c.type != TableObj.pieceType.P1KEY) {
+                finished = false;
+                break;
+            }
+        }
+        if (finished) 
+        {
+            SetWinner(2);
+            return;
+        }
+    
+    }
+
+    private void SetWinner(int player)
+    {
+        turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
+        gameOver = true;
     }
 }
