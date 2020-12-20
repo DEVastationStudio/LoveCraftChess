@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 15303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d1cfdc9b23f3b4c458c0ae8a541f6f8d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -202,3 +202,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacle: {fileID: 4297468671698566930}
   renderer: {fileID: 8506714378734538215}
+  isObstacle: 0
+  r: 0
+  c: 0
+  isClickable: 0
+  type: 0
