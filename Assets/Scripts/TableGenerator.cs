@@ -133,6 +133,9 @@ public class TableGenerator : MonoBehaviour
                 case TableObj.pieceType.BASIC1:
                 case TableObj.pieceType.P1KEY:
                 case TableObj.pieceType.P1ZONE:
+                case TableObj.pieceType.P1REVIVE1:
+                case TableObj.pieceType.P1REVIVE2:
+                case TableObj.pieceType.P1REVIVE3:
                     if (curPlayer == 1) {
                         if (ValidatePosition(c.r, c.c, false, curPlayer)) cells[c.r, c.c].SetClickable(true);
                     }
@@ -140,6 +143,9 @@ public class TableGenerator : MonoBehaviour
                 case TableObj.pieceType.BASIC2:
                 case TableObj.pieceType.P2KEY:
                 case TableObj.pieceType.P2ZONE:
+                case TableObj.pieceType.P2REVIVE1:
+                case TableObj.pieceType.P2REVIVE2:
+                case TableObj.pieceType.P2REVIVE3:
                     if (curPlayer == 2) {
                         if (ValidatePosition(c.r, c.c, false, curPlayer)) cells[c.r, c.c].SetClickable(true);
                     }
@@ -516,6 +522,7 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                 {
                     p2Revives[0].ChangePiece(p1Jail[0].getPiece());
                     p2Revives[0].getPiece().SetPosition(p2Revives[0].r, p2Revives[0].c);
+                    p2Revives[0].getPiece().inJail = false;
                     if (p1Jail[1].getPiece() != null)
                     {
                         p1Jail[0].ChangePiece(p1Jail[1].getPiece());
@@ -536,6 +543,7 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                 {
                     p2Revives[1].ChangePiece(p1Jail[0].getPiece());
                     p2Revives[1].getPiece().SetPosition(p2Revives[1].r, p2Revives[1].c);
+                    p2Revives[1].getPiece().inJail = false;
                     if (p1Jail[1].getPiece() != null)
                     {
                         p1Jail[0].ChangePiece(p1Jail[1].getPiece());
@@ -556,6 +564,7 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                 {
                     p2Revives[2].ChangePiece(p1Jail[0].getPiece());
                     p2Revives[2].getPiece().SetPosition(p2Revives[2].r, p2Revives[2].c);
+                    p2Revives[2].getPiece().inJail = false;
                     if (p1Jail[1].getPiece() != null)
                     {
                         p1Jail[0].ChangePiece(p1Jail[1].getPiece());
@@ -593,6 +602,7 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                 {
                     p1Revives[0].ChangePiece(p2Jail[0].getPiece());
                     p1Revives[0].getPiece().SetPosition(p1Revives[0].r, p1Revives[0].c);
+                    p1Revives[0].getPiece().inJail = false;
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
@@ -613,6 +623,7 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                 {
                     p1Revives[1].ChangePiece(p2Jail[0].getPiece());
                     p1Revives[1].getPiece().SetPosition(p1Revives[1].r, p1Revives[1].c);
+                    p1Revives[1].getPiece().inJail = false;
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
@@ -633,6 +644,7 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                 {
                     p1Revives[2].ChangePiece(p2Jail[0].getPiece());
                     p1Revives[2].getPiece().SetPosition(p1Revives[2].r, p1Revives[2].c);
+                    p1Revives[2].getPiece().inJail = false;
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
@@ -648,7 +660,5 @@ eatenPiece.SetJailPosition(chosenJail[0]);
                 }
             }
         }
-
-
     }
 }
