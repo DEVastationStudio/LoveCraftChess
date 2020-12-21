@@ -7,6 +7,9 @@ public class Cell : MonoBehaviour
 
     [SerializeField] private GameObject obstacle;
     [SerializeField] private Renderer renderer;
+    [SerializeField] private Material OneRevive;
+    [SerializeField] private Material TwoRevive;
+    [SerializeField] private Material ThreeRevive;
 
     private Piece piece;
     public bool isObstacle;
@@ -23,6 +26,7 @@ public class Cell : MonoBehaviour
         color = renderer.material.GetColor("_Color");
         this.tGen = tGen;
         this.type = type;
+        transform.eulerAngles = new Vector3(0f, 180f, 0f);
         switch (type) 
         {
             case TableObj.pieceType.OBSTACLE:
@@ -43,6 +47,41 @@ public class Cell : MonoBehaviour
                 break;
             case TableObj.pieceType.P2KEY:
                 color = Color.magenta;
+                renderer.material.SetColor("_Color", color);
+                break;
+            case TableObj.pieceType.P1REVIVE1:
+                renderer.material = OneRevive;
+                color = Color.cyan;
+                renderer.material.SetColor("_Color", color);
+                break;
+            case TableObj.pieceType.P1REVIVE2:
+                renderer.material = TwoRevive;
+                color = Color.cyan;
+                renderer.material.SetColor("_Color", color);
+                break;
+            case TableObj.pieceType.P1REVIVE3:
+                renderer.material = ThreeRevive;
+                color = Color.cyan;
+                renderer.material.SetColor("_Color", color);
+                break;
+            case TableObj.pieceType.P2REVIVE1:
+                renderer.material = OneRevive;
+                color = Color.magenta;
+                renderer.material.SetColor("_Color", color);
+                break;
+            case TableObj.pieceType.P2REVIVE2:
+                renderer.material = TwoRevive;
+                color = Color.magenta;
+                renderer.material.SetColor("_Color", color);
+                break;
+            case TableObj.pieceType.P2REVIVE3:
+                renderer.material = ThreeRevive;
+                color = Color.magenta;
+                renderer.material.SetColor("_Color", color);
+                break;
+            case TableObj.pieceType.P1JAIL:
+            case TableObj.pieceType.P2JAIL:
+                color = Color.grey;
                 renderer.material.SetColor("_Color", color);
                 break;
         }

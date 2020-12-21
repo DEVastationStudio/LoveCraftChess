@@ -477,11 +477,14 @@ public class TableGenerator : MonoBehaviour
 
     public void NextTurn() {
         
-        if (initialTurn && curPlayer == 2) 
+        if (initialTurn) 
         {
             ResetClickables();
-            initialTurn = false;
-            confirmButton.gameObject.SetActive(false);
+            if (curPlayer == 2)
+            {
+                initialTurn = false;
+                confirmButton.gameObject.SetActive(false);
+            }
         }
 
         if (curPlayer == 1) curPlayer = 2;

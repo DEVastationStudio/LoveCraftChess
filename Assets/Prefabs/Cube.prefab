@@ -202,6 +202,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacle: {fileID: 4297468671698566930}
   renderer: {fileID: 8506714378734538215}
+  OneRevive: {fileID: 2100000, guid: 7f928fd264665b54c914c90ffb2ef01b, type: 2}
+  TwoRevive: {fileID: 2100000, guid: 5758fbb9772a9cd4ea1ded791e9efc46, type: 2}
+  ThreeRevive: {fileID: 2100000, guid: 31e29ecf99731234098297d96e0dd027, type: 2}
   isObstacle: 0
   r: 0
   c: 0
