@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
-public class Cell : MonoBehaviour
+public class Cell : MonoBehaviourPunCallbacks
 {
 
     [SerializeField] private GameObject obstacle;
@@ -102,10 +103,18 @@ public class Cell : MonoBehaviour
     {
         if (isClickable) 
         {
-            tGen.MovePiece(r, c);
+            PhotonView photonView = PhotonView.Get(tGen);//PhotonView.Get(this);
+            photonView.RPC("MovePiece", RpcTarget.All, r, c, tGen.curPiece.r, tGen.curPiece.c);
+            //tGen.MovePiece(r, c);
         }
     }
 
+    /*[PunRPC]
+    void MovePieceRPC(int r, int c)
+    {
+        tGen.MovePiece(r,c);
+    }
+*/
     public void SetClickable(bool click) 
     {
         isClickable = click;

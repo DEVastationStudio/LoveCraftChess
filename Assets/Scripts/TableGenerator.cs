@@ -3,14 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class TableGenerator : MonoBehaviour
+public class TableGenerator : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TableObj tableObj;
     [SerializeField] private Cell cellUnit;
     [SerializeField] private Piece pieceRef;
     [SerializeField] private Text turnText;
     [SerializeField] private Button confirmButton;
+    public static int localPlayer;
 
     public Cell[,] cells;
     public List<Cell> p1Start;
@@ -26,7 +29,7 @@ public class TableGenerator : MonoBehaviour
     public List<Piece> p2Pieces;
 
     private int curPlayer;
-    private Piece curPiece;
+    public Piece curPiece;
     private int cellPos = 1;
     private bool initialTurn = true;
     private bool gameOver = false;
@@ -117,7 +120,7 @@ public class TableGenerator : MonoBehaviour
     public void SelectPiece(int r, int c) 
     {
         Piece piece = cells[r, c].getPiece();
-        if (piece.player != curPlayer || gameOver) return;
+        if (piece.player != curPlayer || curPlayer != localPlayer || gameOver) return;
 
             curPiece?.SetChosen(false);
             curPiece = piece;
@@ -412,9 +415,12 @@ public class TableGenerator : MonoBehaviour
         return false;
     }
 
-    public void MovePiece(int r, int c) 
+    [PunRPC]
+    public void MovePiece(int r, int c, int pr, int pc) 
     {
-        cells[curPiece.r, curPiece.c].ChangePiece(null);
+        Piece piece = cells[pr,pc].getPiece();
+        
+        cells[piece.r, piece.c].ChangePiece(null);
         if (cells[r, c].getPiece() != null) 
         {
             Piece eatenPiece = cells[r,c].getPiece();
@@ -456,10 +462,10 @@ public class TableGenerator : MonoBehaviour
                 chosenJail[0].ChangePiece(eatenPiece);
                 eatenPiece.SetJailPosition(chosenJail[0]);
         }
-        cells[r, c].ChangePiece(curPiece);
+        cells[r, c].ChangePiece(piece);
         cells[r, c].getPiece().SetPosition(r, c);
-        curPiece.SetChosen(false);
-        curPiece = null;
+        piece.SetChosen(false);
+        piece = null;
         ResetClickables();
         if (!initialTurn) NextTurn();
     }
@@ -472,6 +478,27 @@ public class TableGenerator : MonoBehaviour
             {
                 cells[i, j].SetClickable(false);
             }
+        }
+    }
+
+
+    public void ButtonNextTurn()
+    {
+        if (initialTurn)
+        {
+            if (curPlayer == localPlayer)
+            {
+                photonView.RPC("ButtonNextTurnRPC", RpcTarget.All);
+            }
+        }
+    }
+
+    [PunRPC]
+    public void ButtonNextTurnRPC()
+    {
+        if (initialTurn)
+        {
+            NextTurn();
         }
     }
 
