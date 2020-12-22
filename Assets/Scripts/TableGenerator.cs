@@ -11,6 +11,8 @@ public class TableGenerator : MonoBehaviour
     [SerializeField] private Piece pieceRef;
     [SerializeField] private Text turnText;
     [SerializeField] private Button confirmButton;
+    [SerializeField] private MinMax minMaxGenerator;
+    [SerializeField] private bool useMinMax;
 
     public Cell[,] cells;
     public List<Cell> p1Start;
@@ -24,12 +26,13 @@ public class TableGenerator : MonoBehaviour
 
     public List<Piece> p1Pieces;
     public List<Piece> p2Pieces;
+    public List<Vector2> moves;
+    public Piece curPiece;
+    public int curPlayer;
 
-    private int curPlayer;
-    private Piece curPiece;
-    private int cellPos = 1;
-    private bool initialTurn = true;
-    private bool gameOver = false;
+    public int cellPos = 1;
+    public bool initialTurn = true;
+    public bool gameOver = false;
 
     private Piece.pieces[] pieceOrder = { Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.ROOK, Piece.pieces.ROOK, Piece.pieces.KNIGHT, Piece.pieces.BISHOP, Piece.pieces.BISHOP, Piece.pieces.QUEEN };
 
@@ -55,6 +58,7 @@ public class TableGenerator : MonoBehaviour
         p2Revives = new Cell[3];
         p1Pieces = new List<Piece>();
         p2Pieces = new List<Piece>();
+        moves = new List<Vector2>();
         TableObj.pieceType type;
 
         for (int i = 0; i<numRows; i++) 
@@ -130,6 +134,7 @@ public class TableGenerator : MonoBehaviour
         else
         {
             GetMoves(curPiece.type, r, c);
+            SetClickable();
         }
 
     }
@@ -162,20 +167,28 @@ public class TableGenerator : MonoBehaviour
         }
         //if (ValidatePosition(r, c+1, false, curPlayer)) cells[r, c+1].SetClickable(true);
     }
+
+    private void SetClickable() 
+    {
+        foreach(Vector2 v in moves)
+            cells[(int)v.x, (int)v.y].SetClickable(true);
+    }
+
     public void GetMoves(Piece.pieces t, int r, int c) 
     {
+        moves.Clear();
         ResetClickables();
         switch (t) 
         {
             case Piece.pieces.PAWN:
-                if (ValidatePosition(r, c+1, false, curPlayer)) cells[r, c+1].SetClickable(true);
-                if (ValidatePosition(r+1, c+1, true, curPlayer)) cells[r+1, c+1].SetClickable(true);
-                if (ValidatePosition(r+1, c, false, curPlayer)) cells[r+1, c].SetClickable(true);
-                if (ValidatePosition(r+1, c-1, true, curPlayer)) cells[r+1, c-1].SetClickable(true);
-                if (ValidatePosition(r, c-1, false, curPlayer)) cells[r, c-1].SetClickable(true);
-                if (ValidatePosition(r-1, c-1, true, curPlayer)) cells[r-1, c-1].SetClickable(true);
-                if (ValidatePosition(r-1, c, false, curPlayer)) cells[r-1, c].SetClickable(true);
-                if (ValidatePosition(r-1, c+1, true, curPlayer)) cells[r-1, c+1].SetClickable(true);
+                if (ValidatePosition(r, c+1, false, curPlayer)) moves.Add(new Vector2(r, c+1));
+                if (ValidatePosition(r+1, c+1, true, curPlayer)) moves.Add(new Vector2(r+1, c+1));
+                if (ValidatePosition(r+1, c, false, curPlayer)) moves.Add(new Vector2(r+1, c));
+                if (ValidatePosition(r+1, c-1, true, curPlayer)) moves.Add(new Vector2(r+1, c-1));
+                if (ValidatePosition(r, c-1, false, curPlayer)) moves.Add(new Vector2(r, c-1));
+                if (ValidatePosition(r-1, c-1, true, curPlayer)) moves.Add(new Vector2(r-1, c-1));
+                if (ValidatePosition(r-1, c, false, curPlayer)) moves.Add(new Vector2(r-1, c));
+                if (ValidatePosition(r-1, c+1, true, curPlayer)) moves.Add(new Vector2(r-1, c+1));
                 break;
             case Piece.pieces.ROOK:
                 cellPos = 1;
@@ -183,7 +196,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
-                        cells[r + cellPos, c].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c));
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos++;
                     }
@@ -196,7 +209,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r, c + cellPos, true, curPlayer))
                     {
-                        cells[r, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r, c + cellPos));
                         if (cells[r, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -209,7 +222,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
-                        cells[r + cellPos, c].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c));
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos--;
                     }
@@ -222,7 +235,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r, c + cellPos, true, curPlayer))
                     {
-                        cells[r, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r, c + cellPos));
                         if (cells[r, c + cellPos].getPiece() != null) break;
                         cellPos--;
                     }
@@ -230,26 +243,26 @@ public class TableGenerator : MonoBehaviour
                 }
                 break;
             case Piece.pieces.KNIGHT:
-                if (ValidatePosition(r + 2, c + 1, true, curPlayer)) cells[r + 2, c + 1].SetClickable(true);
-                if (ValidatePosition(r + 2, c - 1, true, curPlayer)) cells[r + 2, c - 1].SetClickable(true);
-                if (ValidatePosition(r - 2, c + 1, true, curPlayer)) cells[r - 2, c + 1].SetClickable(true);
-                if (ValidatePosition(r - 2, c - 1, true, curPlayer)) cells[r - 2, c - 1].SetClickable(true);
-                if (ValidatePosition(r + 1, c - 2, true, curPlayer)) cells[r + 1, c - 2].SetClickable(true);
-                if (ValidatePosition(r - 1, c - 2, true, curPlayer)) cells[r - 1, c - 2].SetClickable(true);
-                if (ValidatePosition(r + 1, c + 2, true, curPlayer)) cells[r + 1, c + 2].SetClickable(true);
-                if (ValidatePosition(r - 1, c + 2, true, curPlayer)) cells[r - 1, c + 2].SetClickable(true);
+                if (ValidatePosition(r + 2, c + 1, true, curPlayer)) moves.Add(new Vector2(r + 2, c + 1));
+                if (ValidatePosition(r + 2, c - 1, true, curPlayer)) moves.Add(new Vector2(r + 2, c - 1));
+                if (ValidatePosition(r - 2, c + 1, true, curPlayer)) moves.Add(new Vector2(r - 2, c + 1));
+                if (ValidatePosition(r - 2, c - 1, true, curPlayer)) moves.Add(new Vector2(r - 2, c - 1));
+                if (ValidatePosition(r + 1, c - 2, true, curPlayer)) moves.Add(new Vector2(r + 1, c - 2));
+                if (ValidatePosition(r - 1, c - 2, true, curPlayer)) moves.Add(new Vector2(r - 1, c - 2));
+                if (ValidatePosition(r + 1, c + 2, true, curPlayer)) moves.Add(new Vector2(r + 1, c + 2));
+                if (ValidatePosition(r - 1, c + 2, true, curPlayer)) moves.Add(new Vector2(r - 1, c + 2));
                 break;
             case Piece.pieces.BISHOP:
-                if (ValidatePosition(r, c + 1, false, curPlayer)) cells[r, c + 1].SetClickable(true);
-                if (ValidatePosition(r + 1, c, false, curPlayer)) cells[r + 1, c].SetClickable(true);
-                if (ValidatePosition(r, c - 1, false, curPlayer)) cells[r, c - 1].SetClickable(true);
-                if (ValidatePosition(r - 1, c, false, curPlayer)) cells[r - 1, c].SetClickable(true);
+                if (ValidatePosition(r, c + 1, false, curPlayer)) moves.Add(new Vector2(r, c + 1));
+                if (ValidatePosition(r + 1, c, false, curPlayer)) moves.Add(new Vector2(r + 1, c));
+                if (ValidatePosition(r, c - 1, false, curPlayer)) moves.Add(new Vector2(r, c - 1));
+                if (ValidatePosition(r - 1, c, false, curPlayer)) moves.Add(new Vector2(r - 1, c));
                 cellPos = 1;
                 while (r + cellPos < tableObj.numRows && c + cellPos < tableObj.numCols)
                 {
                     if (ValidatePosition(r + cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c + cellPos));
                         if (cells[r + cellPos, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -262,7 +275,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c - cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c - cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c - cellPos));
                         if (cells[r + cellPos, c - cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -275,7 +288,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r - cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r - cellPos, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r - cellPos, c + cellPos));
                         if (cells[r - cellPos, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -288,7 +301,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c + cellPos));
                         if (cells[r + cellPos, c + cellPos].getPiece() != null) break;
                         cellPos--;
                     }
@@ -302,7 +315,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
-                        cells[r + cellPos, c].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c));
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos++;
                     }
@@ -315,7 +328,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r, c + cellPos, true, curPlayer))
                     {
-                        cells[r, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r, c + cellPos));
                         if (cells[r, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -328,7 +341,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
-                        cells[r + cellPos, c].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c));
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos--;
                     }
@@ -341,7 +354,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r, c + cellPos, true, curPlayer))
                     {
-                        cells[r, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r, c + cellPos));
                         if (cells[r, c + cellPos].getPiece() != null) break;
                         cellPos--;
                     }
@@ -354,7 +367,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c + cellPos));
                         if (cells[r + cellPos, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -367,7 +380,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c - cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c - cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c - cellPos));
                         if (cells[r + cellPos, c - cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -380,7 +393,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r - cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r - cellPos, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r - cellPos, c + cellPos));
                         if (cells[r - cellPos, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -393,7 +406,7 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c + cellPos].SetClickable(true);
+                        moves.Add(new Vector2(r + cellPos, c + cellPos));
                         if (cells[r + cellPos, c + cellPos].getPiece() != null) break;
                         cellPos--;
                     }
@@ -412,8 +425,10 @@ public class TableGenerator : MonoBehaviour
         return false;
     }
 
-    public void MovePiece(int r, int c) 
+    public void MovePiece(int r, int c, bool minmax) 
     {
+        //if(minmax) Debug.Log(curPiece);
+        //Debug.Log(curPiece.inJail);
         cells[curPiece.r, curPiece.c].ChangePiece(null);
         if (cells[r, c].getPiece() != null) 
         {
@@ -442,26 +457,26 @@ public class TableGenerator : MonoBehaviour
                 if (chosenJail[1].getPiece() != null)
                 {
                     chosenJail[2].ChangePiece(chosenJail[1].getPiece());
-                    chosenJail[2].getPiece().SetJailPosition(chosenJail[2]);
+                    chosenJail[2].getPiece().SetJailPosition(chosenJail[2], 2, minmax);
                     chosenJail[1].ChangePiece(null);
                 }
 
                 if (chosenJail[0].getPiece() != null)
                 {
                     chosenJail[1].ChangePiece(chosenJail[0].getPiece());
-                    chosenJail[1].getPiece().SetJailPosition(chosenJail[1]);
+                    chosenJail[1].getPiece().SetJailPosition(chosenJail[1], 1, minmax);
                     chosenJail[0].ChangePiece(null);
                 }
 
                 chosenJail[0].ChangePiece(eatenPiece);
-                eatenPiece.SetJailPosition(chosenJail[0]);
+                eatenPiece.SetJailPosition(chosenJail[0], 0, minmax);
         }
         cells[r, c].ChangePiece(curPiece);
-        cells[r, c].getPiece().SetPosition(r, c);
+        cells[r, c].getPiece().SetPosition(r, c, minmax);
         curPiece.SetChosen(false);
         curPiece = null;
         ResetClickables();
-        if (!initialTurn) NextTurn();
+        if (!initialTurn) NextTurn(minmax);
     }
 
     private void ResetClickables() 
@@ -475,7 +490,7 @@ public class TableGenerator : MonoBehaviour
         }
     }
 
-    public void NextTurn() {
+    public void NextTurn(bool minmax) {
         
         if (initialTurn) 
         {
@@ -484,6 +499,7 @@ public class TableGenerator : MonoBehaviour
             {
                 initialTurn = false;
                 confirmButton.gameObject.SetActive(false);
+                if(useMinMax) minMaxGenerator.startMinMax();
             }
         }
 
@@ -510,19 +526,19 @@ public class TableGenerator : MonoBehaviour
                 if (p2Jail[0].getPiece() != null)
                 {
                     p2Revives[0].ChangePiece(p2Jail[0].getPiece());
-                    p2Revives[0].getPiece().SetPosition(p2Revives[0].r, p2Revives[0].c);
+                    p2Revives[0].getPiece().SetPosition(p2Revives[0].r, p2Revives[0].c, minmax);
                     p2Revives[0].getPiece().inJail = false;
                     p2Jail[0].ChangePiece(null);
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
-                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
+                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0], 0, minmax);
                         p2Jail[1].ChangePiece(null);
                     }
                     if (p2Jail[2].getPiece() != null)
                     {
                         p2Jail[1].ChangePiece(p2Jail[2].getPiece());
-                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
+                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1], 1, minmax);
                         p2Jail[2].ChangePiece(null);
                     }
                 }
@@ -532,19 +548,19 @@ public class TableGenerator : MonoBehaviour
                 if (p2Jail[0].getPiece() != null)
                 {
                     p2Revives[1].ChangePiece(p2Jail[0].getPiece());
-                    p2Revives[1].getPiece().SetPosition(p2Revives[1].r, p2Revives[1].c);
+                    p2Revives[1].getPiece().SetPosition(p2Revives[1].r, p2Revives[1].c, minmax);
                     p2Revives[1].getPiece().inJail = false;
                     p2Jail[0].ChangePiece(null);
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
-                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
+                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0], 0, minmax);
                         p2Jail[1].ChangePiece(null);
                     }
                     if (p2Jail[2].getPiece() != null)
                     {
                         p2Jail[1].ChangePiece(p2Jail[2].getPiece());
-                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
+                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1], 1, minmax);
                         p2Jail[2].ChangePiece(null);
                     }
                 }
@@ -554,19 +570,19 @@ public class TableGenerator : MonoBehaviour
                 if (p2Jail[0].getPiece() != null)
                 {
                     p2Revives[2].ChangePiece(p2Jail[0].getPiece());
-                    p2Revives[2].getPiece().SetPosition(p2Revives[2].r, p2Revives[2].c);
+                    p2Revives[2].getPiece().SetPosition(p2Revives[2].r, p2Revives[2].c, minmax);
                     p2Revives[2].getPiece().inJail = false;
                     p2Jail[0].ChangePiece(null);
                     if (p2Jail[1].getPiece() != null)
                     {
                         p2Jail[0].ChangePiece(p2Jail[1].getPiece());
-                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
+                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0], 0, minmax);
                         p2Jail[1].ChangePiece(null);
                     }
                     if (p2Jail[2].getPiece() != null)
                     {
                         p2Jail[1].ChangePiece(p2Jail[2].getPiece());
-                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
+                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1], 1, minmax);
                         p2Jail[2].ChangePiece(null);
                     }
                 }
@@ -593,19 +609,19 @@ public class TableGenerator : MonoBehaviour
                 if (p1Jail[0].getPiece() != null)
                 {
                     p1Revives[0].ChangePiece(p1Jail[0].getPiece());
-                    p1Revives[0].getPiece().SetPosition(p1Revives[0].r, p1Revives[0].c);
+                    p1Revives[0].getPiece().SetPosition(p1Revives[0].r, p1Revives[0].c, minmax);
                     p1Revives[0].getPiece().inJail = false;
                     p1Jail[0].ChangePiece(null);
                     if (p1Jail[1].getPiece() != null)
                     {
                         p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
+                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0], 0, minmax);
                         p1Jail[1].ChangePiece(null);
                     }
                     if (p1Jail[2].getPiece() != null)
                     {
                         p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
+                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1], 1, minmax);
                         p1Jail[2].ChangePiece(null);
                     }
                 }
@@ -615,19 +631,19 @@ public class TableGenerator : MonoBehaviour
                 if (p1Jail[0].getPiece() != null)
                 {
                     p1Revives[1].ChangePiece(p1Jail[0].getPiece());
-                    p1Revives[1].getPiece().SetPosition(p1Revives[1].r, p1Revives[1].c);
+                    p1Revives[1].getPiece().SetPosition(p1Revives[1].r, p1Revives[1].c, minmax);
                     p1Revives[1].getPiece().inJail = false;
                     p1Jail[0].ChangePiece(null);
                     if (p1Jail[1].getPiece() != null)
                     {
                         p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
+                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0], 0, minmax);
                         p1Jail[1].ChangePiece(null);
                     }
                     if (p1Jail[2].getPiece() != null)
                     {
                         p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
+                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1], 1, minmax);
                         p1Jail[2].ChangePiece(null);
                     }
                 }
@@ -637,19 +653,19 @@ public class TableGenerator : MonoBehaviour
                 if (p1Jail[0].getPiece() != null)
                 {
                     p1Revives[2].ChangePiece(p1Jail[0].getPiece());
-                    p1Revives[2].getPiece().SetPosition(p1Revives[2].r, p1Revives[2].c);
+                    p1Revives[2].getPiece().SetPosition(p1Revives[2].r, p1Revives[2].c, minmax);
                     p1Revives[2].getPiece().inJail = false;
                     p1Jail[0].ChangePiece(null);
                     if (p1Jail[1].getPiece() != null)
                     {
                         p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
+                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0], 0, minmax);
                         p1Jail[1].ChangePiece(null);
                     }
                     if (p1Jail[2].getPiece() != null)
                     {
                         p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
+                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1], 1, minmax);
                         p1Jail[2].ChangePiece(null);
                     }
                 }

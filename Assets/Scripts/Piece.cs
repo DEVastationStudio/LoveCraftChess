@@ -30,6 +30,7 @@ public class Piece : MonoBehaviour
     public pieces type;
     private Color color;
     public bool inJail;
+    public int jailPos;
 
     public void Init(pieces piece, int r, int c, TableGenerator tGen, int player) 
     {
@@ -91,16 +92,19 @@ public class Piece : MonoBehaviour
         }
     }
 
-    public void SetPosition(int r, int c) 
+    public void SetPosition(int r, int c, bool minmax) 
     {
         this.r = r;
         this.c = c;
-        transform.position = new Vector3(c, 1, r);
+        if(!minmax)
+            transform.position = new Vector3(c, 1, r);
     }
-    public void SetJailPosition(Cell c) 
+    public void SetJailPosition(Cell c, int pos, bool isMinMax) 
     {
         this.r = -1;
         this.c = -1;
-        transform.position = new Vector3(c.transform.position.x, 1, c.transform.position.z);
+        jailPos = pos;
+        if(!isMinMax)
+            transform.position = new Vector3(c.transform.position.x, 1, c.transform.position.z);
     }
 }

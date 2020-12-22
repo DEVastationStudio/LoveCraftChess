@@ -102,7 +102,7 @@ public class Cell : MonoBehaviour
     {
         if (isClickable) 
         {
-            tGen.MovePiece(r, c);
+            tGen.MovePiece(r, c, false);
         }
     }
 
