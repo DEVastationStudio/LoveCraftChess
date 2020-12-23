@@ -34,14 +34,48 @@ public class TableGenerator : MonoBehaviour
     public bool initialTurn = true;
     public bool gameOver = false;
 
-    private Piece.pieces[] pieceOrder = { Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.ROOK, Piece.pieces.ROOK, Piece.pieces.KNIGHT, Piece.pieces.BISHOP, Piece.pieces.BISHOP, Piece.pieces.QUEEN };
+    private Piece.pieces[] pieceOrder = { 
+        Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.PAWN, 
+        Piece.pieces.ROOK, Piece.pieces.ROOK, Piece.pieces.KNIGHT, 
+        Piece.pieces.BISHOP, Piece.pieces.BISHOP, Piece.pieces.QUEEN };
 
     void Start()
     {
         curPlayer = 1;
         GenerateTable();
     }
+    public TableGenerator Clone_TableGenerator(
+        Cell[,] cells, List<Cell> p1Start, List<Cell> p2Start, List<Cell> p1Jail,
+        List<Cell> p2Jail, List<Cell> p1Keys, List<Cell> p2keys, Cell[] p1Revives,
+        Cell[] p2Revives, List<Piece> p1Pieces, List<Piece> p2Pieces, List<Vector2> moves,
+        Piece curPiece, int curPlayer, int cellPos, bool initialTurn, bool gameOver
+        )
+    {
+        this.cells = (Cell[,]) cells.Clone();
+        this.p1Jail = DeepClone(p1Jail);
+        this.p2Jail = new List<Cell>(p2Jail);
+        this.p1Keys = new List<Cell>(p1Keys);
+        this.p2Keys = new List<Cell>(p2keys);
+        this.p1Revives = (Cell[]) p1Revives.Clone();
+        this.p2Revives = (Cell[]) p2Revives.Clone();
+        this.p1Pieces = new List<Piece>(p1Pieces);
+        this.p2Pieces = new List<Piece>(p2Pieces);
+        this.moves = new List<Vector2>(moves);
+        this.curPiece = curPiece;
+        this.curPlayer = curPlayer;
+        this.cellPos = cellPos;
+        this.initialTurn = initialTurn;
+        this.gameOver = gameOver;
+        return this;
+    }
 
+    private List<Cell> DeepClone(List<Cell> l) 
+    {
+        List<Cell> aux = new List<Cell>();
+        foreach (Cell c in l)
+            aux.Add(c);
+        return aux;
+    }
     private void GenerateTable()
     {
         initialTurn = true;
@@ -341,9 +375,9 @@ public class TableGenerator : MonoBehaviour
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
-                        moves.Add(new Vector2(r + cellPos, c));
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos--;
+                        moves.Add(new Vector2(r + cellPos, c));
                     }
                     else break;
                 }
@@ -427,8 +461,6 @@ public class TableGenerator : MonoBehaviour
 
     public void MovePiece(int r, int c, bool minmax) 
     {
-        //if(minmax) Debug.Log(curPiece);
-        //Debug.Log(curPiece.inJail);
         cells[curPiece.r, curPiece.c].ChangePiece(null);
         if (cells[r, c].getPiece() != null) 
         {
