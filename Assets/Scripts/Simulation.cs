@@ -513,6 +513,7 @@ public class Simulation : MonoBehaviour
 
     public int numStatesVisited = 0;
     public int playerUsingMinMax;
+    public int profundidadAUsar;
 
     /*
      0 BASIC
@@ -558,7 +559,8 @@ public class Simulation : MonoBehaviour
         initialGameState = new GameState(map);
         gameStates.Push(initialGameState);
         playerUsingMinMax = 1;
-        Debug.Log(alphaBeta(3, playerUsingMinMax, -999999, 999999, true));
+        profundidadAUsar = 3;
+        Debug.Log(alphaBeta(profundidadAUsar, playerUsingMinMax, -999999, 999999, true));
         Debug.Log("Number of states visited:" + numStatesVisited);
     }
     private void PrintMap(int[,] t) 
