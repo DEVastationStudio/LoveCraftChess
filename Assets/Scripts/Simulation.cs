@@ -23,6 +23,8 @@ public class GameState
     public int numCols;
     public List<Vector3Int> p1AlivePieces = new List<Vector3Int>();
     public List<Vector3Int> p2AlivePieces = new List<Vector3Int>();
+    public int p1Alive;
+    public int p2Alive;
 
     #region Contructors
     public GameState(TableObj map) 
@@ -91,11 +93,13 @@ public class GameState
             p2PosibleInitialPositions.RemoveAt(r);
             p2AvailablePieces.RemoveAt(0);
         }
+
+        p1Alive = p1AlivePieces.Count;
+        p2Alive = p2AlivePieces.Count;
     }
 
     public GameState(GameState oldState)
     {
-        Debug.Log("State Created");
         numRows = oldState.numRows;
         numCols = oldState.numCols;
         map = oldState.map;
@@ -103,6 +107,8 @@ public class GameState
         p2Key = oldState.p2Key;
         curPlayer = oldState.curPlayer;
         curPiece = oldState.curPiece;
+        p1Alive = oldState.p1Alive;
+        p2Alive = oldState.p2Alive;
 
         table = new int[numRows, numCols];
         for (int i = 0; i < numRows; i++) 
@@ -149,7 +155,6 @@ public class GameState
     #region Piece Movements
     public void GetMoves(int r, int c)
     {
-        Debug.Log("Num moves prev: " + moves.Count);
         int cellPos = 0;
         moves.Clear();
         switch (curPiece)
@@ -161,7 +166,6 @@ public class GameState
             case 211:
             case 212:
             case 213:
-                Debug.Log("PAWN moves prev: " + moves.Count);
                 if (ValidatePosition(r, c + 1, false, curPlayer)) moves.Add(new Vector2Int(r, c + 1));
                 if (ValidatePosition(r + 1, c + 1, true, curPlayer)) moves.Add(new Vector2Int(r + 1, c + 1));
                 if (ValidatePosition(r + 1, c, false, curPlayer)) moves.Add(new Vector2Int(r + 1, c));
@@ -170,7 +174,6 @@ public class GameState
                 if (ValidatePosition(r - 1, c - 1, true, curPlayer)) moves.Add(new Vector2Int(r - 1, c - 1));
                 if (ValidatePosition(r - 1, c, false, curPlayer)) moves.Add(new Vector2Int(r - 1, c));
                 if (ValidatePosition(r - 1, c + 1, true, curPlayer)) moves.Add(new Vector2Int(r - 1, c + 1));
-                Debug.Log("PAWN moves post: " + moves.Count);
                 break;
             //ROOK
             case 121:
@@ -408,7 +411,6 @@ public class GameState
                 }
                 break;
         }
-        Debug.Log("Num moves post: " + moves.Count);
     }
     private bool ValidatePosition(int r, int c, bool canKill, int player)
     {
@@ -438,26 +440,33 @@ public class GameState
         }
         if (pieces[r2, c2] != 0) 
         {
+            if (player == 1)
+                p2Alive--;
+            else
+                p1Alive--;
+            //Debug.Log("Player "+player +" eats a piece");
             int eatenPiece = pieces[r2,c2];
             int[] chosenJail;
+            List<Vector3Int> chosenLivePool;
             if (player == 1)
             {
                 chosenJail = p2Jail;
+                chosenLivePool = p2AlivePieces;
             }
             else 
             {
                 chosenJail = p1Jail;
+                chosenLivePool = p1AlivePieces;
             }
-
                 if (chosenJail[2] != 0)
                 {
                     if (player == 1) 
                     {
-                        for (int i = 0; i < p1AlivePieces.Count; i++) 
+                        for (int i = 0; i < chosenLivePool.Count; i++) 
                         {
-                            if (p1AlivePieces[i].z == chosenJail[2]) 
+                            if (chosenLivePool[i].z == chosenJail[2]) 
                             {
-                                p1AlivePieces.RemoveAt(i);
+                                chosenLivePool.RemoveAt(i);
                                 break;
                             }
                         }
@@ -502,6 +511,9 @@ public class Simulation : MonoBehaviour
     private Stack<GameState> gameStates = new Stack<GameState>();
     private GameState initialGameState;
 
+    public int numStatesVisited = 0;
+    public int playerUsingMinMax;
+
     /*
      0 BASIC
      1 BASIC1
@@ -545,7 +557,9 @@ public class Simulation : MonoBehaviour
     {
         initialGameState = new GameState(map);
         gameStates.Push(initialGameState);
-        Debug.Log(alphaBeta(3, 1, -999999, 999999));
+        playerUsingMinMax = 1;
+        Debug.Log(alphaBeta(3, playerUsingMinMax, -999999, 999999, true));
+        Debug.Log("Number of states visited:" + numStatesVisited);
     }
     private void PrintMap(int[,] t) 
     {
@@ -570,15 +584,14 @@ public class Simulation : MonoBehaviour
     #endregion
 
     #region MinMax Algorithm
-    public float alphaBeta(int profundidad, int player, float alpha, float beta)
+    public float alphaBeta(int profundidad, int player, float alpha, float beta, bool initialMovement)
     {
-        Debug.Log("Aqui entro");
+        numStatesVisited++;
         GameState gs = gameStates.Peek();
         gameStates.Peek().curPlayer = player;
-        if (profundidad == 0) return heuristica(player);
+        if (profundidad == 0) return heuristica();
         if (player == 1)
         {
-            Debug.Log("p1 Alive pieces: "+gameStates.Peek().p1AlivePieces.Count);
             for (int i = 0; i < gameStates.Peek().p1AlivePieces.Count; i++)
             {
                 Vector3Int p = gameStates.Peek().p1AlivePieces[i];
@@ -590,7 +603,7 @@ public class Simulation : MonoBehaviour
                     {
                         gameStates.Push(new GameState(gs));
                         gameStates.Peek().MovePiece(1, v.x, v.y);
-                        alpha = Math.Max(alpha, alphaBeta(profundidad - 1, 2, alpha, beta));
+                        alpha = Math.Max(alpha, alphaBeta(profundidad - 1, 2, alpha, beta, false));
                         if (beta <= alpha) return alpha;
                     }
                 }
@@ -602,15 +615,15 @@ public class Simulation : MonoBehaviour
             for (int i = 0; i < gameStates.Peek().p2AlivePieces.Count; i++)
             {
                 Vector3Int p = gameStates.Peek().p2AlivePieces[i];
-                if (!gameStates.Peek().inJail(1, p.z))
+                if (!gameStates.Peek().inJail(2, p.z))
                 {
                     gameStates.Peek().curPiece = p.z;
                     gameStates.Peek().GetMoves(p.x, p.y);
                     foreach (Vector2Int v in gameStates.Peek().moves)
                     {
                         gameStates.Push(new GameState(gs));
-                        gameStates.Peek().MovePiece(1, v.x, v.y);
-                        beta = Math.Min(beta, alphaBeta(profundidad - 1, 1, alpha, beta));
+                        gameStates.Peek().MovePiece(2, v.x, v.y);
+                        beta = Math.Min(beta, alphaBeta(profundidad - 1, 1, alpha, beta, false));
                         if (beta <= alpha) return beta;
                     }
                 }
@@ -618,16 +631,18 @@ public class Simulation : MonoBehaviour
             return beta;
         }
     }
-    private int heuristica(int player)
+    private int heuristica()
     {
         GameState gs = gameStates.Pop();
-        if (player == 1)
+        if (playerUsingMinMax == 1)
         {
-            return gs.p1AlivePieces.Count - gs.p2AlivePieces.Count;
+            //Debug.Log("P1["+gs.p1Alive+"] - P2["+gs.p2Alive+"] = "+(gs.p1Alive-gs.p2Alive));
+            return gs.p1Alive - gs.p2Alive;
         }
         else
         {
-            return gs.p2AlivePieces.Count - gs.p1AlivePieces.Count;
+            //Debug.Log("P2[" + gs.p2Alive + "] - P1[" + gs.p1Alive + "] = " + (gs.p2Alive - gs.p1Alive));
+            return gs.p2Alive - gs.p1Alive;
         }
     }
     #endregion
