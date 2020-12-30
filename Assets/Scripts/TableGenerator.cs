@@ -53,6 +53,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
         else 
         {
+            localPlayer = -1;
             curPlayer = 1;
         }
         
@@ -138,7 +139,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     {
         if (initialTurn && !confirmButton.interactable) return;
         Piece piece = cells[r, c].getPiece();
-        if (piece.player != curPlayer || curPlayer != localPlayer || gameOver) return;
+        if (piece.player != curPlayer || (isOnline && (curPlayer != localPlayer)) || gameOver) return;
 
             curPiece?.SetChosen(false);
             curPiece = piece;
@@ -483,7 +484,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         cells[r, c].ChangePiece(piece);
         cells[r, c].getPiece().SetPosition(r, c);
         piece.SetChosen(false);
-        if (piece.player == localPlayer && isOnline)
+        if (piece.player == localPlayer || !isOnline)
             ResetClickables();
         piece = null;
         if (!initialTurn) NextTurn();

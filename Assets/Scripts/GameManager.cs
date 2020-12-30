@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     
     public void Start()
     {
-        PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0,0,0), Quaternion.identity, 0);
+        if (PhotonNetwork.IsConnected)
+            PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0,0,0), Quaternion.identity, 0);
     }
 
     public override void OnLeftRoom()

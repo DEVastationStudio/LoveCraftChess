@@ -171,7 +171,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2498786531899420332}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -251,7 +251,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4426133332214876894}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -331,7 +331,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4554492404430944054}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -411,7 +411,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6662446912844216374}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -422,7 +422,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e5c006f332722de40b4268f26e6ed4a1, type: 2}
+  - {fileID: 2100000, guid: 8e4e4ebc6f1b66445afc8f5a4a69e08c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -491,7 +491,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8941110689919252003}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -605,6 +605,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: archivistaA
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9cee4b7ba0b34504483a75bbd6d837ae,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9cee4b7ba0b34504483a75bbd6d837ae, type: 3}
 --- !u!4 &3212942443654869650 stripped
@@ -698,7 +703,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 80ca55f86da60b241bd44c4e7ecaad09,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80ca55f86da60b241bd44c4e7ecaad09, type: 3}
@@ -790,6 +795,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: acolitoB
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a944a1f9bbbfb3b4d9b25ea18572fc02,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a944a1f9bbbfb3b4d9b25ea18572fc02, type: 3}
 --- !u!4 &2917209662763227316 stripped
@@ -880,6 +890,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: brujoA
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: acfe9ff44d5e18f40a0cd67e6ac072f5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: acfe9ff44d5e18f40a0cd67e6ac072f5, type: 3}
 --- !u!4 &7237563637752404308 stripped
@@ -969,6 +984,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: medicoA
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 52470ac1ce0b8df4090045dcaf0df8e4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52470ac1ce0b8df4090045dcaf0df8e4, type: 3}
