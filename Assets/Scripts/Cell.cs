@@ -103,8 +103,15 @@ public class Cell : MonoBehaviourPunCallbacks
     {
         if (isClickable) 
         {
-            PhotonView photonView = PhotonView.Get(tGen);//PhotonView.Get(this);
-            photonView.RPC("MovePiece", RpcTarget.All, r, c, tGen.curPiece.r, tGen.curPiece.c);
+            if (tGen.isOnline)
+            {
+                PhotonView photonView = PhotonView.Get(tGen);//PhotonView.Get(this);
+                photonView.RPC("MovePiece", RpcTarget.All, r, c, tGen.curPiece.r, tGen.curPiece.c);
+            }
+            else
+            {
+                tGen.MovePiece(r, c, tGen.curPiece.r, tGen.curPiece.c);
+            }
             //tGen.MovePiece(r, c);
         }
     }

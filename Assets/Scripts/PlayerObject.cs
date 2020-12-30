@@ -11,8 +11,14 @@ public class PlayerObject : MonoBehaviourPunCallbacks
     void Start()
     {
         if (PhotonNetwork.IsMasterClient)
+        {
             TableGenerator.localPlayer = 1;
+            TableGenerator.curPlayer = 1;
+        }
         else
+        {
             TableGenerator.localPlayer = 2;
+            TableGenerator.curPlayer = 2;
+        }
     }
 }

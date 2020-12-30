@@ -28,17 +28,34 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public List<Piece> p1Pieces;
     public List<Piece> p2Pieces;
 
-    private int curPlayer;
+    public static int curPlayer;
     public Piece curPiece;
     private int cellPos = 1;
     private bool initialTurn = true;
     private bool gameOver = false;
 
+    private bool p1Ready, p2Ready;
+
+    public bool isOnline = false;
+
     private Piece.pieces[] pieceOrder = { Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.ROOK, Piece.pieces.ROOK, Piece.pieces.KNIGHT, Piece.pieces.BISHOP, Piece.pieces.BISHOP, Piece.pieces.QUEEN };
+
+    public static TableGenerator instance;
 
     void Start()
     {
-        curPlayer = 1;
+        instance = this;
+        isOnline = PhotonNetwork.IsConnected;
+        if (isOnline) 
+        {
+            curPlayer = localPlayer;
+            turnText.text = "START TURN";
+        }
+        else 
+        {
+            curPlayer = 1;
+        }
+        
         GenerateTable();
     }
 
@@ -119,6 +136,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     
     public void SelectPiece(int r, int c) 
     {
+        if (initialTurn && !confirmButton.interactable) return;
         Piece piece = cells[r, c].getPiece();
         if (piece.player != curPlayer || curPlayer != localPlayer || gameOver) return;
 
@@ -465,8 +483,9 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         cells[r, c].ChangePiece(piece);
         cells[r, c].getPiece().SetPosition(r, c);
         piece.SetChosen(false);
+        if (piece.player == localPlayer && isOnline)
+            ResetClickables();
         piece = null;
-        ResetClickables();
         if (!initialTurn) NextTurn();
     }
 
@@ -486,19 +505,45 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     {
         if (initialTurn)
         {
-            if (curPlayer == localPlayer)
+            if (isOnline)
             {
-                photonView.RPC("ButtonNextTurnRPC", RpcTarget.All);
+                if (curPlayer == localPlayer)
+                {
+                    photonView.RPC("ButtonNextTurnRPC", RpcTarget.All, localPlayer);
+                }
+            }
+            else
+            {
+                NextTurn();
             }
         }
     }
 
     [PunRPC]
-    public void ButtonNextTurnRPC()
+    public void ButtonNextTurnRPC(int readyPlayer)
     {
         if (initialTurn)
         {
-            NextTurn();
+            if (readyPlayer == 1) 
+            {
+                if (p1Ready) return;
+                p1Ready = true;
+            }
+            else if (readyPlayer == 2) 
+            {
+                if (p2Ready) return;
+                p2Ready = true;
+            }
+            
+            if (readyPlayer == localPlayer)
+            {
+                curPiece?.SetChosen(false);
+                ResetClickables();
+                confirmButton.interactable = false;
+            }
+
+
+            if (p1Ready && p2Ready) NextTurn();
         }
     }
 
@@ -507,10 +552,19 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         if (initialTurn) 
         {
             ResetClickables();
-            if (curPlayer == 2)
+            if (isOnline)
             {
+                curPlayer = 2;
                 initialTurn = false;
                 confirmButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (curPlayer == 2)
+                {
+                    initialTurn = false;
+                    confirmButton.gameObject.SetActive(false);
+                }
             }
         }
 
