@@ -13,6 +13,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private Piece pieceRef;
     [SerializeField] private Text turnText;
     [SerializeField] private Button confirmButton;
+    [SerializeField] private InGameInterfaceController UIController;
     public static int localPlayer;
 
     public Cell[,] cells;
@@ -55,13 +56,13 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         {
             localPlayer = -1;
             curPlayer = 1;
+            UIController.LocalInterface();
         }
-        
-        GenerateTable();
     }
 
-    private void GenerateTable()
+    public void GenerateTable(TableObj level)
     {
+        tableObj = level;
         initialTurn = true;
         int numRows = tableObj.numRows;
         int numCols = tableObj.numCols;
