@@ -19,6 +19,7 @@ public class InGameInterfaceController : MonoBehaviourPunCallbacks
 
     [Header("Random Multiplayer game")]
 
+    [SerializeField] private GameObject onlineInterface;
     [SerializeField] private Image mapImageP1;
     [SerializeField] private Image mapImageP2;
     [SerializeField] private GameObject multiInterfaceP1;
@@ -35,6 +36,7 @@ public class InGameInterfaceController : MonoBehaviourPunCallbacks
     {
         mapImageP1.sprite = AvailableMapTableObj[currentMap].preview;
         mapImageP2.sprite = AvailableMapTableObj[currentMap].preview;
+        onlineInterface.SetActive(true); 
         if (PhotonNetwork.IsMasterClient)
             multiInterfaceP1.SetActive(true); 
         else
@@ -51,7 +53,7 @@ public class InGameInterfaceController : MonoBehaviourPunCallbacks
     }
     public void PlayerReadyButton(int player)
     {
-        photonView.RPC("PlayerReadyRPC", RpcTarget.All, player);
+        photonView.RPC("PlayerReadyRPC", RpcTarget.All, player, Random.Range(0, 1));
     }
 
 
@@ -64,6 +66,7 @@ public class InGameInterfaceController : MonoBehaviourPunCallbacks
                 currentMapP1 = AvailableMapTableObj.Length - 1;
             else
                 currentMapP1--;
+            mapImageP1.sprite = AvailableMapTableObj[currentMapP1].preview;
         }
         else
         {
@@ -71,6 +74,7 @@ public class InGameInterfaceController : MonoBehaviourPunCallbacks
                 currentMapP2 = AvailableMapTableObj.Length - 1;
             else
                 currentMapP2--;
+            mapImageP2.sprite = AvailableMapTableObj[currentMapP2].preview;
         }
     }
 
@@ -97,7 +101,7 @@ public class InGameInterfaceController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void PlayerReadyRPC(int readyPlayer) 
+    public void PlayerReadyRPC(int readyPlayer, int map) 
     {
         if (readyPlayer == 1)
         {
@@ -111,7 +115,7 @@ public class InGameInterfaceController : MonoBehaviourPunCallbacks
             playerMapSelection[1] = currentMapP2;
             isPlayer2Ready = true;
         }
-        if (isPlayer1Ready && isPlayer2Ready) TB.GenerateTable(AvailableMapTableObj[playerMapSelection[Random.Range(0, 1)]]);
+        if (isPlayer1Ready && isPlayer2Ready) TB.GenerateTable(AvailableMapTableObj[playerMapSelection[map]]);
     }
     /*
      * Llamada: photonView.RPC("ButtonNextTurnRPC", RpcTarget.All, Los parametros que sean necesarios);

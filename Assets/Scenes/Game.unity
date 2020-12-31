@@ -898,6 +898,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 001aca0b791ca5742a8649f7b1362476, type: 2}
   MapImage: {fileID: 1873235518}
   localInterface: {fileID: 1375389855}
+  onlineInterface: {fileID: 1621341471}
   mapImageP1: {fileID: 1614408084}
   mapImageP2: {fileID: 586924967}
   multiInterfaceP1: {fileID: 1961359516}
@@ -5039,7 +5040,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Player 1
+  m_text: Player 2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
