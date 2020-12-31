@@ -56,7 +56,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         {
             curPlayer = localPlayer;
             turnText.text = "START TURN";
-            GenerateTable(tableObj);
+            UIController.OnlineInterface();
         }
         else 
         {

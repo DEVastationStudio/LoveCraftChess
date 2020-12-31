@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime;
 
-public class InGameInterfaceController : MonoBehaviour
+public class InGameInterfaceController : MonoBehaviourPunCallbacks
 {
     [Header("Universal variables")]
     [SerializeField] private TableGenerator TB;
@@ -29,6 +30,30 @@ public class InGameInterfaceController : MonoBehaviour
     private int[] playerMapSelection = new int[2];
 
     #region MultiRandom Region
+
+    public void OnlineInterface() 
+    {
+        mapImageP1.sprite = AvailableMapTableObj[currentMap].preview;
+        mapImageP2.sprite = AvailableMapTableObj[currentMap].preview;
+        if (PhotonNetwork.IsMasterClient)
+            multiInterfaceP1.SetActive(true); 
+        else
+            multiInterfaceP2.SetActive(true); 
+    }
+
+    public void LeftMapButton(int player)
+    {
+        photonView.RPC("LeftMapRPC", RpcTarget.All, player);
+    }
+    public void RightMapButton(int player)
+    {
+        photonView.RPC("RightMapRPC", RpcTarget.All, player);
+    }
+    public void PlayerReadyButton(int player)
+    {
+        photonView.RPC("PlayerReadyRPC", RpcTarget.All, player);
+    }
+
 
     [PunRPC]
     public void LeftMapRPC(int player)
