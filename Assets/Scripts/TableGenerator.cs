@@ -13,6 +13,11 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private Piece pieceRef;
     [SerializeField] private Text turnText;
     [SerializeField] private Button confirmButton;
+
+    #region End Screen
+    [SerializeField] private Text endText;
+    [SerializeField] private GameObject endScreen;
+    #endregion
     public static int localPlayer;
 
     public Cell[,] cells;
@@ -809,9 +814,17 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     
     }
 
+    public void AbandonVictory()
+    {
+        SetWinner(localPlayer);
+    }
+
     private void SetWinner(int player)
     {
         turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
         gameOver = true;
+
+        endScreen.SetActive(true);
+        endText.text = ((isOnline)?((localPlayer==player)?("YOU WIN"):("YOU LOSE")):((player==1?"BLUE":"RED") + " PLAYER WINS"));
     }
 }

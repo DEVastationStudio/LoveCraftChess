@@ -9,6 +9,7 @@ using Photon.Realtime;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public GameObject playerPrefab;
+    public bool isLobby;
     
     public void Start()
     {
@@ -18,7 +19,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        SceneManager.LoadScene(0);
+        if (isLobby)
+        {
+            SceneManager.LoadScene(0);
+        }
+    }
+    public void QuitGameButton()
+    {
+        SceneManager.LoadScene("PreLobby");
     }
 
     public void LeaveRoom()
@@ -42,7 +50,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient && isLobby)
         {
             LoadGame();
         }
@@ -50,9 +58,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (!isLobby)
         {
-            LoadGame();
+            TableGenerator.instance.AbandonVictory();
         }
     }
 }
