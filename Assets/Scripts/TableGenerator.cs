@@ -18,6 +18,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private Text endText;
     [SerializeField] private GameObject endScreen;
     #endregion
+    [SerializeField] private InGameInterfaceController UIController;
     public static int localPlayer;
 
     public Cell[,] cells;
@@ -55,18 +56,19 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         {
             curPlayer = localPlayer;
             turnText.text = "START TURN";
+            GenerateTable(tableObj);
         }
         else 
         {
             localPlayer = -1;
             curPlayer = 1;
+            UIController.LocalInterface();
         }
-        
-        GenerateTable();
     }
 
-    private void GenerateTable()
+    public void GenerateTable(TableObj level)
     {
+        tableObj = level;
         initialTurn = true;
         int numRows = tableObj.numRows;
         int numCols = tableObj.numCols;
@@ -821,6 +823,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
     private void SetWinner(int player)
     {
+        PhotonNetwork.LeaveRoom();
         turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
         gameOver = true;
 

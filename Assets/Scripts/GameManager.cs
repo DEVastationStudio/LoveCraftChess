@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (isLobby)
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("PreLobby");
         }
     }
     public void QuitGameButton()
@@ -31,7 +31,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void LeaveRoom()
     {
-        PhotonNetwork.LeaveRoom();
+        if (PhotonNetwork.IsConnected)
+            PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene("Menu");
     }
     void LoadGame()
     {

@@ -28,6 +28,7 @@ public class TableObj : ScriptableObject
     }
 
     public string name;
+    public Sprite preview;
     public int numRows = 3;
     public int numCols = 3;
     public Arr[] rows;
