@@ -115,7 +115,10 @@ public class InGameInterfaceController : MonoBehaviourPunCallbacks
             playerMapSelection[1] = currentMapP2;
             isPlayer2Ready = true;
         }
-        if (isPlayer1Ready && isPlayer2Ready) TB.GenerateTable(AvailableMapTableObj[playerMapSelection[map]]);
+        if (isPlayer1Ready && isPlayer2Ready) {
+            TB.GenerateTable(AvailableMapTableObj[playerMapSelection[map]]);
+            onlineInterface.SetActive(false); 
+        }
     }
     /*
      * Llamada: photonView.RPC("ButtonNextTurnRPC", RpcTarget.All, Los parametros que sean necesarios);
