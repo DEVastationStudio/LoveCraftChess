@@ -13,6 +13,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private Piece pieceRef;
     [SerializeField] private Text turnText;
     [SerializeField] private Button confirmButton;
+    [SerializeField] private Button moveConfirmButton;
     [SerializeField] private Camera _camera;
 
     #region End Screen
@@ -38,7 +39,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public static int curPlayer;
     public Piece curPiece;
     private int cellPos = 1;
-    private bool initialTurn = true;
+    public bool initialTurn = true;
     private bool gameOver = false;
 
     private bool p1Ready, p2Ready;
@@ -52,6 +53,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public int PitControl; //No one: -1 // Player1: 1 // Player2: 2//
     public List<Cell> Pits;
     public Cell PitBtn;
+    
+    private int[] _movePieceParams;
 
     private Piece.pieces[] pieceOrder = { Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.ROOK, Piece.pieces.ROOK, Piece.pieces.KNIGHT, Piece.pieces.BISHOP, Piece.pieces.BISHOP, Piece.pieces.QUEEN };
 
@@ -168,10 +171,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         if (initialTurn && !confirmButton.interactable) return;
         Piece piece = cells[r, c].getPiece();
         if (piece.player != curPlayer || (isOnline && (curPlayer != localPlayer)) || gameOver) return;
-
-            curPiece?.SetChosen(false);
-            curPiece = piece;
-            curPiece?.SetChosen(true);
+        ResetConfirmMove();
+        curPiece?.SetChosen(false);
+        curPiece = piece;
+        curPiece?.SetChosen(true);
 
         if (initialTurn)
         {
@@ -486,6 +489,33 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         return false;
     }
 
+    public void ResetConfirmMove()
+    {
+        _movePieceParams = new int[4];
+        moveConfirmButton.gameObject.SetActive(false);
+    }
+    public void ShowConfirmMove(int[] parameters)
+    {
+        _movePieceParams = parameters;
+        moveConfirmButton.gameObject.SetActive(true);
+        ResetClickables();
+    }
+
+    public void ConfirmMove()
+    {
+        if (isOnline)
+        {
+            PhotonView photonView = PhotonView.Get(this);
+            photonView.RPC("MovePiece", RpcTarget.All, _movePieceParams[0], _movePieceParams[1], _movePieceParams[2], _movePieceParams[3]);
+        }
+        else
+        {
+            MovePiece(_movePieceParams[0], _movePieceParams[1], _movePieceParams[2], _movePieceParams[3]);
+        }
+        cells[_movePieceParams[0], _movePieceParams[1]].SetSelected(false);
+        moveConfirmButton.gameObject.SetActive(false);
+    }
+
     [PunRPC]
     public void MovePiece(int r, int c, int pr, int pc) 
     {
@@ -621,7 +651,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
         }
 
-        if (PitBtn.getPiece() != null)
+        if (PitBtn != null && PitBtn.getPiece() != null)
             PitControl = PitBtn.getPiece().player;
 
         foreach (Cell p in Pits)
@@ -683,7 +713,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         else curPlayer = 1;
         turnText.text = (curPlayer==1?"BLUE":"RED") + " PLAYER TURN";
 
-        if (barrierBtn.getPiece() != null)
+        if (barrierBtn != null && barrierBtn.getPiece() != null)
             barrierControl = barrierBtn.getPiece().player;
 
         foreach (Cell p in Pits)
@@ -712,7 +742,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
         }
 
-        if (barrierBtn.getPiece() == null)
+        if (barrierBtn != null && barrierBtn.getPiece() == null)
             barrierControl = -1;
 
         foreach (Cell b in barriers)

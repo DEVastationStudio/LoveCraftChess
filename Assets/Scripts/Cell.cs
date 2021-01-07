@@ -124,29 +124,27 @@ public class Cell : MonoBehaviourPunCallbacks
     {
         if (isClickable) 
         {
-            if (tGen.isOnline)
-            {
-                PhotonView photonView = PhotonView.Get(tGen);//PhotonView.Get(this);
-                photonView.RPC("MovePiece", RpcTarget.All, r, c, tGen.curPiece.r, tGen.curPiece.c);
+            int[] _movePieceParams = new int[4];
+            _movePieceParams[0] = r;
+            _movePieceParams[1] = c;
+            _movePieceParams[2] = tGen.curPiece.r;
+            _movePieceParams[3] = tGen.curPiece.c;
+            tGen.ShowConfirmMove(_movePieceParams);
+            SetSelected(true);
+            if (tGen.initialTurn) {
+                tGen.ConfirmMove();
             }
-            else
-            {
-                tGen.MovePiece(r, c, tGen.curPiece.r, tGen.curPiece.c);
-            }
-            //tGen.MovePiece(r, c);
         }
     }
-
-    /*[PunRPC]
-    void MovePieceRPC(int r, int c)
+    public void SetSelected(bool selected)
     {
-        tGen.MovePiece(r,c);
+        if(selected) renderer.material.SetColor("_Color", Color.yellow);
+        else renderer.material.SetColor("_Color", color);
     }
-*/
+
     public void SetClickable(bool click) 
     {
         isClickable = click;
-        if(isClickable) renderer.material.SetColor("_Color", Color.yellow);
-        else renderer.material.SetColor("_Color", color);
+        SetSelected(isClickable);
     }
 }
