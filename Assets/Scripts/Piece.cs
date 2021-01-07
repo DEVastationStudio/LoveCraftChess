@@ -15,11 +15,11 @@ public class Piece : MonoBehaviour
     }
 
     [SerializeField] private Renderer renderer;
-    [SerializeField] private GameObject pawn;
-    [SerializeField] private GameObject rook;
-    [SerializeField] private GameObject knight;
-    [SerializeField] private GameObject bishop;
-    [SerializeField] private GameObject queen;
+    [SerializeField] private GameObject[] pawn;
+    [SerializeField] private GameObject[] rook;
+    [SerializeField] private GameObject[] knight;
+    [SerializeField] private GameObject[] bishop;
+    [SerializeField] private GameObject[] queen;
 
     private Renderer renderer2;
 
@@ -39,34 +39,34 @@ public class Piece : MonoBehaviour
         this.tGen = tGen;
         this.player = player;
         color = (player==1)?Color.blue:Color.red;//renderer.material.GetColor("_Color");
-        ChangeModel();
-        renderer.material.SetColor("_Color", color);
-        renderer2.material.SetColor("_Color", color);
+        ChangeModel(player);
+        //renderer.material.SetColor("_Color", color);
+        //renderer2.material.SetColor("_Color", color);
     }
 
-    private void ChangeModel()
+    private void ChangeModel(int player)
     {
         switch (type) 
         {
             case pieces.PAWN:
-                pawn.SetActive(true);
-                renderer2 = pawn.GetComponent<Renderer>();
+                pawn[player-1].SetActive(true);
+                //renderer2 = pawn.GetComponent<Renderer>();
                 break;
             case pieces.ROOK:
-                rook.SetActive(true);
-                renderer2 = rook.GetComponent<Renderer>();
+                rook[player-1].SetActive(true);
+                //renderer2 = rook.GetComponent<Renderer>();
                 break;
             case pieces.KNIGHT:
-                knight.SetActive(true);
-                renderer2 = knight.GetComponent<Renderer>();
+                knight[player-1].SetActive(true);
+                //renderer2 = knight.GetComponent<Renderer>();
                 break;
             case pieces.BISHOP:
-                bishop.SetActive(true);
-                renderer2 = bishop.GetComponent<Renderer>();
+                bishop[player-1].SetActive(true);
+                //renderer2 = bishop.GetComponent<Renderer>();
                 break;
             case pieces.QUEEN:
-                queen.SetActive(true);
-                renderer2 = queen.GetComponent<Renderer>();
+                queen[player-1].SetActive(true);
+                //renderer2 = queen.GetComponent<Renderer>();
                 break;
         }
     }
@@ -79,6 +79,7 @@ public class Piece : MonoBehaviour
 
     public void SetChosen(bool b) 
     {
+        /*
         if (b)
         {
             renderer.material.SetColor("_Color", Color.green);
@@ -89,6 +90,7 @@ public class Piece : MonoBehaviour
             renderer.material.SetColor("_Color", color);
             renderer2.material.SetColor("_Color", color);
         }
+        */
     }
 
     public void SetPosition(int r, int c) 

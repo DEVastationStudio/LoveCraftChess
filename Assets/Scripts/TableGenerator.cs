@@ -21,6 +21,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject endScreen;
     #endregion
     [SerializeField] private InGameInterfaceController UIController;
+    [SerializeField] private GameObject[,] pieceModels;
     public static int localPlayer;
 
     public Cell[,] cells;
