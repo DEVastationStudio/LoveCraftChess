@@ -517,7 +517,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             {
                 if (curPlayer == localPlayer)
                 {
-                    photonView.RPC("ButtonNextTurnRPC", RpcTarget.All, localPlayer);
+                    photonView.RPC("ButtonNextTurnRPC", RpcTarget.All, localPlayer, UnityEngine.Random.Range(1,3));
                 }
             }
             else
@@ -528,7 +528,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void ButtonNextTurnRPC(int readyPlayer)
+    public void ButtonNextTurnRPC(int readyPlayer, int startingPlayer)
     {
         if (initialTurn)
         {
@@ -551,18 +551,18 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
 
 
-            if (p1Ready && p2Ready) NextTurn();
+            if (p1Ready && p2Ready) NextTurn(startingPlayer);
         }
     }
 
-    public void NextTurn() {
+    public void NextTurn(int startingPlayer = 2) {
         
         if (initialTurn) 
         {
             ResetClickables();
             if (isOnline)
             {
-                curPlayer = 2;
+                curPlayer = startingPlayer;
                 initialTurn = false;
                 confirmButton.gameObject.SetActive(false);
             }
