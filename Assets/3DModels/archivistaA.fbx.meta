@@ -3,7 +3,27 @@ guid: 9cee4b7ba0b34504483a75bbd6d837ae
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: 79cb51c17d033d64f8dc6a787f719a4d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: None
+    second: {fileID: 2100000, guid: fc15facc46acd4b498dce731f6fe97a1, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color BaseA
+    second: {fileID: 2800000, guid: 1b159865b42b8ce44a1eeade2b1d22c4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Libros ArchivistaA
+    second: {fileID: 2800000, guid: 43029e763ba48fa4b950d911f9a55988, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0

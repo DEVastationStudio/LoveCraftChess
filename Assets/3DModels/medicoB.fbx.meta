@@ -3,7 +3,97 @@ guid: 310bb98e4a52e0c44b09d4ab3362c47c
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: 113cc20f922b27745a03dc502e8abef3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: f6c25271589efc64facd341fc2db619c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: 3d1f06c565d38df41882c7fab09bf9b0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.003
+    second: {fileID: 2100000, guid: 285812f2c6a17e8428c336a7b4d5e95c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.004
+    second: {fileID: 2100000, guid: d2d291b6bf84fa74e94ebcb183eb7b73, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.005
+    second: {fileID: 2100000, guid: dfe8ba8c296e3a942b52b286663b10e0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.006
+    second: {fileID: 2100000, guid: 0ddb84c5568abcd4688d7c927e58a5df, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.007
+    second: {fileID: 2100000, guid: 47e1657da9dd9ee4d8a0f0dc70ee86c6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: None
+    second: {fileID: 2100000, guid: 31a4943657a11c84cb388ea620c35b44, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color AgarreSierra MedicoB
+    second: {fileID: 2800000, guid: b09559fab45fa9a4080051f852741eb2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Bandeja MedicoB
+    second: {fileID: 2800000, guid: d7d232b9deeab9e4fadc01db9cd0294e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color BaseB
+    second: {fileID: 2800000, guid: da56e08afbbe04d4c90a85eb4e8e411f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Escalpe MedicoB
+    second: {fileID: 2800000, guid: 754f82272144c4e468c929d56d2327e8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color EscalpeAgarre MedicoB
+    second: {fileID: 2800000, guid: 639872eba670e7f4a94c34e71eb6e802, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Pincho MedicoB
+    second: {fileID: 2800000, guid: 2148f88b23aac2249b8967d7dd2ce0da, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Sierra MedicoB
+    second: {fileID: 2800000, guid: b933f6c1f8cc7de4d86cbdd7d703d295, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Tentaculo MedicoB
+    second: {fileID: 2800000, guid: 5253769bb2f31fe48a721c81784a18ba, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Tijera MedicoB
+    second: {fileID: 2800000, guid: 27bf67f30c6675a4e86fe297fed804e7, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
