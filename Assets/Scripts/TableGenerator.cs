@@ -44,6 +44,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
     public bool isOnline = false;
 
+    public int barrierControl; //No one: -1 // Player1: 1 // Player2: 2//
+    public List<Cell> barriers;
+    public Cell barrierBtn;
+
     private Piece.pieces[] pieceOrder = { Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.ROOK, Piece.pieces.ROOK, Piece.pieces.KNIGHT, Piece.pieces.BISHOP, Piece.pieces.BISHOP, Piece.pieces.QUEEN };
 
     public static TableGenerator instance;
@@ -68,6 +72,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
     public void GenerateTable(TableObj level)
     {
+        barrierControl = -1;
         tableObj = level;
         initialTurn = true;
         int numRows = tableObj.numRows;
@@ -79,6 +84,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         p2Jail = new List<Cell>();
         p1Keys = new List<Cell>();
         p2Keys = new List<Cell>();
+        barriers = new List<Cell>();
         p1Revives = new Cell[3];
         p2Revives = new Cell[3];
         p1Pieces = new List<Piece>();
@@ -110,6 +116,9 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 if (type == TableObj.pieceType.P2REVIVE1) p2Revives[0] = cells[i,j];
                 if (type == TableObj.pieceType.P2REVIVE2) p2Revives[1] = cells[i,j];
                 if (type == TableObj.pieceType.P2REVIVE3) p2Revives[2] = cells[i,j];
+
+                if (type == TableObj.pieceType.BARRIER) barriers.Add(cells[i, j]);
+                if (type == TableObj.pieceType.BARRIERBTN) barrierBtn = cells[i, j];
             }
         }
 
@@ -197,14 +206,14 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         switch (t) 
         {
             case Piece.pieces.PAWN:
-                if (ValidatePosition(r, c+1, false, curPlayer)) cells[r, c+1].SetClickable(true);
-                if (ValidatePosition(r+1, c+1, true, curPlayer)) cells[r+1, c+1].SetClickable(true);
-                if (ValidatePosition(r+1, c, false, curPlayer)) cells[r+1, c].SetClickable(true);
-                if (ValidatePosition(r+1, c-1, true, curPlayer)) cells[r+1, c-1].SetClickable(true);
-                if (ValidatePosition(r, c-1, false, curPlayer)) cells[r, c-1].SetClickable(true);
-                if (ValidatePosition(r-1, c-1, true, curPlayer)) cells[r-1, c-1].SetClickable(true);
-                if (ValidatePosition(r-1, c, false, curPlayer)) cells[r-1, c].SetClickable(true);
-                if (ValidatePosition(r-1, c+1, true, curPlayer)) cells[r-1, c+1].SetClickable(true);
+                if (ValidatePosition(r, c+1, false, curPlayer)) if (!cells[r, c + 1].isBarrier) cells[r, c+1].SetClickable(true);
+                if (ValidatePosition(r+1, c+1, true, curPlayer)) if (!cells[r + 1, c + 1].isBarrier) cells[r+1, c+1].SetClickable(true);
+                if (ValidatePosition(r+1, c, false, curPlayer)) if (!cells[r + 1, c].isBarrier) cells[r+1, c].SetClickable(true);
+                if (ValidatePosition(r+1, c-1, true, curPlayer)) if (!cells[r + 1, c - 1].isBarrier) cells[r+1, c-1].SetClickable(true);
+                if (ValidatePosition(r, c-1, false, curPlayer)) if (!cells[r, c - 1].isBarrier) cells[r, c-1].SetClickable(true);
+                if (ValidatePosition(r-1, c-1, true, curPlayer)) if (!cells[r - 1, c - 1].isBarrier) cells[r-1, c-1].SetClickable(true);
+                if (ValidatePosition(r-1, c, false, curPlayer)) if (!cells[r - 1, c + 1].isBarrier) cells[r-1, c+1].SetClickable(true);
+                if (ValidatePosition(r-1, c+1, true, curPlayer)) if (!cells[r - 1, c + 1].isBarrier) cells[r-1, c+1].SetClickable(true);
                 break;
             case Piece.pieces.ROOK:
                 cellPos = 1;
@@ -212,6 +221,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
+                       if (!cells[r + cellPos, c].isBarrier)
                         cells[r + cellPos, c].SetClickable(true);
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos++;
@@ -225,7 +235,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r, c + cellPos, true, curPlayer))
                     {
-                        cells[r, c + cellPos].SetClickable(true);
+                        if (!cells[r, c + cellPos].isBarrier)
+                            cells[r, c + cellPos].SetClickable(true);
                         if (cells[r, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -238,7 +249,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
-                        cells[r + cellPos, c].SetClickable(true);
+                        if (!cells[r + cellPos, c].isBarrier)
+                            cells[r + cellPos, c].SetClickable(true);
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos--;
                     }
@@ -251,7 +263,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r, c + cellPos, true, curPlayer))
                     {
-                        cells[r, c + cellPos].SetClickable(true);
+                        if (!cells[r, c + cellPos].isBarrier)
+                            cells[r, c + cellPos].SetClickable(true);
                         if (cells[r, c + cellPos].getPiece() != null) break;
                         cellPos--;
                     }
@@ -259,26 +272,27 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 }
                 break;
             case Piece.pieces.KNIGHT:
-                if (ValidatePosition(r + 2, c + 1, true, curPlayer)) cells[r + 2, c + 1].SetClickable(true);
-                if (ValidatePosition(r + 2, c - 1, true, curPlayer)) cells[r + 2, c - 1].SetClickable(true);
-                if (ValidatePosition(r - 2, c + 1, true, curPlayer)) cells[r - 2, c + 1].SetClickable(true);
-                if (ValidatePosition(r - 2, c - 1, true, curPlayer)) cells[r - 2, c - 1].SetClickable(true);
-                if (ValidatePosition(r + 1, c - 2, true, curPlayer)) cells[r + 1, c - 2].SetClickable(true);
-                if (ValidatePosition(r - 1, c - 2, true, curPlayer)) cells[r - 1, c - 2].SetClickable(true);
-                if (ValidatePosition(r + 1, c + 2, true, curPlayer)) cells[r + 1, c + 2].SetClickable(true);
-                if (ValidatePosition(r - 1, c + 2, true, curPlayer)) cells[r - 1, c + 2].SetClickable(true);
+                if (ValidatePosition(r + 2, c + 1, true, curPlayer)) if( !cells[r + 2, c + 1].isBarrier) cells[r + 2, c + 1].SetClickable(true);
+                if (ValidatePosition(r + 2, c - 1, true, curPlayer)) if( !cells[r + 2, c - 1].isBarrier) cells[r + 2, c - 1].SetClickable(true);
+                if (ValidatePosition(r - 2, c + 1, true, curPlayer)) if( !cells[r - 2, c + 1].isBarrier) cells[r - 2, c + 1].SetClickable(true);
+                if (ValidatePosition(r - 2, c - 1, true, curPlayer)) if( !cells[r - 2, c - 1].isBarrier) cells[r - 2, c - 1].SetClickable(true);
+                if (ValidatePosition(r + 1, c - 2, true, curPlayer)) if( !cells[r + 1, c - 2].isBarrier) cells[r + 1, c - 2].SetClickable(true);
+                if (ValidatePosition(r - 1, c - 2, true, curPlayer)) if( !cells[r - 1, c - 2].isBarrier) cells[r - 1, c - 2].SetClickable(true);
+                if (ValidatePosition(r + 1, c + 2, true, curPlayer)) if( !cells[r + 1, c + 2].isBarrier) cells[r + 1, c + 2].SetClickable(true);
+                if (ValidatePosition(r - 1, c + 2, true, curPlayer)) if (!cells[r - 1, c + 2].isBarrier) cells[r - 1, c + 2].SetClickable(true);
                 break;
             case Piece.pieces.BISHOP:
-                if (ValidatePosition(r, c + 1, false, curPlayer)) cells[r, c + 1].SetClickable(true);
-                if (ValidatePosition(r + 1, c, false, curPlayer)) cells[r + 1, c].SetClickable(true);
-                if (ValidatePosition(r, c - 1, false, curPlayer)) cells[r, c - 1].SetClickable(true);
-                if (ValidatePosition(r - 1, c, false, curPlayer)) cells[r - 1, c].SetClickable(true);
+                if (ValidatePosition(r, c + 1, false, curPlayer)) if (!cells[r, c + 1].isBarrier) cells[r, c + 1].SetClickable(true);
+                if (ValidatePosition(r + 1, c, false, curPlayer)) if (!cells[r + 1, c].isBarrier) cells[r + 1, c].SetClickable(true);
+                if (ValidatePosition(r, c - 1, false, curPlayer)) if (!cells[r, c - 1].isBarrier) cells[r, c - 1].SetClickable(true);
+                if (ValidatePosition(r - 1, c, false, curPlayer)) if (!cells[r - 1, c].isBarrier) cells[r - 1, c].SetClickable(true);
                 cellPos = 1;
                 while (r + cellPos < tableObj.numRows && c + cellPos < tableObj.numCols)
                 {
                     if (ValidatePosition(r + cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c + cellPos].SetClickable(true);
+                        if(!cells[r + cellPos, c + cellPos].isBarrier)
+                            cells[r + cellPos, c + cellPos].SetClickable(true);
                         if (cells[r + cellPos, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -291,7 +305,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c - cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c - cellPos].SetClickable(true);
+                        if (!cells[r + cellPos, c - cellPos].isBarrier)
+                            cells[r + cellPos, c - cellPos].SetClickable(true);
                         if (cells[r + cellPos, c - cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -304,7 +319,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r - cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r - cellPos, c + cellPos].SetClickable(true);
+                        if (!cells[r - cellPos, c + cellPos].isBarrier)
+                            cells[r - cellPos, c + cellPos].SetClickable(true);
                         if (cells[r - cellPos, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -317,7 +333,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c + cellPos].SetClickable(true);
+                        if (!cells[r + cellPos, c + cellPos].isBarrier)
+                            cells[r + cellPos, c + cellPos].SetClickable(true);
                         if (cells[r + cellPos, c + cellPos].getPiece() != null) break;
                         cellPos--;
                     }
@@ -331,7 +348,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
-                        cells[r + cellPos, c].SetClickable(true);
+                        if (!cells[r + cellPos, c].isBarrier)
+                            cells[r + cellPos, c].SetClickable(true);
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos++;
                     }
@@ -344,7 +362,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r, c + cellPos, true, curPlayer))
                     {
-                        cells[r, c + cellPos].SetClickable(true);
+                        if (!cells[r, c + cellPos].isBarrier)
+                            cells[r, c + cellPos].SetClickable(true);
                         if (cells[r, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -357,7 +376,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c, true, curPlayer))
                     {
-                        cells[r + cellPos, c].SetClickable(true);
+                        if (!cells[r + cellPos, c].isBarrier)
+                            cells[r + cellPos, c].SetClickable(true);
                         if (cells[r + cellPos, c].getPiece() != null) break;
                         cellPos--;
                     }
@@ -370,7 +390,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r, c + cellPos, true, curPlayer))
                     {
-                        cells[r, c + cellPos].SetClickable(true);
+                        if (!cells[r, c + cellPos].isBarrier)
+                            cells[r, c + cellPos].SetClickable(true);
                         if (cells[r, c + cellPos].getPiece() != null) break;
                         cellPos--;
                     }
@@ -383,7 +404,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c + cellPos].SetClickable(true);
+                        if (!cells[r + cellPos, c + cellPos].isBarrier)
+                            cells[r + cellPos, c + cellPos].SetClickable(true);
                         if (cells[r + cellPos, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -396,7 +418,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c - cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c - cellPos].SetClickable(true);
+                        if (!cells[r + cellPos, c - cellPos].isBarrier)
+                            cells[r + cellPos, c - cellPos].SetClickable(true);
                         if (cells[r + cellPos, c - cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -409,7 +432,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r - cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r - cellPos, c + cellPos].SetClickable(true);
+                        if (!cells[r - cellPos, c + cellPos].isBarrier)
+                            cells[r - cellPos, c + cellPos].SetClickable(true);
                         if (cells[r - cellPos, c + cellPos].getPiece() != null) break;
                         cellPos++;
                     }
@@ -422,7 +446,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (ValidatePosition(r + cellPos, c + cellPos, true, curPlayer))
                     {
-                        cells[r + cellPos, c + cellPos].SetClickable(true);
+                        if (!cells[r + cellPos, c + cellPos].isBarrier)
+                            cells[r + cellPos, c + cellPos].SetClickable(true);
                         if (cells[r + cellPos, c + cellPos].getPiece() != null) break;
                         cellPos--;
                     }
@@ -435,6 +460,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     {
         if (r < 0 || c < 0 || r >= tableObj.numRows || c >= tableObj.numCols) return false;
         if (cells[r, c].isObstacle) return false;
+        if (cells[r, c].isBarrier && barrierControl != player) return false;
         if (cells[r, c].getPiece() == null) return true;
         if (cells[r, c].getPiece().player == player) return false;
         if (cells[r, c].getPiece().player != player) return canKill;
@@ -579,6 +605,23 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         if (curPlayer == 1) curPlayer = 2;
         else curPlayer = 1;
         turnText.text = (curPlayer==1?"BLUE":"RED") + " PLAYER TURN";
+
+        if (barrierBtn.getPiece() != null)
+            barrierControl = barrierBtn.getPiece().player;
+        
+        foreach (Cell b in barriers)
+        {
+            if (barrierControl != -1)
+            {
+
+                if (barrierControl == curPlayer)
+                    b.barrier.SetActive(false); //Animacion de bajar
+                else
+                    b.barrier.SetActive(true); //Animacion de subir
+            }
+            else
+                b.barrier.SetActive(true);
+        }
         
         bool found = false;
         foreach (Cell c in p2Keys)

@@ -22,6 +22,9 @@ public class Cell : MonoBehaviourPunCallbacks
     public bool isClickable;
     public TableObj.pieceType type;
 
+    public bool isBarrier;
+    public GameObject barrier;
+    public GameObject barrierBtn;
     public void Init(TableObj.pieceType type, int r, int c, TableGenerator tGen)
     {
         color = renderer.material.GetColor("_Color");
@@ -84,6 +87,13 @@ public class Cell : MonoBehaviourPunCallbacks
             case TableObj.pieceType.P2JAIL:
                 color = Color.grey;
                 renderer.material.SetColor("_Color", color);
+                break;
+            case TableObj.pieceType.BARRIER:
+                isBarrier = true;
+                barrier.SetActive(true);
+                break;
+            case TableObj.pieceType.BARRIERBTN:
+                barrierBtn.SetActive(true);
                 break;
         }
         this.r = r;
