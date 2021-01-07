@@ -26,7 +26,9 @@ public class TableObj : ScriptableObject
         P2REVIVE2,
         P2REVIVE3,
         BARRIER,
-        BARRIERBTN
+        BARRIERBTN,
+        PIT,
+        PITBTN
     }
 
     public string name;

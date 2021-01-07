@@ -25,6 +25,10 @@ public class Cell : MonoBehaviourPunCallbacks
     public bool isBarrier;
     public GameObject barrier;
     public GameObject barrierBtn;
+
+    public bool isPit;
+    public GameObject pitBtn;
+    public GameObject pit;
     public void Init(TableObj.pieceType type, int r, int c, TableGenerator tGen)
     {
         color = renderer.material.GetColor("_Color");
@@ -94,6 +98,13 @@ public class Cell : MonoBehaviourPunCallbacks
                 break;
             case TableObj.pieceType.BARRIERBTN:
                 barrierBtn.SetActive(true);
+                break;
+            case TableObj.pieceType.PIT:
+                isPit = true;
+                pit.SetActive(true);
+                break;
+            case TableObj.pieceType.PITBTN:
+                pitBtn.SetActive(true);
                 break;
         }
         this.r = r;
