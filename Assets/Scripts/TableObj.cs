@@ -24,7 +24,9 @@ public class TableObj : ScriptableObject
         P1REVIVE3,
         P2REVIVE1,
         P2REVIVE2,
-        P2REVIVE3
+        P2REVIVE3,
+        BARRIER,
+        BARRIERBTN
     }
 
     public string name;
@@ -45,7 +47,6 @@ public class TableObj : ScriptableObject
         if (p1JailCells.Length != 3) Array.Resize(ref p1JailCells, 3);
         if (p2JailCells.Length != 3) Array.Resize(ref p2JailCells, 3);
     }
-
 }
 
 [System.Serializable]
