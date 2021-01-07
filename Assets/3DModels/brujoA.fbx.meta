@@ -3,7 +3,37 @@ guid: acfe9ff44d5e18f40a0cd67e6ac072f5
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: 14474ebdade5f1845ac8e297d04e44b5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: b5085bb45f087ec438f2ddf400458faa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: None
+    second: {fileID: 2100000, guid: fc15facc46acd4b498dce731f6fe97a1, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color BaseA
+    second: {fileID: 2800000, guid: 175e66bc58301624995f2d069f2f7fbe, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Caracol BrujoA
+    second: {fileID: 2800000, guid: 0001aab6996375f46872e730955f3684, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Material Base Color Mano BrujoA
+    second: {fileID: 2800000, guid: 031838991d4acf34eb02f488fab53708, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0

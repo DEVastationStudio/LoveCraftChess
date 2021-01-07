@@ -49,6 +49,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public List<Cell> barriers;
     public Cell barrierBtn;
 
+    public int PitControl; //No one: -1 // Player1: 1 // Player2: 2//
+    public List<Cell> Pits;
+    public Cell PitBtn;
+
     private Piece.pieces[] pieceOrder = { Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.PAWN, Piece.pieces.ROOK, Piece.pieces.ROOK, Piece.pieces.KNIGHT, Piece.pieces.BISHOP, Piece.pieces.BISHOP, Piece.pieces.QUEEN };
 
     public static TableGenerator instance;
@@ -74,6 +78,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public void GenerateTable(TableObj level)
     {
         barrierControl = -1;
+        PitControl = -1;
         tableObj = level;
         initialTurn = true;
         int numRows = tableObj.numRows;
@@ -109,7 +114,6 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                     p2Start.Add(cells[i, j]);
                     if (type == TableObj.pieceType.P2KEY) p2Keys.Add(cells[i,j]);
                 }
-
                 if (type == TableObj.pieceType.P1REVIVE1) p1Revives[0] = cells[i,j];
                 if (type == TableObj.pieceType.P1REVIVE2) p1Revives[1] = cells[i,j];
                 if (type == TableObj.pieceType.P1REVIVE3) p1Revives[2] = cells[i,j];
@@ -120,6 +124,9 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
                 if (type == TableObj.pieceType.BARRIER) barriers.Add(cells[i, j]);
                 if (type == TableObj.pieceType.BARRIERBTN) barrierBtn = cells[i, j];
+
+                if (type == TableObj.pieceType.PIT) Pits.Add(cells[i, j]);
+                if (type == TableObj.pieceType.PITBTN) PitBtn = cells[i, j];
             }
         }
 
@@ -466,6 +473,13 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         if (r < 0 || c < 0 || r >= tableObj.numRows || c >= tableObj.numCols) return false;
         if (cells[r, c].isObstacle) return false;
         if (cells[r, c].isBarrier && barrierControl != player) return false;
+        if (cells[r, c].isPit && PitControl != player && PitControl != -1) return false;
+        if (PitControl == -1 && cells[r, c].isPit && cells[r, c].getPiece() == null) return true;
+        if (cells[r, c].getPiece()!=null) 
+        {
+            if (PitControl == -1 && cells[r, c].isPit && cells[r, c].getPiece().player == player) return false;
+            if (PitControl == -1 && cells[r, c].isPit && cells[r, c].getPiece().player != player) return true;
+        }
         if (cells[r, c].getPiece() == null) return true;
         if (cells[r, c].getPiece().player == player) return false;
         if (cells[r, c].getPiece().player != player) return canKill;
@@ -607,25 +621,113 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
         }
 
+        if (PitBtn.getPiece() != null)
+            PitControl = PitBtn.getPiece().player;
+
+        foreach (Cell p in Pits)
+        {
+            if (PitControl != -1)
+            {
+                if (p.getPiece() != null)
+                {
+                    if (p.getPiece().player != PitControl)
+                    {
+                        //Abrir trampilla
+
+                        Piece eatenPiece = cells[p.r,p.c].getPiece();
+                        eatenPiece.inJail = true;
+                        List<Cell> chosenJail;
+                        if (eatenPiece.player == 1)
+                        {
+                            chosenJail = p2Jail;
+                        }
+                        else
+                        {
+                            chosenJail = p1Jail;
+                        }
+
+                        if (chosenJail[2].getPiece() != null)
+                        {
+                            p1Pieces.Remove(chosenJail[2].getPiece());
+                            p2Pieces.Remove(chosenJail[2].getPiece());
+                            Destroy(chosenJail[2].getPiece().gameObject);
+                            chosenJail[2].ChangePiece(null);
+                        }
+
+                        if (chosenJail[1].getPiece() != null)
+                        {
+                            chosenJail[2].ChangePiece(chosenJail[1].getPiece());
+                            chosenJail[2].getPiece().SetJailPosition(chosenJail[2]);
+                            chosenJail[1].ChangePiece(null);
+                        }
+
+                        if (chosenJail[0].getPiece() != null)
+                        {
+                            chosenJail[1].ChangePiece(chosenJail[0].getPiece());
+                            chosenJail[1].getPiece().SetJailPosition(chosenJail[1]);
+                            chosenJail[0].ChangePiece(null);
+                        }
+
+                        chosenJail[0].ChangePiece(eatenPiece);
+                        eatenPiece.SetJailPosition(chosenJail[0]);
+                    }
+                }
+            }
+            else
+            {
+                //Cerrar la trampilla
+            }
+        }
+
         if (curPlayer == 1) curPlayer = 2;
         else curPlayer = 1;
         turnText.text = (curPlayer==1?"BLUE":"RED") + " PLAYER TURN";
 
         if (barrierBtn.getPiece() != null)
             barrierControl = barrierBtn.getPiece().player;
-        
+
+        foreach (Cell p in Pits)
+        {
+            if (PitControl != -1)
+            {
+                if (p.getPiece() != null)
+                {
+                    if (p.getPiece().player == PitControl)
+                    {
+                        //Cerrar la trampilla
+                    }
+                    else
+                    {
+                        //Abrir trampilla
+                    }
+                }
+                else
+                {
+                    //Abrir trampilla
+                }
+            }
+            else
+            {
+                //Cerrar la trampilla
+            }
+        }
+
+        if (barrierBtn.getPiece() == null)
+            barrierControl = -1;
+
         foreach (Cell b in barriers)
         {
             if (barrierControl != -1)
             {
-
                 if (barrierControl == curPlayer)
                     b.barrier.SetActive(false); //Animacion de bajar
                 else
                     b.barrier.SetActive(true); //Animacion de subir
             }
-            else
+            else 
+            {
                 b.barrier.SetActive(true);
+            }
         }
         
         bool found = false;
