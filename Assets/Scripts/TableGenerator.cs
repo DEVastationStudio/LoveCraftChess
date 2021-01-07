@@ -13,6 +13,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private Piece pieceRef;
     [SerializeField] private Text turnText;
     [SerializeField] private Button confirmButton;
+    [SerializeField] private Camera _camera;
 
     #region End Screen
     [SerializeField] private Text endText;
@@ -149,6 +150,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             p2Jail.Add(Instantiate(cellUnit, new Vector3(jc.col,0,jc.row), Quaternion.identity));
             p2Jail[p2Jail.Count-1].Init(TableObj.pieceType.P2JAIL, -1, -1, this);
         }
+
+        //Camera position
+        _camera.transform.position = new Vector3(numCols/2, Mathf.Max(numCols,numRows)*1.5f, numRows/2);
+        if (isOnline && localPlayer == 2) _camera.transform.eulerAngles += new Vector3(0,180,0);
     }
     
     public void SelectPiece(int r, int c) 

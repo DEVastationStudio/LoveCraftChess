@@ -4563,6 +4563,7 @@ MonoBehaviour:
     type: 3}
   turnText: {fileID: 1082038203}
   confirmButton: {fileID: 1586294065}
+  _camera: {fileID: 963194227}
   endText: {fileID: 966420924}
   endScreen: {fileID: 1376008488}
   UIController: {fileID: 624912889}
@@ -4578,6 +4579,9 @@ MonoBehaviour:
   p2Pieces: []
   curPiece: {fileID: 0}
   isOnline: 0
+  barrierControl: 0
+  barriers: []
+  barrierBtn: {fileID: 0}
 --- !u!4 &1822207357
 Transform:
   m_ObjectHideFlags: 0
