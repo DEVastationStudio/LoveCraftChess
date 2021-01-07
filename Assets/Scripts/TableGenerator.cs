@@ -217,7 +217,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 if (ValidatePosition(r+1, c-1, true, curPlayer)) if (!cells[r + 1, c - 1].isBarrier) cells[r+1, c-1].SetClickable(true);
                 if (ValidatePosition(r, c-1, false, curPlayer)) if (!cells[r, c - 1].isBarrier) cells[r, c-1].SetClickable(true);
                 if (ValidatePosition(r-1, c-1, true, curPlayer)) if (!cells[r - 1, c - 1].isBarrier) cells[r-1, c-1].SetClickable(true);
-                if (ValidatePosition(r-1, c, false, curPlayer)) if (!cells[r - 1, c + 1].isBarrier) cells[r-1, c+1].SetClickable(true);
+                if (ValidatePosition(r-1, c, false, curPlayer)) if (!cells[r - 1, c].isBarrier) cells[r-1, c].SetClickable(true);
                 if (ValidatePosition(r-1, c+1, true, curPlayer)) if (!cells[r - 1, c + 1].isBarrier) cells[r-1, c+1].SetClickable(true);
                 break;
             case Piece.pieces.ROOK:

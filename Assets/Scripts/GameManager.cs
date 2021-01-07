@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
             PhotonNetwork.LeaveRoom();
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("PreLobby");
     }
     void LoadGame()
     {
