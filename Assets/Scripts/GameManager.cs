@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 using Photon.Pun;
 using Photon.Realtime;
@@ -9,12 +10,22 @@ using Photon.Realtime;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public GameObject playerPrefab;
+    public TMP_Text codeText;
     public bool isLobby;
     
     public void Start()
     {
         if (PhotonNetwork.IsConnected)
+        {
             PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0,0,0), Quaternion.identity, 0);
+            if (isLobby && codeText != null)
+            {
+                if (PhotonNetwork.CurrentRoom.Name.Length < 20)
+                    codeText.text = "Room code: " + PhotonNetwork.CurrentRoom.Name;
+                else
+                    codeText.text = "";
+            }
+        }
     }
 
     public override void OnLeftRoom()
@@ -36,7 +47,10 @@ public class GameManager : MonoBehaviourPunCallbacks
             PhotonNetwork.LeaveRoom();
             SceneManager.LoadScene("PreLobby");
         }
-        SceneManager.LoadScene("Menu");
+        else
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
     void LoadGame()
     {
