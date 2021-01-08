@@ -11,6 +11,7 @@ public class Cell : MonoBehaviourPunCallbacks
     [SerializeField] private Material OneRevive;
     [SerializeField] private Material TwoRevive;
     [SerializeField] private Material ThreeRevive;
+    [SerializeField] private Material[] tableTextures;
 
     private Piece piece;
     public bool isObstacle;
@@ -42,55 +43,49 @@ public class Cell : MonoBehaviourPunCallbacks
                 obstacle.SetActive(isObstacle);
                 break;
             case TableObj.pieceType.P1ZONE:
-                color = Color.blue;
-                renderer.material.SetColor("_Color", color);
+                renderer.material = tableTextures[0];
                 break;
             case TableObj.pieceType.P2ZONE:
-                color = Color.red;
-                renderer.material.SetColor("_Color", color);
+                renderer.material = tableTextures[1];
                 break;
             case TableObj.pieceType.P1KEY:
-                color = Color.cyan;
-                renderer.material.SetColor("_Color", color);
+                renderer.material = tableTextures[2];
                 break;
             case TableObj.pieceType.P2KEY:
-                color = Color.magenta;
-                renderer.material.SetColor("_Color", color);
+                renderer.material = tableTextures[3];
                 break;
             case TableObj.pieceType.P1REVIVE1:
-                renderer.material = OneRevive;
-                color = Color.cyan;
-                renderer.material.SetColor("_Color", color);
+            case TableObj.pieceType.P2REVIVE1:
+                renderer.material = tableTextures[4];
                 break;
             case TableObj.pieceType.P1REVIVE2:
-                renderer.material = TwoRevive;
-                color = Color.cyan;
-                renderer.material.SetColor("_Color", color);
+            case TableObj.pieceType.P2REVIVE2:
+                renderer.material = tableTextures[5];
                 break;
             case TableObj.pieceType.P1REVIVE3:
-                renderer.material = ThreeRevive;
-                color = Color.cyan;
-                renderer.material.SetColor("_Color", color);
-                break;
-            case TableObj.pieceType.P2REVIVE1:
-                renderer.material = OneRevive;
-                color = Color.magenta;
-                renderer.material.SetColor("_Color", color);
-                break;
-            case TableObj.pieceType.P2REVIVE2:
-                renderer.material = TwoRevive;
-                color = Color.magenta;
-                renderer.material.SetColor("_Color", color);
-                break;
             case TableObj.pieceType.P2REVIVE3:
-                renderer.material = ThreeRevive;
-                color = Color.magenta;
-                renderer.material.SetColor("_Color", color);
+                renderer.material = tableTextures[6];
                 break;
-            case TableObj.pieceType.P1JAIL:
-            case TableObj.pieceType.P2JAIL:
-                color = Color.grey;
-                renderer.material.SetColor("_Color", color);
+            case TableObj.pieceType.P11JAIL:
+            case TableObj.pieceType.P21JAIL:
+                renderer.material = tableTextures[7];
+                break;
+            case TableObj.pieceType.P12JAIL:
+            case TableObj.pieceType.P22JAIL:
+                renderer.material = tableTextures[8];
+                break;
+            case TableObj.pieceType.P13JAIL:
+            case TableObj.pieceType.P23JAIL:
+                renderer.material = tableTextures[9];
+                break;
+            case TableObj.pieceType.BASIC:
+                renderer.material = tableTextures[10];
+                break;
+            case TableObj.pieceType.BASIC1:
+                renderer.material = tableTextures[11];
+                break;
+            case TableObj.pieceType.BASIC2:
+                renderer.material = tableTextures[12];
                 break;
             case TableObj.pieceType.BARRIER:
                 isBarrier = true;
