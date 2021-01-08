@@ -38,10 +38,8 @@ public class Piece : MonoBehaviour
         type = piece;
         this.tGen = tGen;
         this.player = player;
-        color = (player==1)?Color.blue:Color.red;//renderer.material.GetColor("_Color");
+        color = (player==1)?Color.blue:Color.red;
         ChangeModel(player);
-        //renderer.material.SetColor("_Color", color);
-        //renderer2.material.SetColor("_Color", color);
     }
 
     private void ChangeModel(int player)
@@ -50,23 +48,18 @@ public class Piece : MonoBehaviour
         {
             case pieces.PAWN:
                 pawn[player-1].SetActive(true);
-                //renderer2 = pawn.GetComponent<Renderer>();
                 break;
             case pieces.ROOK:
                 rook[player-1].SetActive(true);
-                //renderer2 = rook.GetComponent<Renderer>();
                 break;
             case pieces.KNIGHT:
                 knight[player-1].SetActive(true);
-                //renderer2 = knight.GetComponent<Renderer>();
                 break;
             case pieces.BISHOP:
                 bishop[player-1].SetActive(true);
-                //renderer2 = bishop.GetComponent<Renderer>();
                 break;
             case pieces.QUEEN:
                 queen[player-1].SetActive(true);
-                //renderer2 = queen.GetComponent<Renderer>();
                 break;
         }
     }

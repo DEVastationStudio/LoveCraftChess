@@ -5,15 +5,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class PreLobby : MonoBehaviourPunCallbacks
 {
     public Button JoinRandomBtn;
+    public TMP_Text connectedToText;
 
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
 
-
+    private void Start()
+    {
+        string remainder = "/*";
+        connectedToText.text = "Connected to "+ PhotonNetwork.CloudRegion.Replace(remainder, "") + " server";
+    }
     public void JoinRandom()
     {
         if (!PhotonNetwork.JoinRandomRoom())
