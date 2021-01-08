@@ -13,6 +13,7 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public Button ConnectBtn, MainBtn, OfflineBtn;
     public TMP_Dropdown serverDropdown;
     public string[] regions;
+    public Text connectText;
 
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
@@ -69,13 +70,15 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             AppSettings settings = PhotonNetwork.PhotonServerSettings.AppSettings;
             settings.FixedRegion = regions[serverDropdown.value-1];
+            Debug.Log("Fixed region: " + settings.FixedRegion);
+            Debug.Log("Dropdown value: " + (serverDropdown.value - 1));
             if (PhotonNetwork.ConnectUsingSettings())
             {
-                Debug.Log("Connected to server.");
+                connectText.text = "Connecting to the server";
             }
             else
             {
-                Debug.Log("Error connecting to server.");
+                connectText.text = "Error while connecting to the server";
             }
         }
     }
@@ -85,6 +88,11 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
         ConnectBtn.interactable = true;
         MainBtn.interactable = true;
         OfflineBtn.interactable = true;
+    }
+
+    public void ConectingText() 
+    {
+        
     }
 
     public override void OnConnectedToMaster()
