@@ -973,7 +973,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   JoinRandomBtn: {fileID: 2105786889}
+  BackBtn: {fileID: 869845116}
   connectedToText: {fileID: 1729278752}
+  statusText: {fileID: 315879266}
   maxPlayersInRoom: 2
   minPlayersInRoom: 2
 --- !u!4 &1008865370
@@ -1478,17 +1480,6 @@ MonoBehaviour:
       - m_Target: {fileID: 1008865369}
         m_MethodName: JoinRandom
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2105786889}
-        m_MethodName: set_interactable
-        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

@@ -9,8 +9,8 @@ using TMPro;
 
 public class PreLobby : MonoBehaviourPunCallbacks
 {
-    public Button JoinRandomBtn;
-    public TMP_Text connectedToText;
+    public Button JoinRandomBtn, BackBtn;
+    public TMP_Text connectedToText, statusText;
 
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
@@ -22,28 +22,35 @@ public class PreLobby : MonoBehaviourPunCallbacks
     }
     public void JoinRandom()
     {
+        JoinRandomBtn.interactable = false;
+        BackBtn.interactable = false;
+            statusText.text = "Connecting...";
         if (!PhotonNetwork.JoinRandomRoom())
         {
-            Debug.Log("Failed to join room.");
+            statusText.text = "Failed to join room.";
+            JoinRandomBtn.interactable = true;
+            BackBtn.interactable = true;
         }
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log("There are no rooms. Creating a new room...");
+        statusText.text = "There are no rooms. Creating a new room...";
         if (PhotonNetwork.CreateRoom(null, new Photon.Realtime.RoomOptions() { MaxPlayers = maxPlayersInRoom }))
         {
-            Debug.Log("Room created successfully.");
+            statusText.text = ("Room created successfully.");
         }
         else
         {
-            Debug.Log("Failed to create room.");
+            statusText.text = ("Failed to create room.");
+            JoinRandomBtn.interactable = true;
+            BackBtn.interactable = true;
         }
     }
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined room.");
+        statusText.text = ("Joined room.");
         JoinRandomBtn.interactable = false;
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
