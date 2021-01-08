@@ -32,8 +32,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void LeaveRoom()
     {
         if (PhotonNetwork.IsConnected)
+        {
             PhotonNetwork.LeaveRoom();
-        SceneManager.LoadScene("PreLobby");
+            SceneManager.LoadScene("PreLobby");
+        }
+        SceneManager.LoadScene("Menu");
     }
     void LoadGame()
     {

@@ -60,15 +60,15 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void Connect()
     {
-        if (serverDropdown.value == 0) return;
         PlayerPrefs.SetInt("preferredRegion",serverDropdown.value);
         ConnectBtn.interactable = false;
         MainBtn.interactable = false;
         OfflineBtn.interactable = false;
+        serverDropdown.interactable = false;
         if (!PhotonNetwork.IsConnected)
         {
             AppSettings settings = PhotonNetwork.PhotonServerSettings.AppSettings;
-            settings.FixedRegion = regions[serverDropdown.value-1];
+            settings.FixedRegion = regions[serverDropdown.value];
             if (PhotonNetwork.ConnectUsingSettings())
             {
                 Debug.Log("Connected to server.");
@@ -85,6 +85,7 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
         ConnectBtn.interactable = true;
         MainBtn.interactable = true;
         OfflineBtn.interactable = true;
+        serverDropdown.interactable = true;
     }
 
     public override void OnConnectedToMaster()
