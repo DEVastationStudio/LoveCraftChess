@@ -151,15 +151,26 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             pI = (pI+1)%maxI;
             p2Pieces.Add(c.getPiece());
         }
-        foreach (JailCell jc in tableObj.p1JailCells)
+        for(int i = 0; i < 3; i++)
         {
-            p1Jail.Add(Instantiate(cellUnit, new Vector3(jc.col,0,jc.row), Quaternion.identity));
-            p1Jail[p1Jail.Count-1].Init(TableObj.pieceType.P1JAIL, -1, -1, this);
+            p1Jail.Add(Instantiate(cellUnit, new Vector3(tableObj.p1JailCells[i].col,0, tableObj.p1JailCells[i].row), Quaternion.identity));
+            if(i == 0)
+                p1Jail[p1Jail.Count-1].Init(TableObj.pieceType.P11JAIL, -1, -1, this); 
+            if (i == 1)
+                p1Jail[p1Jail.Count - 1].Init(TableObj.pieceType.P12JAIL, -1, -1, this); 
+            if (i == 2)
+                p1Jail[p1Jail.Count - 1].Init(TableObj.pieceType.P13JAIL, -1, -1, this);
         }
-        foreach (JailCell jc in tableObj.p2JailCells)
+
+        for (int i = 0; i < 3; i++)
         {
-            p2Jail.Add(Instantiate(cellUnit, new Vector3(jc.col,0,jc.row), Quaternion.identity));
-            p2Jail[p2Jail.Count-1].Init(TableObj.pieceType.P2JAIL, -1, -1, this);
+            p2Jail.Add(Instantiate(cellUnit, new Vector3(tableObj.p2JailCells[i].col, 0, tableObj.p2JailCells[i].row), Quaternion.identity));
+            if (i == 0)
+                p2Jail[p2Jail.Count - 1].Init(TableObj.pieceType.P21JAIL, -1, -1, this);
+            if (i == 1)
+                p2Jail[p2Jail.Count - 1].Init(TableObj.pieceType.P22JAIL, -1, -1, this);
+            if (i == 2)
+                p2Jail[p2Jail.Count - 1].Init(TableObj.pieceType.P23JAIL, -1, -1, this);
         }
 
         //Camera position
