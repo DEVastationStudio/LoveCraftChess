@@ -648,6 +648,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         
         if (initialTurn) 
         {
+            curPiece?.SetChosen(false);
             ResetClickables();
             if (isOnline)
             {

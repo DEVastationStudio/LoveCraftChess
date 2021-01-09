@@ -14,12 +14,14 @@ public class Piece : MonoBehaviour
         QUEEN //X1
     }
 
-    [SerializeField] private Renderer renderer;
     [SerializeField] private GameObject[] pawn;
     [SerializeField] private GameObject[] rook;
     [SerializeField] private GameObject[] knight;
     [SerializeField] private GameObject[] bishop;
     [SerializeField] private GameObject[] queen;
+    [SerializeField] private GameObject _pieceContainer;
+    private bool _isSelected;
+    private float _moveTimer;
 
     private Renderer renderer2;
 
@@ -72,18 +74,10 @@ public class Piece : MonoBehaviour
 
     public void SetChosen(bool b) 
     {
-        /*
-        if (b)
-        {
-            renderer.material.SetColor("_Color", Color.green);
-            renderer2.material.SetColor("_Color", Color.green);
-        }
-        else
-        {
-            renderer.material.SetColor("_Color", color);
-            renderer2.material.SetColor("_Color", color);
-        }
-        */
+        _isSelected = b;
+        _moveTimer = 0;
+        _pieceContainer.transform.localPosition = Vector3.zero;
+        _pieceContainer.transform.rotation = Quaternion.identity;
     }
 
     public void SetPosition(int r, int c) 
@@ -97,5 +91,15 @@ public class Piece : MonoBehaviour
         this.r = -1;
         this.c = -1;
         transform.position = new Vector3(c.transform.position.x, 1, c.transform.position.z);
+    }
+
+    void Update()
+    {
+        if (!_isSelected) return;
+
+        _pieceContainer.transform.localPosition = new Vector3(0, 1+Mathf.Sin(_moveTimer), 0);
+        _pieceContainer.transform.eulerAngles = new Vector3(0, Mathf.Rad2Deg*_moveTimer, 0);
+
+        _moveTimer = (_moveTimer+Time.deltaTime)%(2*Mathf.PI);
     }
 }

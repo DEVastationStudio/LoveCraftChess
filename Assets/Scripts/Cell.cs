@@ -14,6 +14,7 @@ public class Cell : MonoBehaviourPunCallbacks
     [SerializeField] private Material ThreeRevive;
     [SerializeField] private Material[] tableTextures;
     [SerializeField] private ParticleSystem _particleSystem;
+    [SerializeField] private Gradient _freeCellGradient, _occupiedCellGradient;
 
     private Piece piece;
     public bool isObstacle;
@@ -111,6 +112,8 @@ public class Cell : MonoBehaviourPunCallbacks
     public void ChangePiece(Piece p) 
     {
         piece = p;
+        ParticleSystem.MainModule main = _particleSystem.main;
+        main.startColor = (p!=null)?_occupiedCellGradient:_freeCellGradient;
     }
 
     public Piece getPiece() 
