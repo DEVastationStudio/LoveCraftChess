@@ -42,6 +42,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     private int cellPos = 1;
     public bool initialTurn = true;
     private bool gameOver = false;
+    private bool gameOverP1 = false;
+    private bool gameOverP2 = false;
 
     private bool p1Ready, p2Ready;
 
@@ -1010,16 +1012,36 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
     public void AbandonVictory()
     {
+        if (gameOver) return;
         SetWinner(localPlayer);
     }
 
     private void SetWinner(int player)
     {
-        PhotonNetwork.LeaveRoom();
-        turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
         gameOver = true;
+        turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
 
-        endScreen.SetActive(true);
         endText.text = ((isOnline)?((localPlayer==player)?("YOU WIN"):("YOU LOSE")):((player==1?"BLUE":"RED") + " PLAYER WINS"));
+
+        if (isOnline)
+        {
+            if (localPlayer == 1)
+            {
+                gameOverP1 = true;
+            } else 
+            if (localPlayer == 2)
+            {
+                gameOverP2 = true;
+            }
+            if (gameOverP1 && gameOverP2)
+            {
+                PhotonNetwork.LeaveRoom();
+                endScreen.SetActive(true);
+            }
+        }
+        else
+        {
+            endScreen.SetActive(true);
+        }
     }
 }
