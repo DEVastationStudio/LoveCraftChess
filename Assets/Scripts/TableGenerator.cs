@@ -540,21 +540,25 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         confirmButton.interactable = false;
         
         cells[piece.r, piece.c].ChangePiece(null);
-        if (cells[r, c].getPiece() != null) 
+        
+        if (initialTurn)
         {
-            Piece eatenPiece = cells[r,c].getPiece();
-            eatenPiece.inJail = true;
-            //cells[r, c].getPiece().transform.Translate(new Vector3(0,1,0));
-            //mas cosas pa Luego
-            List<Cell> chosenJail;
-            if (eatenPiece.player == 1)
+
+            if (cells[r, c].getPiece() != null) 
             {
-                chosenJail = p2Jail;
-            }
-            else 
-            {
-                chosenJail = p1Jail;
-            }
+                Piece eatenPiece = cells[r,c].getPiece();
+                eatenPiece.inJail = true;
+                //cells[r, c].getPiece().transform.Translate(new Vector3(0,1,0));
+                //mas cosas pa Luego
+                List<Cell> chosenJail;
+                if (eatenPiece.player == 1)
+                {
+                    chosenJail = p2Jail;
+                }
+                else 
+                {
+                    chosenJail = p1Jail;
+                }
 
                 if (chosenJail[2].getPiece() != null)
                 {
@@ -580,9 +584,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
                 chosenJail[0].ChangePiece(eatenPiece);
                 eatenPiece.SetJailPosition(chosenJail[0]);
-        }
-        if (initialTurn)
-        {
+            }
+
             cells[r, c].ChangePiece(piece);
             cells[r, c].getPiece().SetPosition(r, c);
             piece.SetChosen(false);
@@ -615,6 +618,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         Vector3 containerPos = pieceContainer.transform.localPosition;
         Quaternion containerRot = pieceContainer.transform.localRotation;
 
+        //Up movement
+
         while (elapsedTime < 1)
         {
             pieceContainer.transform.localPosition = Vector3.Lerp(containerPos, Vector3.zero, elapsedTime);
@@ -626,6 +631,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
         piece.transform.position = startFloatPos;
 
+        //Forward movement
+
         elapsedTime = 0.0f;
         float totalTime = Vector3.Distance(startFloatPos, endFloatPos)/4;
         while (elapsedTime < totalTime)
@@ -636,15 +643,147 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
         piece.transform.position = endFloatPos;
 
+        Piece eatenPiece = cells[endPos.z, endPos.x].getPiece();
+        bool eatsPiece = (eatenPiece != null);
+        Vector3 eatenPiecePos = (eatsPiece)?(eatenPiece.transform.position):(Vector3.zero);
+        Vector3 finalEatenPiecePos = eatenPiecePos + new Vector3(0, -1, 0);
+
+        //Down movement
+
         elapsedTime = 0.0f;
         while (elapsedTime < 1)
         {
             piece.transform.position = Vector3.Lerp(endFloatPos, endPos, elapsedTime);
+            if (eatsPiece) eatenPiece.transform.position = Vector3.Lerp(eatenPiecePos, finalEatenPiecePos, elapsedTime);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         piece.transform.position = endPos;
 
+        //Eaten Piece management
+
+        if (eatsPiece)
+        {
+            eatenPiece.inJail = true;
+            
+            List<Cell> chosenJail;
+            if (eatenPiece.player == 1)
+            {
+                chosenJail = p2Jail;
+            }
+            else 
+            {
+                chosenJail = p1Jail;
+            }
+
+            Vector3 jailOffset = new Vector3(chosenJail[1].transform.position.x-chosenJail[0].transform.position.x, 0, chosenJail[1].transform.position.z-chosenJail[0].transform.position.z);
+            print(jailOffset);
+
+            List<Piece> moveablePieceList = new List<Piece>();
+            List<Vector3> moveablePiecePositions = new List<Vector3>();
+            List<Vector3> moveablePieceFinalPositions = new List<Vector3>();
+            bool pieceDestroyed = false;
+            Piece destroyedPiece = null;
+
+            //Get List of pieces that should be moved
+
+            if (chosenJail[2].getPiece() != null)
+            {
+                p1Pieces.Remove(chosenJail[2].getPiece());
+                p2Pieces.Remove(chosenJail[2].getPiece());
+
+                moveablePieceList.Add(chosenJail[2].getPiece());
+                moveablePiecePositions.Add(chosenJail[2].getPiece().transform.position);
+                moveablePieceFinalPositions.Add(chosenJail[2].getPiece().transform.position+jailOffset);
+
+                destroyedPiece = chosenJail[2].getPiece();
+                pieceDestroyed = (destroyedPiece != null);
+
+                chosenJail[2].ChangePiece(null);
+            }
+
+            if (chosenJail[1].getPiece() != null)
+            {
+                chosenJail[2].ChangePiece(chosenJail[1].getPiece());
+                
+                moveablePieceList.Add(chosenJail[1].getPiece());
+                moveablePiecePositions.Add(chosenJail[1].getPiece().transform.position);
+                moveablePieceFinalPositions.Add(chosenJail[1].getPiece().transform.position+jailOffset);
+
+                chosenJail[1].ChangePiece(null);
+                chosenJail[2].getPiece().SetCoords(-1,-1);
+            }
+
+            if (chosenJail[0].getPiece() != null)
+            {
+                chosenJail[1].ChangePiece(chosenJail[0].getPiece());
+                
+                moveablePieceList.Add(chosenJail[0].getPiece());
+                moveablePiecePositions.Add(chosenJail[0].getPiece().transform.position);
+                moveablePieceFinalPositions.Add(chosenJail[0].getPiece().transform.position+jailOffset);
+                
+                chosenJail[0].ChangePiece(null);
+                chosenJail[1].getPiece().SetCoords(-1,-1);
+            }
+
+            if (moveablePieceList.Count > 0)
+            {
+                elapsedTime = 0.0f;
+                int numPieces = moveablePieceList.Count;
+                while (elapsedTime < 1)
+                {
+                    for (int i = 0; i < numPieces; i++)
+                    {
+                        moveablePieceList[i].transform.position = Vector3.Lerp(moveablePiecePositions[i], moveablePieceFinalPositions[i], elapsedTime);
+                    }
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+                for (int i = 0; i < numPieces; i++)
+                {
+                    moveablePieceList[i].transform.position = moveablePieceFinalPositions[i];
+                }
+            }
+
+            if (pieceDestroyed)
+            {
+                Vector3 destroyedPieceStart = destroyedPiece.transform.position;
+                Vector3 destroyedPieceEnd = destroyedPieceStart + new Vector3(0,-1,0);
+
+                elapsedTime = 0.0f;
+                while (elapsedTime < 1)
+                {
+                    destroyedPiece.transform.position = Vector3.Lerp(destroyedPieceStart, destroyedPieceEnd, elapsedTime);
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+                Destroy(destroyedPiece.gameObject);
+            }
+
+            //Elevate new dead piece
+
+            eatenPiece.transform.position = new Vector3(chosenJail[0].transform.position.x, -1, chosenJail[0].transform.position.z);
+            finalEatenPiecePos = new Vector3(eatenPiece.transform.position.x, eatenPiecePos.y, eatenPiece.transform.position.z);
+            eatenPiecePos = eatenPiece.transform.position;
+
+
+            elapsedTime = 0.0f;
+            while (elapsedTime < 1)
+            {
+                eatenPiece.transform.position = Vector3.Lerp(eatenPiecePos, finalEatenPiecePos, elapsedTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            eatenPiece.transform.position = finalEatenPiecePos;
+            eatenPiece.SetCoords(-1,-1);
+
+            chosenJail[0].ChangePiece(eatenPiece);
+            
+
+        }
+
+        //Finishing touches
 
         cells[endPos.z, endPos.x].ChangePiece(piece);
         cells[endPos.z, endPos.x].getPiece().SetCoords(endPos.z, endPos.x);
@@ -1093,7 +1232,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
         endText.text = ((isOnline)?((localPlayer==player)?("YOU WIN"):("YOU LOSE")):((player==1?"BLUE":"RED") + " PLAYER WINS"));
 
-        photonView.RPC("GameOver", RpcTarget.All, localPlayer);
+        if (isOnline) photonView.RPC("GameOver", RpcTarget.All, localPlayer);
+        else GameOver(localPlayer);
     }
     [PunRPC]
     private void GameOver(int p)
