@@ -63,6 +63,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
     public static TableGenerator instance;
 
+    public bool performingMove;
+
     void Start()
     {
         instance = this;
@@ -534,6 +536,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public void MovePiece(int r, int c, int pr, int pc) 
     {
         Piece piece = cells[pr,pc].getPiece();
+        performingMove = true;
+        confirmButton.interactable = false;
         
         cells[piece.r, piece.c].ChangePiece(null);
         if (cells[r, c].getPiece() != null) 
@@ -577,13 +581,78 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 chosenJail[0].ChangePiece(eatenPiece);
                 eatenPiece.SetJailPosition(chosenJail[0]);
         }
-        cells[r, c].ChangePiece(piece);
-        cells[r, c].getPiece().SetPosition(r, c);
-        piece.SetChosen(false);
+        if (initialTurn)
+        {
+            cells[r, c].ChangePiece(piece);
+            cells[r, c].getPiece().SetPosition(r, c);
+            piece.SetChosen(false);
+            if (piece.player == localPlayer || !isOnline)
+                ResetClickables();
+            piece = null;
+            performingMove = false;
+            confirmButton.interactable = true;
+        }
+        else
+        {
+            StartCoroutine(PerformPieceMovement(piece, new Vector3Int(pc, 1, pr), new Vector3Int(c, 1, r)));
+        }
+    }
+
+    private IEnumerator PerformPieceMovement(Piece piece, Vector3Int startPos, Vector3Int endPos)
+    {
+        Vector3Int startFloatPos = startPos + new Vector3Int(0,1,0);
+        Vector3Int endFloatPos = endPos + new Vector3Int(0,1,0);
+        Quaternion startRot = piece.transform.rotation;
+        Quaternion endRot1 = Quaternion.LookRotation(endPos-startPos);
+        Quaternion endRot2 = Quaternion.LookRotation(startPos-endPos);
+        Quaternion endRot = (piece.player == 1)?endRot1:endRot2;
+        float elapsedTime = 0.0f;
+
+        GameObject pieceContainer = piece.SetChosenMovement(false);
         if (piece.player == localPlayer || !isOnline)
             ResetClickables();
+
+        Vector3 containerPos = pieceContainer.transform.localPosition;
+        Quaternion containerRot = pieceContainer.transform.localRotation;
+
+        while (elapsedTime < 1)
+        {
+            pieceContainer.transform.localPosition = Vector3.Lerp(containerPos, Vector3.zero, elapsedTime);
+            pieceContainer.transform.localRotation = Quaternion.Slerp(containerRot, Quaternion.identity, elapsedTime);
+            piece.transform.position = Vector3.Lerp(startPos, startFloatPos, elapsedTime);
+            piece.transform.rotation = Quaternion.Slerp(startRot, endRot, elapsedTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        piece.transform.position = startFloatPos;
+
+        elapsedTime = 0.0f;
+        float totalTime = Vector3.Distance(startFloatPos, endFloatPos)/4;
+        while (elapsedTime < totalTime)
+        {
+            piece.transform.position = Vector3.Lerp(startFloatPos, endFloatPos, elapsedTime/totalTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        piece.transform.position = endFloatPos;
+
+        elapsedTime = 0.0f;
+        while (elapsedTime < 1)
+        {
+            piece.transform.position = Vector3.Lerp(endFloatPos, endPos, elapsedTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        piece.transform.position = endPos;
+
+
+        cells[endPos.z, endPos.x].ChangePiece(piece);
+        cells[endPos.z, endPos.x].getPiece().SetCoords(endPos.z, endPos.x);
         piece = null;
         if (!initialTurn) NextTurn();
+        performingMove = false;
+        confirmButton.interactable = true;
+        yield return null;
     }
 
     private void ResetClickables() 

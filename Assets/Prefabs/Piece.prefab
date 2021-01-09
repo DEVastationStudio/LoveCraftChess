@@ -143,7 +143,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08f01361e93fe9479d56ece7009f0b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderer: {fileID: 8579170882038724598}
   pawn:
   - {fileID: 3499313597821004408}
   - {fileID: 5391345210022969357}
