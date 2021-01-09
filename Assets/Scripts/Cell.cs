@@ -8,10 +8,12 @@ public class Cell : MonoBehaviourPunCallbacks
 
     [SerializeField] private GameObject obstacle;
     [SerializeField] private Renderer renderer;
+    [SerializeField] private Color _glowColor;
     [SerializeField] private Material OneRevive;
     [SerializeField] private Material TwoRevive;
     [SerializeField] private Material ThreeRevive;
     [SerializeField] private Material[] tableTextures;
+    [SerializeField] private ParticleSystem _particleSystem;
 
     private Piece piece;
     public bool isObstacle;
@@ -133,8 +135,11 @@ public class Cell : MonoBehaviourPunCallbacks
     }
     public void SetSelected(bool selected)
     {
-        if(selected) renderer.material.SetColor("_Color", Color.yellow);
+        if(selected) renderer.material.SetColor("_Color", _glowColor);
         else renderer.material.SetColor("_Color", color);
+
+        if (selected) _particleSystem.Play();
+        else _particleSystem.Stop();
     }
 
     public void SetClickable(bool click) 

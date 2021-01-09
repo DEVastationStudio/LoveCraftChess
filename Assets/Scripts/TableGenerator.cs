@@ -1023,13 +1023,18 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
         endText.text = ((isOnline)?((localPlayer==player)?("YOU WIN"):("YOU LOSE")):((player==1?"BLUE":"RED") + " PLAYER WINS"));
 
+        photonView.RPC("GameOver", RpcTarget.All, localPlayer);
+    }
+    [PunRPC]
+    private void GameOver(int p)
+    {
         if (isOnline)
         {
-            if (localPlayer == 1)
+            if (p == 1)
             {
                 gameOverP1 = true;
             } else 
-            if (localPlayer == 2)
+            if (p == 2)
             {
                 gameOverP2 = true;
             }
