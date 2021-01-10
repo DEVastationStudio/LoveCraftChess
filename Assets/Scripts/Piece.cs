@@ -14,14 +14,16 @@ public class Piece : MonoBehaviour
         QUEEN //X1
     }
 
-    [SerializeField] private Renderer renderer;
     [SerializeField] private GameObject[] pawn;
     [SerializeField] private GameObject[] rook;
     [SerializeField] private GameObject[] knight;
     [SerializeField] private GameObject[] bishop;
     [SerializeField] private GameObject[] queen;
+    [SerializeField] private GameObject _pieceContainer;
+    [SerializeField] private Collider _collider;
+    private bool _isSelected;
+    private float _moveTimer;
 
-    private Renderer renderer2;
 
     private TableGenerator tGen;
     public int player;
@@ -66,36 +68,50 @@ public class Piece : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (inJail) return;
+        if (tGen.performingMove || inJail) return;
         tGen.SelectPiece(r, c);
     }
 
     public void SetChosen(bool b) 
     {
-        /*
-        if (b)
-        {
-            renderer.material.SetColor("_Color", Color.green);
-            renderer2.material.SetColor("_Color", Color.green);
-        }
-        else
-        {
-            renderer.material.SetColor("_Color", color);
-            renderer2.material.SetColor("_Color", color);
-        }
-        */
+        _isSelected = b;
+        _moveTimer = 0;
+        _pieceContainer.transform.localPosition = Vector3.zero;
+        _pieceContainer.transform.localRotation = Quaternion.identity;
+    }
+
+    public GameObject SetChosenMovement(bool b)
+    {
+        _isSelected = b;
+        _moveTimer = 0;
+        return _pieceContainer;
     }
 
     public void SetPosition(int r, int c) 
     {
+        SetCoords(r,c);
+        transform.position = new Vector3(c, 1, r);
+    }
+    public void SetCoords(int r, int c)
+    {
         this.r = r;
         this.c = c;
-        transform.position = new Vector3(c, 1, r);
     }
     public void SetJailPosition(Cell c) 
     {
-        this.r = -1;
-        this.c = -1;
+        SetCoords(-1,-1);
         transform.position = new Vector3(c.transform.position.x, 1, c.transform.position.z);
+    }
+
+    void Update()
+    {
+        _pieceContainer.SetActive(!tGen.initialTurn || player == TableGenerator.curPlayer);
+        _collider.enabled = (TableGenerator.curPlayer == player || (tGen.isOnline && TableGenerator.localPlayer == player));
+        if (!_isSelected) return;
+
+        _pieceContainer.transform.localPosition = new Vector3(0, 1+Mathf.Sin(_moveTimer), 0);
+        _pieceContainer.transform.localEulerAngles = new Vector3(0, Mathf.Rad2Deg*_moveTimer, 0);
+
+        _moveTimer = (_moveTimer+Time.deltaTime)%(2*Mathf.PI);
     }
 }

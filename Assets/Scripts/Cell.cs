@@ -8,12 +8,18 @@ public class Cell : MonoBehaviourPunCallbacks
 
     [SerializeField] private GameObject obstacle;
     [SerializeField] private Renderer renderer;
+    [SerializeField] private Renderer _PitRendererL;
+    [SerializeField] private Renderer _PitRendererR;
     [SerializeField] private Color _glowColor;
     [SerializeField] private Material OneRevive;
     [SerializeField] private Material TwoRevive;
     [SerializeField] private Material ThreeRevive;
     [SerializeField] private Material[] tableTextures;
+    [SerializeField] private Material[] _p1FloorMaterials;
+    [SerializeField] private Material[] _p2FloorMaterials;
+    [SerializeField] private Material _barrierFloorMaterial;
     [SerializeField] private ParticleSystem _particleSystem;
+    [SerializeField] private Gradient _freeCellGradient, _occupiedCellGradient;
 
     private Piece piece;
     public bool isObstacle;
@@ -27,11 +33,15 @@ public class Cell : MonoBehaviourPunCallbacks
 
     public bool isBarrier;
     public GameObject barrier;
-    public GameObject barrierBtn;
+    [SerializeField] private Material barrierButtonTexture;
 
     public bool isPit;
-    public GameObject pitBtn;
     public GameObject pit;
+    public GameObject pitHingeL, pitHingeR;
+    public bool pitOpen;
+    public bool barrierDown;
+    [SerializeField] private Material pitButtonTexture;
+
     public void Init(TableObj.pieceType type, int r, int c, TableGenerator tGen)
     {
         color = renderer.material.GetColor("_Color");
@@ -84,24 +94,26 @@ public class Cell : MonoBehaviourPunCallbacks
                 renderer.material = tableTextures[10];
                 break;
             case TableObj.pieceType.BASIC1:
-                renderer.material = tableTextures[11];
+                renderer.material = _p1FloorMaterials[Random.Range(0,_p1FloorMaterials.Length)];
                 break;
             case TableObj.pieceType.BASIC2:
-                renderer.material = tableTextures[12];
+                renderer.material = _p2FloorMaterials[Random.Range(0,_p2FloorMaterials.Length)];
                 break;
             case TableObj.pieceType.BARRIER:
                 isBarrier = true;
+                renderer.material = _barrierFloorMaterial;
                 barrier.SetActive(true);
                 break;
             case TableObj.pieceType.BARRIERBTN:
-                barrierBtn.SetActive(true);
+                renderer.material = barrierButtonTexture;
                 break;
             case TableObj.pieceType.PIT:
                 isPit = true;
+                renderer.enabled = false;
                 pit.SetActive(true);
                 break;
             case TableObj.pieceType.PITBTN:
-                pitBtn.SetActive(true);
+                renderer.material = pitButtonTexture;
                 break;
         }
         this.r = r;
@@ -111,6 +123,8 @@ public class Cell : MonoBehaviourPunCallbacks
     public void ChangePiece(Piece p) 
     {
         piece = p;
+        ParticleSystem.MainModule main = _particleSystem.main;
+        main.startColor = (p!=null)?_occupiedCellGradient:_freeCellGradient;
     }
 
     public Piece getPiece() 
@@ -135,8 +149,18 @@ public class Cell : MonoBehaviourPunCallbacks
     }
     public void SetSelected(bool selected)
     {
-        if(selected) renderer.material.SetColor("_Color", _glowColor);
-        else renderer.material.SetColor("_Color", color);
+        if(selected) 
+        {
+            renderer.material.SetColor("_Color", _glowColor);
+            _PitRendererL.material.SetColor("_Color", _glowColor);
+            _PitRendererR.material.SetColor("_Color", _glowColor);
+        }
+        else 
+        {
+            renderer.material.SetColor("_Color", color);
+            _PitRendererL.material.SetColor("_Color", color);
+            _PitRendererR.material.SetColor("_Color", color);
+        }
 
         if (selected) _particleSystem.Play();
         else _particleSystem.Stop();
