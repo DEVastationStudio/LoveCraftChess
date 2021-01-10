@@ -159,6 +159,7 @@ MonoBehaviour:
   - {fileID: 992793366705739741}
   - {fileID: 7504659461474669761}
   _pieceContainer: {fileID: 77000370899354658}
+  _collider: {fileID: 4238533132871919691}
   player: 0
   r: 0
   c: 0

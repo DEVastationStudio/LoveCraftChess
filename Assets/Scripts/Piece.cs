@@ -20,6 +20,7 @@ public class Piece : MonoBehaviour
     [SerializeField] private GameObject[] bishop;
     [SerializeField] private GameObject[] queen;
     [SerializeField] private GameObject _pieceContainer;
+    [SerializeField] private Collider _collider;
     private bool _isSelected;
     private float _moveTimer;
 
@@ -105,6 +106,7 @@ public class Piece : MonoBehaviour
 
     void Update()
     {
+        _collider.enabled = (TableGenerator.curPlayer == player);
         if (!_isSelected) return;
 
         _pieceContainer.transform.localPosition = new Vector3(0, 1+Mathf.Sin(_moveTimer), 0);
