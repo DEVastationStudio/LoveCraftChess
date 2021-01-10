@@ -5969,6 +5969,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacle: {fileID: 4297468671698566930}
   renderer: {fileID: 828304874139708944}
+  _PitRendererL: {fileID: 5269353688255124155}
+  _PitRendererR: {fileID: 6660901829039169320}
   _glowColor: {r: 0.996681, g: 1, b: 0.7311321, a: 1}
   OneRevive: {fileID: 2100000, guid: 7f928fd264665b54c914c90ffb2ef01b, type: 2}
   TwoRevive: {fileID: 2100000, guid: 5758fbb9772a9cd4ea1ded791e9efc46, type: 2}
@@ -5987,6 +5989,14 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 137c0980a443eb64c8e9ed9754eeb4d4, type: 2}
   - {fileID: 2100000, guid: c0e7253140ad8624fba0eaba57b83a89, type: 2}
   - {fileID: 2100000, guid: e81cf2502a8b58b42b841ab1e5935bd7, type: 2}
+  _p1FloorMaterials:
+  - {fileID: 2100000, guid: 9e2134ddcce4f8c4197ab12290d9f8cb, type: 2}
+  - {fileID: 2100000, guid: e81cf2502a8b58b42b841ab1e5935bd7, type: 2}
+  - {fileID: 2100000, guid: 9d0e69e4052f0cb48a57c73a24815752, type: 2}
+  _p2FloorMaterials:
+  - {fileID: 2100000, guid: c0e7253140ad8624fba0eaba57b83a89, type: 2}
+  - {fileID: 2100000, guid: 137c0980a443eb64c8e9ed9754eeb4d4, type: 2}
+  - {fileID: 2100000, guid: a852d809a03aab549a371acc7dd85426, type: 2}
   _particleSystem: {fileID: 5046335117732828348}
   _freeCellGradient:
     serializedVersion: 2
@@ -6062,6 +6072,7 @@ MonoBehaviour:
   pitHingeL: {fileID: 8654859510539376229}
   pitHingeR: {fileID: 8296844596460016579}
   pitOpen: 0
+  barrierDown: 0
   pitButtonTexture: {fileID: 2100000, guid: 752dfae90997eaf429d9e03298643063, type: 2}
 --- !u!65 &7528756169337470645
 BoxCollider:

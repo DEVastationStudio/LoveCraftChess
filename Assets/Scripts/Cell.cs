@@ -8,11 +8,15 @@ public class Cell : MonoBehaviourPunCallbacks
 
     [SerializeField] private GameObject obstacle;
     [SerializeField] private Renderer renderer;
+    [SerializeField] private Renderer _PitRendererL;
+    [SerializeField] private Renderer _PitRendererR;
     [SerializeField] private Color _glowColor;
     [SerializeField] private Material OneRevive;
     [SerializeField] private Material TwoRevive;
     [SerializeField] private Material ThreeRevive;
     [SerializeField] private Material[] tableTextures;
+    [SerializeField] private Material[] _p1FloorMaterials;
+    [SerializeField] private Material[] _p2FloorMaterials;
     [SerializeField] private ParticleSystem _particleSystem;
     [SerializeField] private Gradient _freeCellGradient, _occupiedCellGradient;
 
@@ -91,10 +95,10 @@ public class Cell : MonoBehaviourPunCallbacks
                 renderer.material = tableTextures[10];
                 break;
             case TableObj.pieceType.BASIC1:
-                renderer.material = tableTextures[11];
+                renderer.material = _p1FloorMaterials[Random.Range(0,_p1FloorMaterials.Length)];
                 break;
             case TableObj.pieceType.BASIC2:
-                renderer.material = tableTextures[12];
+                renderer.material = _p2FloorMaterials[Random.Range(0,_p2FloorMaterials.Length)];
                 break;
             case TableObj.pieceType.BARRIER:
                 isBarrier = true;
@@ -147,8 +151,18 @@ public class Cell : MonoBehaviourPunCallbacks
     }
     public void SetSelected(bool selected)
     {
-        if(selected) renderer.material.SetColor("_Color", _glowColor);
-        else renderer.material.SetColor("_Color", color);
+        if(selected) 
+        {
+            renderer.material.SetColor("_Color", _glowColor);
+            _PitRendererL.material.SetColor("_Color", _glowColor);
+            _PitRendererR.material.SetColor("_Color", _glowColor);
+        }
+        else 
+        {
+            renderer.material.SetColor("_Color", color);
+            _PitRendererL.material.SetColor("_Color", color);
+            _PitRendererR.material.SetColor("_Color", color);
+        }
 
         if (selected) _particleSystem.Play();
         else _particleSystem.Stop();
