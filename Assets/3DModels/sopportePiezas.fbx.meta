@@ -9,11 +9,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Material.001
     second: {fileID: 2100000, guid: 18e961deec25aa048835be7030c901c0, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color SoportePiezas
-    second: {fileID: 2800000, guid: 0391176a2d923024c8c7ddd30f1505a6, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
