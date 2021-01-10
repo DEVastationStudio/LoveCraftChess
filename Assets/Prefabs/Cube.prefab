@@ -5997,6 +5997,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: c0e7253140ad8624fba0eaba57b83a89, type: 2}
   - {fileID: 2100000, guid: 137c0980a443eb64c8e9ed9754eeb4d4, type: 2}
   - {fileID: 2100000, guid: a852d809a03aab549a371acc7dd85426, type: 2}
+  _barrierFloorMaterial: {fileID: 2100000, guid: 15ce4909a024d174ea094eedce73c84c,
+    type: 2}
   _particleSystem: {fileID: 5046335117732828348}
   _freeCellGradient:
     serializedVersion: 2
@@ -6063,11 +6065,9 @@ MonoBehaviour:
   type: 0
   isBarrier: 0
   barrier: {fileID: 1164060076319503481}
-  barrierBtn: {fileID: 8463567634513395029}
   barrierButtonTexture: {fileID: 2100000, guid: 38b90b8701c62cd4abffed372b09e24f,
     type: 2}
   isPit: 0
-  pitBtn: {fileID: 7353681075800407565}
   pit: {fileID: 3175120881735999601}
   pitHingeL: {fileID: 8654859510539376229}
   pitHingeR: {fileID: 8296844596460016579}

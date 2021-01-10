@@ -17,6 +17,7 @@ public class Cell : MonoBehaviourPunCallbacks
     [SerializeField] private Material[] tableTextures;
     [SerializeField] private Material[] _p1FloorMaterials;
     [SerializeField] private Material[] _p2FloorMaterials;
+    [SerializeField] private Material _barrierFloorMaterial;
     [SerializeField] private ParticleSystem _particleSystem;
     [SerializeField] private Gradient _freeCellGradient, _occupiedCellGradient;
 
@@ -32,11 +33,9 @@ public class Cell : MonoBehaviourPunCallbacks
 
     public bool isBarrier;
     public GameObject barrier;
-    public GameObject barrierBtn;
     [SerializeField] private Material barrierButtonTexture;
 
     public bool isPit;
-    public GameObject pitBtn;
     public GameObject pit;
     public GameObject pitHingeL, pitHingeR;
     public bool pitOpen;
@@ -102,11 +101,11 @@ public class Cell : MonoBehaviourPunCallbacks
                 break;
             case TableObj.pieceType.BARRIER:
                 isBarrier = true;
+                renderer.material = _barrierFloorMaterial;
                 barrier.SetActive(true);
                 break;
             case TableObj.pieceType.BARRIERBTN:
                 renderer.material = barrierButtonTexture;
-                //barrierBtn.SetActive(true);
                 break;
             case TableObj.pieceType.PIT:
                 isPit = true;
@@ -115,7 +114,6 @@ public class Cell : MonoBehaviourPunCallbacks
                 break;
             case TableObj.pieceType.PITBTN:
                 renderer.material = pitButtonTexture;
-                //pitBtn.SetActive(true);
                 break;
         }
         this.r = r;
