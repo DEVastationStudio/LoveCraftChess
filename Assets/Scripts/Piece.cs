@@ -24,7 +24,6 @@ public class Piece : MonoBehaviour
     private bool _isSelected;
     private float _moveTimer;
 
-    private Renderer renderer2;
 
     private TableGenerator tGen;
     public int player;
@@ -106,6 +105,7 @@ public class Piece : MonoBehaviour
 
     void Update()
     {
+        _pieceContainer.SetActive(!tGen.initialTurn || player == TableGenerator.curPlayer);
         _collider.enabled = (TableGenerator.curPlayer == player || (tGen.isOnline && TableGenerator.localPlayer == player));
         if (!_isSelected) return;
 
