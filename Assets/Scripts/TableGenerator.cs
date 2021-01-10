@@ -8,7 +8,7 @@ using Photon.Realtime;
 
 public class TableGenerator : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private TableObj tableObj;
+    [SerializeField] public TableObj tableObj;
     [SerializeField] private Cell cellUnit;
     [SerializeField] private Piece pieceRef;
     [SerializeField] private Text turnText;
@@ -177,11 +177,18 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 p2Jail[p2Jail.Count - 1].Init(TableObj.pieceType.P23JAIL, -1, -1, this);
         }
 
-        //Camera position
+        //cam position
         _camera.transform.position = new Vector3(numCols/2, Mathf.Max(numCols,numRows)*1.5f, numRows/2);
         if (isOnline && localPlayer == 2) _camera.transform.eulerAngles += new Vector3(0,180,0);
     }
-    
+
+    public int GetLocalPlayer() 
+    {
+        if (isOnline)
+            return localPlayer;
+        return curPlayer;
+    }
+
     public void SelectPiece(int r, int c) 
     {
         if (initialTurn && !confirmButton.interactable) return;
@@ -854,10 +861,9 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
     }
 
-    public void NextTurn(int startingPlayer = 2)
+    public void NextTurn(int startingPlayer = 2) 
     {
-
-        if (initialTurn)
+        if (initialTurn) 
         {
             curPiece?.SetChosen(false);
             ResetClickables();
@@ -876,6 +882,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 }
             }
         }
+
 
         if (PitBtn != null && PitBtn.getPiece() != null)
             PitControl = PitBtn.getPiece().player;
@@ -967,6 +974,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
         }
 
+
         if (curPlayer == 1) curPlayer = 2;
         else curPlayer = 1;
         turnText.text = (curPlayer == 1 ? "BLUE" : "RED") + " PLAYER TURN";
@@ -976,6 +984,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
         if (barrierBtn != null && barrierBtn.getPiece() == null)
             barrierControl = -1;
+
+        if(!isOnline) _camera.GetComponent<CameraController>().ResetTarget();
 
         foreach (Cell b in barriers)
         {
