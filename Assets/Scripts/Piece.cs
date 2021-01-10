@@ -106,7 +106,7 @@ public class Piece : MonoBehaviour
 
     void Update()
     {
-        _collider.enabled = (TableGenerator.curPlayer == player);
+        _collider.enabled = (TableGenerator.curPlayer == player || (tGen.isOnline && TableGenerator.localPlayer == player));
         if (!_isSelected) return;
 
         _pieceContainer.transform.localPosition = new Vector3(0, 1+Mathf.Sin(_moveTimer), 0);

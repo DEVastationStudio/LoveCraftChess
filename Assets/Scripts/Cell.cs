@@ -29,10 +29,16 @@ public class Cell : MonoBehaviourPunCallbacks
     public bool isBarrier;
     public GameObject barrier;
     public GameObject barrierBtn;
+    [SerializeField] private Material barrierButtonTexture;
 
     public bool isPit;
     public GameObject pitBtn;
     public GameObject pit;
+    public GameObject pitHingeL, pitHingeR;
+    public bool pitOpen;
+    public bool barrierDown;
+    [SerializeField] private Material pitButtonTexture;
+
     public void Init(TableObj.pieceType type, int r, int c, TableGenerator tGen)
     {
         color = renderer.material.GetColor("_Color");
@@ -95,14 +101,17 @@ public class Cell : MonoBehaviourPunCallbacks
                 barrier.SetActive(true);
                 break;
             case TableObj.pieceType.BARRIERBTN:
-                barrierBtn.SetActive(true);
+                renderer.material = barrierButtonTexture;
+                //barrierBtn.SetActive(true);
                 break;
             case TableObj.pieceType.PIT:
                 isPit = true;
+                renderer.enabled = false;
                 pit.SetActive(true);
                 break;
             case TableObj.pieceType.PITBTN:
-                pitBtn.SetActive(true);
+                renderer.material = pitButtonTexture;
+                //pitBtn.SetActive(true);
                 break;
         }
         this.r = r;

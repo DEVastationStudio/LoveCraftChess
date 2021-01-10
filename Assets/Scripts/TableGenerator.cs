@@ -620,12 +620,12 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
         //Up movement
 
-        while (elapsedTime < 1)
+        while (elapsedTime < 0.5f)
         {
-            pieceContainer.transform.localPosition = Vector3.Lerp(containerPos, Vector3.zero, elapsedTime);
-            pieceContainer.transform.localRotation = Quaternion.Slerp(containerRot, Quaternion.identity, elapsedTime);
-            piece.transform.position = Vector3.Lerp(startPos, startFloatPos, elapsedTime);
-            piece.transform.rotation = Quaternion.Slerp(startRot, endRot, elapsedTime);
+            pieceContainer.transform.localPosition = Vector3.Lerp(containerPos, Vector3.zero, elapsedTime*2);
+            pieceContainer.transform.localRotation = Quaternion.Slerp(containerRot, Quaternion.identity, elapsedTime*2);
+            piece.transform.position = Vector3.Lerp(startPos, startFloatPos, elapsedTime*2);
+            piece.transform.rotation = Quaternion.Slerp(startRot, endRot, elapsedTime*2);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -634,10 +634,9 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         //Forward movement
 
         elapsedTime = 0.0f;
-        float totalTime = Vector3.Distance(startFloatPos, endFloatPos)/4;
-        while (elapsedTime < totalTime)
+        while (elapsedTime < 1)
         {
-            piece.transform.position = Vector3.Lerp(startFloatPos, endFloatPos, elapsedTime/totalTime);
+            piece.transform.position = Vector3.Lerp(startFloatPos, endFloatPos, elapsedTime);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -651,17 +650,31 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         //Down movement
 
         elapsedTime = 0.0f;
-        while (elapsedTime < 1)
+        while (elapsedTime < 0.5f)
         {
-            piece.transform.position = Vector3.Lerp(endFloatPos, endPos, elapsedTime);
-            if (eatsPiece) eatenPiece.transform.position = Vector3.Lerp(eatenPiecePos, finalEatenPiecePos, elapsedTime);
+            piece.transform.position = Vector3.Lerp(endFloatPos, endPos, elapsedTime*2);
+            if (eatsPiece) eatenPiece.transform.position = Vector3.Lerp(eatenPiecePos, finalEatenPiecePos, elapsedTime*2);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         piece.transform.position = endPos;
 
         //Eaten Piece management
+        yield return eatPiece(eatsPiece, eatenPiece, elapsedTime, eatenPiecePos, finalEatenPiecePos);
 
+        //Finishing touches
+
+        cells[endPos.z, endPos.x].ChangePiece(piece);
+        cells[endPos.z, endPos.x].getPiece().SetCoords(endPos.z, endPos.x);
+        piece = null;
+        if (!initialTurn) NextTurn();
+        performingMove = false;
+        confirmButton.interactable = true;
+        yield return null;
+    }
+
+    private IEnumerator eatPiece(bool eatsPiece, Piece eatenPiece, float elapsedTime, Vector3 eatenPiecePos, Vector3 finalEatenPiecePos)
+    {
         if (eatsPiece)
         {
             eatenPiece.inJail = true;
@@ -677,7 +690,6 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
 
             Vector3 jailOffset = new Vector3(chosenJail[1].transform.position.x-chosenJail[0].transform.position.x, 0, chosenJail[1].transform.position.z-chosenJail[0].transform.position.z);
-            print(jailOffset);
 
             List<Piece> moveablePieceList = new List<Piece>();
             List<Vector3> moveablePiecePositions = new List<Vector3>();
@@ -730,11 +742,11 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             {
                 elapsedTime = 0.0f;
                 int numPieces = moveablePieceList.Count;
-                while (elapsedTime < 1)
+                while (elapsedTime < 0.5f)
                 {
                     for (int i = 0; i < numPieces; i++)
                     {
-                        moveablePieceList[i].transform.position = Vector3.Lerp(moveablePiecePositions[i], moveablePieceFinalPositions[i], elapsedTime);
+                        moveablePieceList[i].transform.position = Vector3.Lerp(moveablePiecePositions[i], moveablePieceFinalPositions[i], elapsedTime*2);
                     }
                     elapsedTime += Time.deltaTime;
                     yield return null;
@@ -782,16 +794,6 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             
 
         }
-
-        //Finishing touches
-
-        cells[endPos.z, endPos.x].ChangePiece(piece);
-        cells[endPos.z, endPos.x].getPiece().SetCoords(endPos.z, endPos.x);
-        piece = null;
-        if (!initialTurn) NextTurn();
-        performingMove = false;
-        confirmButton.interactable = true;
-        yield return null;
     }
 
     private void ResetClickables() 
@@ -852,9 +854,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
     }
 
-    public void NextTurn(int startingPlayer = 2) {
-        
-        if (initialTurn) 
+    public void NextTurn(int startingPlayer = 2)
+    {
+
+        if (initialTurn)
         {
             curPiece?.SetChosen(false);
             ResetClickables();
@@ -876,7 +879,15 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
         if (PitBtn != null && PitBtn.getPiece() != null)
             PitControl = PitBtn.getPiece().player;
+        else
+            PitControl = -1;
 
+        StartCoroutine(NextTurnAnimations());
+
+    }
+
+    private IEnumerator NextTurnAnimations()
+    {
         foreach (Cell p in Pits)
         {
             if (PitControl != -1)
@@ -885,85 +896,83 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 {
                     if (p.getPiece().player != PitControl)
                     {
-                        //Abrir trampilla
+                        Piece eatenPiece = cells[p.r, p.c].getPiece();
+                        bool eatsPiece = (eatenPiece != null);
+                        Vector3 eatenPiecePos = (eatsPiece)?(eatenPiece.transform.position):(Vector3.zero);
+                        Vector3 finalEatenPiecePos = eatenPiecePos + new Vector3(0, -1, 0);
 
-                        Piece eatenPiece = cells[p.r,p.c].getPiece();
-                        eatenPiece.inJail = true;
-                        List<Cell> chosenJail;
-                        if (eatenPiece.player == 1)
-                        {
-                            chosenJail = p2Jail;
-                        }
-                        else
-                        {
-                            chosenJail = p1Jail;
-                        }
+                        Quaternion closedPitRot = Quaternion.identity;
+                        Quaternion openPitLRot = Quaternion.Euler(0,0,89);
+                        Quaternion openPitRRot = Quaternion.Euler(0,0,-89);
 
-                        if (chosenJail[2].getPiece() != null)
-                        {
-                            p1Pieces.Remove(chosenJail[2].getPiece());
-                            p2Pieces.Remove(chosenJail[2].getPiece());
-                            Destroy(chosenJail[2].getPiece().gameObject);
-                            chosenJail[2].ChangePiece(null);
-                        }
+                        //Open Trapdoors
 
-                        if (chosenJail[1].getPiece() != null)
+                        float elapsedTime = 0.0f;
+                        while (elapsedTime < 0.25f)
                         {
-                            chosenJail[2].ChangePiece(chosenJail[1].getPiece());
-                            chosenJail[2].getPiece().SetJailPosition(chosenJail[2]);
-                            chosenJail[1].ChangePiece(null);
+                            if (eatsPiece) eatenPiece.transform.position = Vector3.Lerp(eatenPiecePos, finalEatenPiecePos, elapsedTime*4);
+                            if (!p.pitOpen)
+                            {
+                                p.pitHingeL.transform.localRotation = Quaternion.Slerp(closedPitRot, openPitLRot, elapsedTime*4);
+                                p.pitHingeR.transform.localRotation = Quaternion.Slerp(closedPitRot, openPitRRot, elapsedTime*4);
+                            }
+                            elapsedTime += Time.deltaTime;
+                            yield return null;
                         }
+                        p.pitOpen = true;
+                        yield return new WaitForSeconds(0.5f);
+                        yield return CloseTrapdoors(p);
 
-                        if (chosenJail[0].getPiece() != null)
+                        //Eaten Piece management
+                        yield return eatPiece(eatsPiece, eatenPiece, elapsedTime, eatenPiecePos, finalEatenPiecePos);
+
+                        p.ChangePiece(null);
+
+                    }
+                    else
+                    {
+                        yield return CloseTrapdoors(p);
+                    }
+                }
+                else
+                {
+                    if (PitControl != curPlayer)
+                    {
+                        yield return CloseTrapdoors(p);
+                    }
+                    else
+                    {
+                        //Open Trapdoors
+                        if (!p.pitOpen)
                         {
-                            chosenJail[1].ChangePiece(chosenJail[0].getPiece());
-                            chosenJail[1].getPiece().SetJailPosition(chosenJail[1]);
-                            chosenJail[0].ChangePiece(null);
+                            Quaternion closedPitRot = Quaternion.identity;
+                            Quaternion openPitLRot = Quaternion.Euler(0,0,89);
+                            Quaternion openPitRRot = Quaternion.Euler(0,0,-89);
+                            float elapsedTime = 0.0f;
+                            while (elapsedTime < 0.25f)
+                            {
+                                p.pitHingeL.transform.localRotation = Quaternion.Slerp(closedPitRot, openPitLRot, elapsedTime*4);
+                                p.pitHingeR.transform.localRotation = Quaternion.Slerp(closedPitRot, openPitRRot, elapsedTime*4);
+                                elapsedTime += Time.deltaTime;
+                                yield return null;
+                            }
                         }
-
-                        chosenJail[0].ChangePiece(eatenPiece);
-                        eatenPiece.SetJailPosition(chosenJail[0]);
+                        p.pitOpen = true;
                     }
                 }
             }
             else
             {
-                //Cerrar la trampilla
+                yield return CloseTrapdoors(p);
             }
         }
 
         if (curPlayer == 1) curPlayer = 2;
         else curPlayer = 1;
-        turnText.text = (curPlayer==1?"BLUE":"RED") + " PLAYER TURN";
+        turnText.text = (curPlayer == 1 ? "BLUE" : "RED") + " PLAYER TURN";
 
         if (barrierBtn != null && barrierBtn.getPiece() != null)
             barrierControl = barrierBtn.getPiece().player;
-
-        foreach (Cell p in Pits)
-        {
-            if (PitControl != -1)
-            {
-                if (p.getPiece() != null)
-                {
-                    if (p.getPiece().player == PitControl)
-                    {
-                        //Cerrar la trampilla
-                    }
-                    else
-                    {
-                        //Abrir trampilla
-                    }
-                }
-                else
-                {
-                    //Abrir trampilla
-                }
-            }
-            else
-            {
-                //Cerrar la trampilla
-            }
-        }
 
         if (barrierBtn != null && barrierBtn.getPiece() == null)
             barrierControl = -1;
@@ -972,17 +981,61 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         {
             if (barrierControl != -1)
             {
+                float elapsedTime = 0.0f;
+                Vector3 barrierDownPos = Vector3.zero;
+                Vector3 barrierUpPos = Vector3.up;
                 if (barrierControl == curPlayer)
-                    b.barrier.SetActive(false); //Animacion de bajar
+                {
+                    //Barrier sink animation
+                    if (!b.barrierDown)
+                    {
+                        while (elapsedTime < 0.25f)
+                        {
+                            b.barrier.transform.localPosition = Vector3.Lerp(barrierUpPos, barrierDownPos, elapsedTime*4);
+                            elapsedTime += Time.deltaTime;
+                            yield return null;
+                        }
+                        b.barrier.transform.localPosition = barrierDownPos;
+                    }
+                    b.barrierDown = true;
+                }
                 else
-                    b.barrier.SetActive(true); //Animacion de subir
+                {
+                    //Barrier rise animation
+                    if (b.barrierDown)
+                    {
+                        while (elapsedTime < 0.25f)
+                        {
+                            b.barrier.transform.localPosition = Vector3.Lerp(barrierDownPos, barrierUpPos, elapsedTime*4);
+                            elapsedTime += Time.deltaTime;
+                            yield return null;
+                        }
+                        b.barrier.transform.localPosition = barrierUpPos;
+                    }
+                    b.barrierDown = false;
+                }
+                    
             }
-            else 
+            else
             {
-                b.barrier.SetActive(true);
+                //Barrier rise animation
+                float elapsedTime = 0.0f;
+                Vector3 barrierDownPos = Vector3.zero;
+                Vector3 barrierUpPos = Vector3.up;
+                if (b.barrierDown)
+                {
+                    while (elapsedTime < 0.25f)
+                    {
+                        b.barrier.transform.localPosition = Vector3.Lerp(barrierDownPos, barrierUpPos, elapsedTime*4);
+                        elapsedTime += Time.deltaTime;
+                        yield return null;
+                    }
+                    b.barrier.transform.localPosition = barrierUpPos;
+                }
+                b.barrierDown = false;
             }
         }
-        
+
         bool found = false;
         foreach (Cell c in p2Keys)
         {
@@ -995,76 +1048,46 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
         }
 
+        float _elapsedTime = 0.0f;
+        List<Piece> moveablePieceList = new List<Piece>();
+        List<Vector3> moveablePiecePositions = new List<Vector3>();
+        List<Vector3> moveablePieceFinalPositions = new List<Vector3>();
+        Piece pi = null;
+        Vector3 oldPos = Vector3.zero;
+        Vector3 newPos = Vector3.zero;
+
+                /*
+                _elapsedTime = 0.0f;
+                while (_elapsedTime < 0.5f)
+                {
+                    pi.transform.position = Vector3.Lerp(oldPos, newPos, _elapsedTime*2);
+                    _elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+                pi.transform.position = newPos;
+                */
+
         if (found)
         {
-            if (p2Revives[0].getPiece() == null)
-            {
-                if (p2Jail[0].getPiece() != null)
-                {
-                    p2Revives[0].ChangePiece(p2Jail[0].getPiece());
-                    p2Revives[0].getPiece().SetPosition(p2Revives[0].r, p2Revives[0].c);
-                    p2Revives[0].getPiece().inJail = false;
-                    p2Jail[0].ChangePiece(null);
-                    if (p2Jail[1].getPiece() != null)
-                    {
-                        p2Jail[0].ChangePiece(p2Jail[1].getPiece());
-                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
-                        p2Jail[1].ChangePiece(null);
-                    }
-                    if (p2Jail[2].getPiece() != null)
-                    {
-                        p2Jail[1].ChangePiece(p2Jail[2].getPiece());
-                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
-                        p2Jail[2].ChangePiece(null);
-                    }
-                }
-            }
-            if (p2Revives[1].getPiece() == null)
-            {
-                if (p2Jail[0].getPiece() != null)
-                {
-                    p2Revives[1].ChangePiece(p2Jail[0].getPiece());
-                    p2Revives[1].getPiece().SetPosition(p2Revives[1].r, p2Revives[1].c);
-                    p2Revives[1].getPiece().inJail = false;
-                    p2Jail[0].ChangePiece(null);
-                    if (p2Jail[1].getPiece() != null)
-                    {
-                        p2Jail[0].ChangePiece(p2Jail[1].getPiece());
-                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
-                        p2Jail[1].ChangePiece(null);
-                    }
-                    if (p2Jail[2].getPiece() != null)
-                    {
-                        p2Jail[1].ChangePiece(p2Jail[2].getPiece());
-                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
-                        p2Jail[2].ChangePiece(null);
-                    }
-                }
-            }
-            if (p2Revives[2].getPiece() == null)
-            {
-                if (p2Jail[0].getPiece() != null)
-                {
-                    p2Revives[2].ChangePiece(p2Jail[0].getPiece());
-                    p2Revives[2].getPiece().SetPosition(p2Revives[2].r, p2Revives[2].c);
-                    p2Revives[2].getPiece().inJail = false;
-                    p2Jail[0].ChangePiece(null);
-                    if (p2Jail[1].getPiece() != null)
-                    {
-                        p2Jail[0].ChangePiece(p2Jail[1].getPiece());
-                        p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
-                        p2Jail[1].ChangePiece(null);
-                    }
-                    if (p2Jail[2].getPiece() != null)
-                    {
-                        p2Jail[1].ChangePiece(p2Jail[2].getPiece());
-                        p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
-                        p2Jail[2].ChangePiece(null);
-                    }
-                }
-            }
+            yield return RevivePieces(_elapsedTime, pi, oldPos, newPos, p2Revives, p2Jail);
         }
-   
+
+        _elapsedTime = 0.0f;
+        int numPieces = moveablePieceList.Count;
+        while (_elapsedTime < 0.5f)
+        {
+            for (int i = 0; i < numPieces; i++)
+            {
+                moveablePieceList[i].transform.position = Vector3.Lerp(moveablePiecePositions[i], moveablePieceFinalPositions[i], _elapsedTime*2);
+            }
+            _elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        for (int i = 0; i < numPieces; i++)
+        {
+            moveablePieceList[i].transform.position = moveablePieceFinalPositions[i];
+        }
+
 
         found = false;
         foreach (Cell c in p1Keys)
@@ -1080,74 +1103,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
         if (found)
         {
-            if (p1Revives[0].getPiece() == null)
-            {
-                if (p1Jail[0].getPiece() != null)
-                {
-                    p1Revives[0].ChangePiece(p1Jail[0].getPiece());
-                    p1Revives[0].getPiece().SetPosition(p1Revives[0].r, p1Revives[0].c);
-                    p1Revives[0].getPiece().inJail = false;
-                    p1Jail[0].ChangePiece(null);
-                    if (p1Jail[1].getPiece() != null)
-                    {
-                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
-                        p1Jail[1].ChangePiece(null);
-                    }
-                    if (p1Jail[2].getPiece() != null)
-                    {
-                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
-                        p1Jail[2].ChangePiece(null);
-                    }
-                }
-            }
-            if (p1Revives[1].getPiece() == null)
-            {
-                if (p1Jail[0].getPiece() != null)
-                {
-                    p1Revives[1].ChangePiece(p1Jail[0].getPiece());
-                    p1Revives[1].getPiece().SetPosition(p1Revives[1].r, p1Revives[1].c);
-                    p1Revives[1].getPiece().inJail = false;
-                    p1Jail[0].ChangePiece(null);
-                    if (p1Jail[1].getPiece() != null)
-                    {
-                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
-                        p1Jail[1].ChangePiece(null);
-                    }
-                    if (p1Jail[2].getPiece() != null)
-                    {
-                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
-                        p1Jail[2].ChangePiece(null);
-                    }
-                }
-            }
-            if (p1Revives[2].getPiece() == null)
-            {
-                if (p1Jail[0].getPiece() != null)
-                {
-                    p1Revives[2].ChangePiece(p1Jail[0].getPiece());
-                    p1Revives[2].getPiece().SetPosition(p1Revives[2].r, p1Revives[2].c);
-                    p1Revives[2].getPiece().inJail = false;
-                    p1Jail[0].ChangePiece(null);
-                    if (p1Jail[1].getPiece() != null)
-                    {
-                        p1Jail[0].ChangePiece(p1Jail[1].getPiece());
-                        p1Jail[0].getPiece().SetJailPosition(p1Jail[0]);
-                        p1Jail[1].ChangePiece(null);
-                    }
-                    if (p1Jail[2].getPiece() != null)
-                    {
-                        p1Jail[1].ChangePiece(p1Jail[2].getPiece());
-                        p1Jail[1].getPiece().SetJailPosition(p1Jail[1]);
-                        p1Jail[2].ChangePiece(null);
-                    }
-                }
-            }
+            yield return RevivePieces(_elapsedTime, pi, oldPos, newPos, p1Revives, p1Jail);
         }
 
+        
         bool allDead;
 
         if (p1Pieces.Count <= 3)
@@ -1160,7 +1119,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             if (allDead)
             {
                 SetWinner(2);
-                return;
+                yield break;
             }
         }
         if (p2Pieces.Count <= 3)
@@ -1173,50 +1132,188 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             if (allDead)
             {
                 SetWinner(1);
-                return;
+                yield break;
             }
         }
 
         bool finished = true;
         foreach (Piece p in p1Pieces)
         {
-            if (p.inJail) 
+            if (p.inJail)
             {
                 finished = false;
                 break;
             }
             Cell c = cells[p.r, p.c];
-            if (c.type != TableObj.pieceType.P2ZONE && c.type != TableObj.pieceType.P2KEY) {
+            if (c.type != TableObj.pieceType.P2ZONE && c.type != TableObj.pieceType.P2KEY)
+            {
                 finished = false;
                 break;
             }
         }
-        if (finished) 
+        if (finished)
         {
             SetWinner(1);
-            return;
+            yield break;
         }
-        
+
         finished = true;
         foreach (Piece p in p2Pieces)
         {
-            if (p.inJail) 
+            if (p.inJail)
             {
                 finished = false;
                 break;
             }
             Cell c = cells[p.r, p.c];
-            if (c.type != TableObj.pieceType.P1ZONE && c.type != TableObj.pieceType.P1KEY) {
+            if (c.type != TableObj.pieceType.P1ZONE && c.type != TableObj.pieceType.P1KEY)
+            {
                 finished = false;
                 break;
             }
         }
-        if (finished) 
+        if (finished)
         {
             SetWinner(2);
-            return;
+            yield break;
         }
-    
+        yield return null;
+
+    }
+
+    private IEnumerator RevivePieces(float _elapsedTime, Piece pi, Vector3 oldPos, Vector3 newPos, Cell[] p2Revives, List<Cell> p2Jail)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (p2Revives[i].getPiece() == null)
+            {
+                if (p2Jail[0].getPiece() != null)
+                {
+                    p2Revives[i].ChangePiece(p2Jail[0].getPiece());
+                    p2Revives[i].getPiece().SetCoords(p2Revives[i].r, p2Revives[i].c);
+                    p2Revives[i].getPiece().inJail = false;
+                    p2Jail[0].ChangePiece(null);
+
+                    _elapsedTime = 0.0f;
+                    pi = p2Revives[i].getPiece();
+                    oldPos = pi.transform.position;
+                    newPos = new Vector3(p2Revives[i].c, 1, p2Revives[i].r);
+                    while (_elapsedTime < 0.5f)
+                    {
+                        pi.transform.position = Vector3.Lerp(oldPos, newPos, _elapsedTime*2);
+                        _elapsedTime += Time.deltaTime;
+                        yield return null;
+                    }
+                    pi.transform.position = newPos;
+
+                    
+                    if (p2Jail[1].getPiece() != null)
+                    {
+                        p2Jail[0].ChangePiece(p2Jail[1].getPiece());
+                        p2Jail[0].getPiece().SetCoords(-1,-1);
+
+                        _elapsedTime = 0.0f;
+                        pi = p2Jail[0].getPiece();
+                        oldPos = pi.transform.position;
+                        newPos = new Vector3(p2Jail[0].transform.position.x, 1, p2Jail[0].transform.position.z);
+                        while (_elapsedTime < 0.5f)
+                        {
+                            pi.transform.position = Vector3.Lerp(oldPos, newPos, _elapsedTime*2);
+                            _elapsedTime += Time.deltaTime;
+                            yield return null;
+                        }
+                        pi.transform.position = newPos;
+
+                        p2Jail[1].ChangePiece(null);
+                    }
+
+                    if (p2Jail[2].getPiece() != null)
+                    {
+                        p2Jail[1].ChangePiece(p2Jail[2].getPiece());
+                        p2Jail[1].getPiece().SetCoords(-1,-1);
+
+                        _elapsedTime = 0.0f;
+                        pi = p2Jail[1].getPiece();
+                        oldPos = pi.transform.position;
+                        newPos = new Vector3(p2Jail[1].transform.position.x, 1, p2Jail[1].transform.position.z);
+                        while (_elapsedTime < 0.5f)
+                        {
+                            pi.transform.position = Vector3.Lerp(oldPos, newPos, _elapsedTime*2);
+                            _elapsedTime += Time.deltaTime;
+                            yield return null;
+                        }
+                        pi.transform.position = newPos;
+
+                        p2Jail[2].ChangePiece(null);
+                    }
+                }
+            }
+        }
+        
+        /*if (p2Revives[1].getPiece() == null)
+        {
+            if (p2Jail[0].getPiece() != null)
+            {
+                p2Revives[1].ChangePiece(p2Jail[0].getPiece());
+                p2Revives[1].getPiece().SetCoords(p2Revives[1].r, p2Revives[1].c);
+                p2Revives[1].getPiece().inJail = false;
+                p2Jail[0].ChangePiece(null);
+                if (p2Jail[1].getPiece() != null)
+                {
+                    p2Jail[0].ChangePiece(p2Jail[1].getPiece());
+                    p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
+                    p2Jail[1].ChangePiece(null);
+                }
+                if (p2Jail[2].getPiece() != null)
+                {
+                    p2Jail[1].ChangePiece(p2Jail[2].getPiece());
+                    p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
+                    p2Jail[2].ChangePiece(null);
+                }
+            }
+        }
+        if (p2Revives[2].getPiece() == null)
+        {
+            if (p2Jail[0].getPiece() != null)
+            {
+                p2Revives[2].ChangePiece(p2Jail[0].getPiece());
+                p2Revives[2].getPiece().SetCoords(p2Revives[2].r, p2Revives[2].c);
+                p2Revives[2].getPiece().inJail = false;
+                p2Jail[0].ChangePiece(null);
+                if (p2Jail[1].getPiece() != null)
+                {
+                    p2Jail[0].ChangePiece(p2Jail[1].getPiece());
+                    p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
+                    p2Jail[1].ChangePiece(null);
+                }
+                if (p2Jail[2].getPiece() != null)
+                {
+                    p2Jail[1].ChangePiece(p2Jail[2].getPiece());
+                    p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
+                    p2Jail[2].ChangePiece(null);
+                }
+            }
+        }*/
+    }
+
+    private IEnumerator CloseTrapdoors(Cell p)
+    {
+        //Close Trapdoors
+        if (p.pitOpen)
+        {
+            Quaternion closedPitRot = Quaternion.identity;
+            Quaternion openPitLRot = Quaternion.Euler(0,0,89);
+            Quaternion openPitRRot = Quaternion.Euler(0,0,-89);
+            float elapsedTime = 0.0f;
+            while (elapsedTime < 0.25f)
+            {
+                p.pitHingeL.transform.localRotation = Quaternion.Slerp(openPitLRot, closedPitRot, elapsedTime*4);
+                p.pitHingeR.transform.localRotation = Quaternion.Slerp(openPitRRot, closedPitRot, elapsedTime*4);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
+        p.pitOpen = false;
     }
 
     public void AbandonVictory()
