@@ -15,6 +15,11 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button moveConfirmButton;
     [SerializeField] private Camera _camera;
+    
+    [SerializeField] private Image _minimap;
+    [SerializeField] private Image _minimapCell;
+    private Vector2 _minimapOrigin;
+    private Vector3 _minimapScale;
 
     #region End Screen
     [SerializeField] private Text endText;
@@ -104,13 +109,30 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         p1Pieces = new List<Piece>();
         p2Pieces = new List<Piece>();
         TableObj.pieceType type;
+        _minimapScale = new Vector3(10/(float)numRows, 10/(float)numCols, 1);
+
+        _minimapCell.transform.localScale = Vector3.one;
+        float mapOffsetX = 40;
+        float mapOffsetY = 40;
+        _minimapOrigin =  - new Vector3((numRows/2f)*mapOffsetX*_minimapScale.x, (numCols/2f)*mapOffsetY*_minimapScale.y, 0);
 
         for (int i = 0; i<numRows; i++) 
         {
             for (int j = 0; j < numCols; j++) 
             {
+                Image bgImage = Instantiate(_minimapCell, Vector3.zero, Quaternion.identity);
+                bgImage.transform.SetParent(_minimap.transform);
+                bgImage.transform.localScale = Vector3.one;
+                bgImage.transform.localPosition = (_minimapOrigin + new Vector2((j+0.5f)*mapOffsetX*_minimapScale.x, (i+0.5f)*mapOffsetY*_minimapScale.y));
+                Image pieceImage = Instantiate(_minimapCell, Vector3.zero, Quaternion.identity);
+                pieceImage.transform.SetParent(_minimap.transform);
+                pieceImage.transform.localScale = Vector3.one;
+                pieceImage.transform.localPosition = (_minimapOrigin + new Vector2((j+0.5f)*mapOffsetX*_minimapScale.x, (i+0.5f)*mapOffsetY*_minimapScale.y));
+
                 type = tableObj.rows[i].cols[j];
                 cells[i, j] = Instantiate(cellUnit, new Vector3(j,0,i), Quaternion.identity);
+                cells[i,j].minimapCell = bgImage;
+                cells[i,j].minimapPiece = pieceImage;
                 cells[i, j].Init(type, i, j, this);
                 if (type == TableObj.pieceType.P1ZONE || type == TableObj.pieceType.P1KEY) 
                 {
@@ -142,22 +164,38 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         int maxI = pieceOrder.Length;
         foreach (Cell c in p1Start) 
         {
-            c.ChangePiece(Instantiate(pieceRef, new Vector3(c.c, 1f, c.r), Quaternion.identity));
-            c.getPiece().Init(pieceOrder[maxI-pI-1], c.r, c.c, this, 1);
+            Piece p = Instantiate(pieceRef, new Vector3(c.c, 1f, c.r), Quaternion.identity);
+            p.Init(pieceOrder[maxI-pI-1], c.r, c.c, this, 1);
+            c.ChangePiece(p);
             pI = (pI+1)%maxI;
             p1Pieces.Add(c.getPiece());
         }
         pI = 0;
         foreach (Cell c in p2Start)
         {
-            c.ChangePiece(Instantiate(pieceRef, new Vector3(c.c, 1f, c.r), Quaternion.identity));
-            c.getPiece().Init(pieceOrder[pI], c.r, c.c, this, 2);
+            Piece p = Instantiate(pieceRef, new Vector3(c.c, 1f, c.r), Quaternion.identity);
+            p.Init(pieceOrder[pI], c.r, c.c, this, 2);
+            c.ChangePiece(p);
             pI = (pI+1)%maxI;
             p2Pieces.Add(c.getPiece());
         }
         for(int i = 0; i < 3; i++)
         {
+            Image bgImage = Instantiate(_minimapCell, Vector3.zero, Quaternion.identity);
+            bgImage.transform.SetParent(_minimap.transform);
+            bgImage.transform.localScale = Vector3.one;
+            bgImage.transform.localPosition = _minimapOrigin + new Vector2((tableObj.p1JailCells[i].col+0.5f)*40*_minimapScale.x, (tableObj.p1JailCells[i].row+0.5f)*40*_minimapScale.y);
+            Image pieceImage = Instantiate(_minimapCell, Vector3.zero, Quaternion.identity);
+            pieceImage.transform.SetParent(_minimap.transform);
+            pieceImage.transform.localScale = Vector3.one;
+            pieceImage.transform.localPosition = _minimapOrigin + new Vector2((tableObj.p1JailCells[i].col+0.5f)*40*_minimapScale.x, (tableObj.p1JailCells[i].row+0.5f)*40*_minimapScale.y);
+
+
             p1Jail.Add(Instantiate(cellUnit, new Vector3(tableObj.p1JailCells[i].col,0, tableObj.p1JailCells[i].row), Quaternion.identity));
+
+            p1Jail[p1Jail.Count-1].minimapCell = bgImage;
+            p1Jail[p1Jail.Count-1].minimapPiece = pieceImage;
+
             if(i == 0)
                 p1Jail[p1Jail.Count-1].Init(TableObj.pieceType.P11JAIL, -1, -1, this); 
             if (i == 1)
@@ -168,7 +206,20 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < 3; i++)
         {
+            Image bgImage = Instantiate(_minimapCell, Vector3.zero, Quaternion.identity);
+            bgImage.transform.SetParent(_minimap.transform);
+            bgImage.transform.localScale = Vector3.one;
+            bgImage.transform.localPosition = _minimapOrigin + new Vector2((tableObj.p2JailCells[i].col+0.5f)*40*_minimapScale.x, (tableObj.p2JailCells[i].row+0.5f)*40*_minimapScale.y);
+            Image pieceImage = Instantiate(_minimapCell, Vector3.zero, Quaternion.identity);
+            pieceImage.transform.SetParent(_minimap.transform);
+            pieceImage.transform.localScale = Vector3.one;
+            pieceImage.transform.localPosition = _minimapOrigin + new Vector2((tableObj.p2JailCells[i].col+0.5f)*40*_minimapScale.x, (tableObj.p2JailCells[i].row+0.5f)*40*_minimapScale.y);
+
             p2Jail.Add(Instantiate(cellUnit, new Vector3(tableObj.p2JailCells[i].col, 0, tableObj.p2JailCells[i].row), Quaternion.identity));
+            
+            p2Jail[p2Jail.Count-1].minimapCell = bgImage;
+            p2Jail[p2Jail.Count-1].minimapPiece = pieceImage;
+            
             if (i == 0)
                 p2Jail[p2Jail.Count - 1].Init(TableObj.pieceType.P21JAIL, -1, -1, this);
             if (i == 1)
@@ -548,8 +599,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             {
                 Piece eatenPiece = cells[r,c].getPiece();
                 eatenPiece.inJail = true;
-                //cells[r, c].getPiece().transform.Translate(new Vector3(0,1,0));
-                //mas cosas pa Luego
+
                 List<Cell> chosenJail;
                 if (eatenPiece.player == 1)
                 {
@@ -865,6 +915,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             {
                 curPlayer = startingPlayer;
                 initialTurn = false;
+                _minimap.gameObject.SetActive(true);
                 confirmButton.gameObject.SetActive(false);
             }
             else
@@ -872,6 +923,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 if (curPlayer == 2)
                 {
                     initialTurn = false;
+                    _minimap.gameObject.SetActive(true);
                     confirmButton.gameObject.SetActive(false);
                 }
             }
@@ -1056,17 +1108,6 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         Vector3 oldPos = Vector3.zero;
         Vector3 newPos = Vector3.zero;
 
-                /*
-                _elapsedTime = 0.0f;
-                while (_elapsedTime < 0.5f)
-                {
-                    pi.transform.position = Vector3.Lerp(oldPos, newPos, _elapsedTime*2);
-                    _elapsedTime += Time.deltaTime;
-                    yield return null;
-                }
-                pi.transform.position = newPos;
-                */
-
         if (found)
         {
             yield return RevivePieces(_elapsedTime, pi, oldPos, newPos, p2Revives, p2Jail);
@@ -1249,51 +1290,6 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 }
             }
         }
-        
-        /*if (p2Revives[1].getPiece() == null)
-        {
-            if (p2Jail[0].getPiece() != null)
-            {
-                p2Revives[1].ChangePiece(p2Jail[0].getPiece());
-                p2Revives[1].getPiece().SetCoords(p2Revives[1].r, p2Revives[1].c);
-                p2Revives[1].getPiece().inJail = false;
-                p2Jail[0].ChangePiece(null);
-                if (p2Jail[1].getPiece() != null)
-                {
-                    p2Jail[0].ChangePiece(p2Jail[1].getPiece());
-                    p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
-                    p2Jail[1].ChangePiece(null);
-                }
-                if (p2Jail[2].getPiece() != null)
-                {
-                    p2Jail[1].ChangePiece(p2Jail[2].getPiece());
-                    p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
-                    p2Jail[2].ChangePiece(null);
-                }
-            }
-        }
-        if (p2Revives[2].getPiece() == null)
-        {
-            if (p2Jail[0].getPiece() != null)
-            {
-                p2Revives[2].ChangePiece(p2Jail[0].getPiece());
-                p2Revives[2].getPiece().SetCoords(p2Revives[2].r, p2Revives[2].c);
-                p2Revives[2].getPiece().inJail = false;
-                p2Jail[0].ChangePiece(null);
-                if (p2Jail[1].getPiece() != null)
-                {
-                    p2Jail[0].ChangePiece(p2Jail[1].getPiece());
-                    p2Jail[0].getPiece().SetJailPosition(p2Jail[0]);
-                    p2Jail[1].ChangePiece(null);
-                }
-                if (p2Jail[2].getPiece() != null)
-                {
-                    p2Jail[1].ChangePiece(p2Jail[2].getPiece());
-                    p2Jail[1].getPiece().SetJailPosition(p2Jail[1]);
-                    p2Jail[2].ChangePiece(null);
-                }
-            }
-        }*/
     }
 
     private IEnumerator CloseTrapdoors(Cell p)
