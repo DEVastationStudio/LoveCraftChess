@@ -203,6 +203,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             if (i == 2)
                 p1Jail[p1Jail.Count - 1].Init(TableObj.pieceType.P13JAIL, -1, -1, this);
         }
+        Instantiate(cellUnit, new Vector3(tableObj.p1GodCell.col, 0, tableObj.p1GodCell.row), Quaternion.identity).Init(TableObj.pieceType.P1GOD, -1, -1, this);
 
         for (int i = 0; i < 3; i++)
         {
@@ -227,6 +228,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             if (i == 2)
                 p2Jail[p2Jail.Count - 1].Init(TableObj.pieceType.P23JAIL, -1, -1, this);
         }
+        Instantiate(cellUnit, new Vector3(tableObj.p2GodCell.col, 0, tableObj.p2GodCell.row), Quaternion.identity).Init(TableObj.pieceType.P2GOD, -1, -1, this);
 
         //cam position
         _camera.transform.position = new Vector3(numCols/2, Mathf.Max(numCols,numRows)*1.5f, numRows/2);

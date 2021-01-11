@@ -22,6 +22,9 @@ public class Cell : MonoBehaviourPunCallbacks
     [SerializeField] private ParticleSystem _particleSystem;
     [SerializeField] private Gradient _freeCellGradient, _occupiedCellGradient;
     [SerializeField] private Sprite[] _minimapSprites;
+    [SerializeField] private Material p1godMaterial;
+    [SerializeField] private Material p2godMaterial;
+
     public Image minimapCell;
     public Image minimapPiece;
 
@@ -48,8 +51,8 @@ public class Cell : MonoBehaviourPunCallbacks
 
     public void Init(TableObj.pieceType type, int r, int c, TableGenerator tGen)
     {
-        minimapCell.sprite = _minimapSprites[0];
-        minimapPiece.sprite = _minimapSprites[0];
+        if (minimapCell != null) minimapCell.sprite = _minimapSprites[0];
+        if (minimapPiece != null) minimapPiece.sprite = _minimapSprites[0];
         color = renderer.material.GetColor("_Color");
         this.tGen = tGen;
         this.type = type;
@@ -138,6 +141,12 @@ public class Cell : MonoBehaviourPunCallbacks
             case TableObj.pieceType.PITBTN:
                 renderer.material = pitButtonTexture;
                 minimapCell.sprite = _minimapSprites[26];
+                break;
+            case TableObj.pieceType.P1GOD:
+                renderer.material = p1godMaterial;
+                break;
+            case TableObj.pieceType.P2GOD:
+                renderer.material = p2godMaterial;
                 break;
         }
         this.r = r;

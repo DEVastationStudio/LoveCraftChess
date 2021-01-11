@@ -32,7 +32,9 @@ public class TableObj : ScriptableObject
         BARRIER,
         BARRIERBTN,
         PIT,
-        PITBTN
+        PITBTN, 
+        P1GOD,
+        P2GOD
     }
 
     public string name;
@@ -41,7 +43,9 @@ public class TableObj : ScriptableObject
     public int numCols = 3;
     public Arr[] rows;
     public JailCell[] p1JailCells;
+    public JailCell p1GodCell;
     public JailCell[] p2JailCells;
+    public JailCell p2GodCell;
 
     void OnValidate()
     {
