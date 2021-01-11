@@ -9,11 +9,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Material.001
     second: {fileID: 2100000, guid: 287b1564d5e29c1408416fa81c8032f3, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Mesa
-    second: {fileID: 2800000, guid: 70fdf5f4d05aefa4081dfdef27beee46, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
