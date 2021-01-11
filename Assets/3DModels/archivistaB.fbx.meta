@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1c8f10fe51f4c1e46b1a0e6a3d6ac454
+guid: 84f7ac26f3370d644973dd975efe9a45
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
@@ -34,36 +34,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: None
     second: {fileID: 2100000, guid: 31a4943657a11c84cb388ea620c35b44, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color BaseB
-    second: {fileID: 2800000, guid: a8135911ba046ee418ec7ef2496b9989, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Bote ArchivistaB
-    second: {fileID: 2800000, guid: d8fa1c059ea065a458bb407130d3c696, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Papiro ArchivistaB
-    second: {fileID: 2800000, guid: 90179b741c2c6274bb876236f558cfcb, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Pluma ArchivistaB
-    second: {fileID: 2800000, guid: 0f891e679493022499649d805777bd30, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Soporte ArchivistaB
-    second: {fileID: 2800000, guid: c99d16e515cf75844959e78410e519ea, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Tapa ArchivistaB
-    second: {fileID: 2800000, guid: 03efdfca5707d8e4180005800197f869, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0

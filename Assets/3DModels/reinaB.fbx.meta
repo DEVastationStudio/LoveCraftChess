@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: af0ea399810661a4184fbd24c7bf79dc
+guid: 199d704fafe37f947942c526c5676082
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
@@ -29,31 +29,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: None
     second: {fileID: 2100000, guid: 31a4943657a11c84cb388ea620c35b44, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color BaseB
-    second: {fileID: 2800000, guid: 5bc4c3f249604ec4db07730f125ff15c, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Specular Adorno ReinaB
-    second: {fileID: 2800000, guid: b6c01d4f6a03589468de408f6e96763e, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Specular Amuleto Reina B
-    second: {fileID: 2800000, guid: d5950e11e4756034e8fa96bffc039007, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Specular Cabeza ReinaB
-    second: {fileID: 2800000, guid: 1229324149caee64ab2297f39df88347, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Specular Lengua ReinaB
-    second: {fileID: 2800000, guid: ed892e595f7789141973b064352d587c, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0

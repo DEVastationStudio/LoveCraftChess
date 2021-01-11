@@ -16,6 +16,9 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public Button createCustomBtn, joinCustomBtn, backCustomBtn;
     private bool _creatingCustomRoom;
 
+    public GameObject connecting;
+    public Text connectProgText;
+
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
 
@@ -122,11 +125,22 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            PhotonNetwork.LoadLevel("Lobby");
+            StartCoroutine(LoadLevelCR("Lobby"));
         }
         else
         {
-            PhotonNetwork.LoadLevel("Game");
+            StartCoroutine(LoadLevelCR("Game"));
+        }
+    }
+
+    public IEnumerator LoadLevelCR(string level)
+    {
+        connecting.SetActive(true);
+        PhotonNetwork.LoadLevel(level);
+        while (PhotonNetwork.LevelLoadingProgress < 1)
+        {
+            connectProgText.text = "Loading Room...\n" + (PhotonNetwork.LevelLoadingProgress*100) + "%";
+            yield return new WaitForEndOfFrame();
         }
     }
 
