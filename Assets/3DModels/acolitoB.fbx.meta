@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a944a1f9bbbfb3b4d9b25ea18572fc02
+guid: 04dfc8d6df0b99b4a81503c6a2492109
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
@@ -14,16 +14,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Material.001
     second: {fileID: 2100000, guid: 31a4943657a11c84cb388ea620c35b44, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color BaseB
-    second: {fileID: 2800000, guid: 96c6cd7443517b14ca1fe26025336aec, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Velas AcolitoB
-    second: {fileID: 2800000, guid: 0faa9898ca2db4144af8986d148e2479, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
