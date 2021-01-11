@@ -34,6 +34,9 @@ MonoBehaviour:
     col: 1
   - row: -1
     col: 2
+  p1GodCell:
+    row: -1
+    col: 3
   p2JailCells:
   - row: 10
     col: 9
@@ -41,3 +44,6 @@ MonoBehaviour:
     col: 8
   - row: 10
     col: 7
+  p2GodCell:
+    row: 10
+    col: 6

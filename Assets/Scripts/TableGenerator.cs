@@ -706,6 +706,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         Vector3 eatenPiecePos = (eatsPiece)?(eatenPiece.transform.position):(Vector3.zero);
         Vector3 finalEatenPiecePos = eatenPiecePos + new Vector3(0, -1, 0);
 
+
         //Down movement
 
         elapsedTime = 0.0f;
@@ -719,7 +720,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         piece.transform.position = endPos;
 
         //Eaten Piece management
-        yield return eatPiece(eatsPiece, eatenPiece, elapsedTime, eatenPiecePos, finalEatenPiecePos);
+        yield return eatPiece(eatsPiece, eatenPiece, elapsedTime, eatenPiecePos, finalEatenPiecePos, false);
 
         //Finishing touches
 
@@ -732,10 +733,16 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         yield return null;
     }
 
-    private IEnumerator eatPiece(bool eatsPiece, Piece eatenPiece, float elapsedTime, Vector3 eatenPiecePos, Vector3 finalEatenPiecePos)
+    private IEnumerator eatPiece(bool eatsPiece, Piece eatenPiece, float elapsedTime, Vector3 eatenPiecePos, Vector3 finalEatenPiecePos, bool deathByTrap)
     {
         if (eatsPiece)
         {
+            if (isOnline && eatenPiece.player != localPlayer) 
+            {
+                if (deathByTrap) PlayerPrefs.SetInt("TrapKills", PlayerPrefs.GetInt("TrapKills", 0)+1);
+                else PlayerPrefs.SetInt("EatenPieces", PlayerPrefs.GetInt("EatenPieces", 0)+1);
+            }
+
             eatenPiece.inJail = true;
             
             List<Cell> chosenJail;
@@ -936,10 +943,17 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 }
             }
         }
+        else if (isOnline && localPlayer != curPlayer)
+        {
+            PlayerPrefs.SetInt("TurnsTaken", PlayerPrefs.GetInt("TurnsTaken", 0)+1);
+        }
 
 
         if (PitBtn != null && PitBtn.getPiece() != null)
+        {
             PitControl = PitBtn.getPiece().player;
+            if (isOnline && barrierControl == localPlayer) PlayerPrefs.SetInt("TrapsTriggered", PlayerPrefs.GetInt("TrapsTriggered", 0)+1);
+        }
         else
             PitControl = -1;
 
@@ -985,7 +999,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                         yield return CloseTrapdoors(p);
 
                         //Eaten Piece management
-                        yield return eatPiece(eatsPiece, eatenPiece, elapsedTime, eatenPiecePos, finalEatenPiecePos);
+                        yield return eatPiece(eatsPiece, eatenPiece, elapsedTime, eatenPiecePos, finalEatenPiecePos, true);
 
                         p.ChangePiece(null);
 
@@ -1034,7 +1048,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         turnText.text = (curPlayer == 1 ? "BLUE" : "RED") + " PLAYER TURN";
 
         if (barrierBtn != null && barrierBtn.getPiece() != null)
+        {
             barrierControl = barrierBtn.getPiece().player;
+            if (isOnline && barrierControl == localPlayer) PlayerPrefs.SetInt("TrapsTriggered", PlayerPrefs.GetInt("TrapsTriggered", 0)+1);
+        }
 
         if (barrierBtn != null && barrierBtn.getPiece() == null)
             barrierControl = -1;
@@ -1171,7 +1188,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
             if (allDead)
             {
-                SetWinner(2);
+                SetWinner(2,1);
                 yield break;
             }
         }
@@ -1184,7 +1201,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             }
             if (allDead)
             {
-                SetWinner(1);
+                SetWinner(1,1);
                 yield break;
             }
         }
@@ -1206,7 +1223,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
         if (finished)
         {
-            SetWinner(1);
+            SetWinner(1,0);
             yield break;
         }
 
@@ -1227,7 +1244,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
         if (finished)
         {
-            SetWinner(2);
+            SetWinner(2,0);
             yield break;
         }
         yield return null;
@@ -1242,6 +1259,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             {
                 if (p2Jail[0].getPiece() != null)
                 {
+                    if (isOnline && p2Jail[0].getPiece().player == localPlayer) PlayerPrefs.SetInt("Resurrections", PlayerPrefs.GetInt("Resurrections", 0)+1);
                     p2Revives[i].ChangePiece(p2Jail[0].getPiece());
                     p2Revives[i].getPiece().SetCoords(p2Revives[i].r, p2Revives[i].c);
                     p2Revives[i].getPiece().inJail = false;
@@ -1327,24 +1345,65 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public void AbandonVictory()
     {
         if (gameOver) return;
-        SetWinner(localPlayer);
+        SetWinner(localPlayer,2);
     }
 
-    private void SetWinner(int player)
+    private void SetWinner(int player, int cause)
     {
         gameOver = true;
         turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
 
         endText.text = ((isOnline)?((localPlayer==player)?("YOU WIN"):("YOU LOSE")):((player==1?"BLUE":"RED") + " PLAYER WINS"));
 
-        if (isOnline) photonView.RPC("GameOver", RpcTarget.All, localPlayer);
-        else GameOver(localPlayer);
+        if (isOnline) photonView.RPC("GameOver", RpcTarget.All, localPlayer, cause);
+        else GameOver(localPlayer, cause);
     }
     [PunRPC]
-    private void GameOver(int p)
+    private void GameOver(int p, int cause)
     {
         if (isOnline)
         {
+            PlayerPrefs.SetInt("OnlineGames", PlayerPrefs.GetInt("OnlineGames", 0)+1);
+            switch (cause)
+            {
+                case 0: //Conqueror victory
+                    if (localPlayer == p) 
+                    {
+                        PlayerPrefs.SetInt("OnlineWins", PlayerPrefs.GetInt("OnlineWins", 0)+1);
+                        PlayerPrefs.SetInt("OnlineWinsConqueror", PlayerPrefs.GetInt("OnlineWinsConqueror", 0)+1);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt("OnlineLosses", PlayerPrefs.GetInt("OnlineLosses", 0)+1);
+                        PlayerPrefs.SetInt("OnlineLossesConqueror", PlayerPrefs.GetInt("OnlineLossesConqueror", 0)+1);
+                    }
+                break;
+                case 1: //Devastator victory
+                    if (localPlayer == p) 
+                    {
+                        PlayerPrefs.SetInt("OnlineWins", PlayerPrefs.GetInt("OnlineWins", 0)+1);
+                        PlayerPrefs.SetInt("OnlineWinsDevastator", PlayerPrefs.GetInt("OnlineWinsDevastator", 0)+1);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt("OnlineLosses", PlayerPrefs.GetInt("OnlineLosses", 0)+1);
+                        PlayerPrefs.SetInt("OnlineLossesDevastator", PlayerPrefs.GetInt("OnlineLossesDevastator", 0)+1);
+                    }
+                break;
+                case 2: //Abandon victory
+                    if (localPlayer == p) 
+                    {
+                        PlayerPrefs.SetInt("OnlineWins", PlayerPrefs.GetInt("OnlineWins", 0)+1);
+                        PlayerPrefs.SetInt("OnlineWinsSurrender", PlayerPrefs.GetInt("OnlineWinsSurrender", 0)+1);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt("OnlineLosses", PlayerPrefs.GetInt("OnlineLosses", 0)+1);
+                        PlayerPrefs.SetInt("OnlineLossesSurrender", PlayerPrefs.GetInt("OnlineLossesSurrender", 0)+1);
+                    }
+                break;
+            }
+
             if (p == 1)
             {
                 gameOverP1 = true;
@@ -1361,6 +1420,15 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
         else
         {
+            if (p == 1)
+            {
+                PlayerPrefs.SetInt("P1Victories", PlayerPrefs.GetInt("P1Victories", 0)+1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("P2Victories", PlayerPrefs.GetInt("P2Victories", 0)+1);
+            }
+
             endScreen.SetActive(true);
         }
     }
