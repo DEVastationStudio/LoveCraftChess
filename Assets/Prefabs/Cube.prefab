@@ -6088,10 +6088,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2fb6d857967b8224ea940f1151dd9a79, type: 3}
   - {fileID: 21300000, guid: db081efc563f7ed40bfda2e0fd604927, type: 3}
   - {fileID: 21300000, guid: aad34bf8dc69a9a44851fe920f593f66, type: 3}
-  - {fileID: 21300000, guid: 9e61a1c4ac5770a41b3caac8a4c479d0, type: 3}
-  - {fileID: 21300000, guid: 376f2767394ad1441a89b959ef102f0a, type: 3}
-  - {fileID: 21300000, guid: b135c06f5e753b54cb40cfe64658a796, type: 3}
-  - {fileID: 21300000, guid: 94a8c9a7e8e9b3548afcc85cca0a994b, type: 3}
+  - {fileID: 21300000, guid: 93b66cf997eacba4e8b4bb7ea852d23c, type: 3}
+  - {fileID: 21300000, guid: b38360ba94f1c5b48b7ff5d6bbe0ef86, type: 3}
+  - {fileID: 21300000, guid: 8d2f9e071fa8dc94c98d7c98832ab796, type: 3}
+  - {fileID: 21300000, guid: a59eea5ca90c7e94c9ff0bbd26c0f11b, type: 3}
   minimapCell: {fileID: 0}
   minimapPiece: {fileID: 0}
   isObstacle: 0
