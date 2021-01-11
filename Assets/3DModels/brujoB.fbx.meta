@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d166fd005a63dd447b83896d563d5475
+guid: 0c959ed649094314495cd5c7d83d3453
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
@@ -19,21 +19,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: None
     second: {fileID: 2100000, guid: 31a4943657a11c84cb388ea620c35b44, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color BaseB
-    second: {fileID: 2800000, guid: 410b3d0b3df95e54c90b013a3472a7b6, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Calavera BrujoB
-    second: {fileID: 2800000, guid: ee4d0059cf2e83949a5b9f92e113eba1, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Material Base Color Tentaculos BrujoB
-    second: {fileID: 2800000, guid: 128d57f72f3c84b468fbc342baf6aca5, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
