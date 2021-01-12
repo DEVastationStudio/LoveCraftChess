@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject playerPrefab;
     public TMP_Text codeText;
     public bool isLobby;
+    public GameObject connecting;
+    public TMP_Text connectProgText;
     
     public GameObject Quit, Surrender, QuitBtn, SurrenderBtn;
 
@@ -75,11 +77,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            PhotonNetwork.LoadLevel("Lobby");
+            StartCoroutine(LoadLevelCR("Lobby"));
         }
         else
         {
-            PhotonNetwork.LoadLevel("Game");
+            StartCoroutine(LoadLevelCR("Game"));
+        }
+    }
+    public IEnumerator LoadLevelCR(string level)
+    {
+        connecting.SetActive(true);
+        PhotonNetwork.LoadLevel(level);
+        while (PhotonNetwork.LevelLoadingProgress < 1)
+        {
+            connectProgText.text = LanguageManager.LoadingRoom() + (PhotonNetwork.LevelLoadingProgress*100) + "%";
+            yield return new WaitForEndOfFrame();
         }
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)

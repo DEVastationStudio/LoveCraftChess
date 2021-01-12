@@ -23,6 +23,8 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
     //public Text PlayerCounter;
 
     private bool isConnecting;
+    public GameObject connecting;
+    public TMP_Text connectProgText;
 
 
     void Start()
@@ -105,9 +107,18 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void JoinLocalGame()
     {
-        SceneManager.LoadScene("Game");
+        StartCoroutine(LoadSceneCR("Game"));
     }
-
+    public IEnumerator LoadSceneCR(string level)
+    {
+        connecting.SetActive(true);
+        AsyncOperation	async = SceneManager.LoadSceneAsync(level);
+        while (!async.isDone)
+        {
+            connectProgText.text = LanguageManager.LoadingRoom() + (async.progress*100) + "%";
+            yield return new WaitForEndOfFrame();
+        }
+    }
     /*public void FixedUpdate()
     {
         if (PhotonNetwork.CurrentRoom != null)

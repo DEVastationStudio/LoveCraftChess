@@ -61,8 +61,8 @@ public class LanguageManager : MonoBehaviour
     public const string joinedRoom_en = "Joined room.";
     public const string joinedRoom_es = "Te uniste a una sala.";
     public static string JoinedRoom() {return (isSpanish?joinedRoom_es:joinedRoom_en);}
-    public const string loadingRoom_en = "Loading Room...\n";
-    public const string loadingRoom_es = "Cargando Sala...\n";
+    public const string loadingRoom_en = "Loading...\n";
+    public const string loadingRoom_es = "Cargando...\n";
     public static string LoadingRoom() {return (isSpanish?loadingRoom_es:loadingRoom_en);}
     
     public const string stats_1_en = "Local Multiplayer Stats:\n";
