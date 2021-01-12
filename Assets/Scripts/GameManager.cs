@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (isLobby && codeText != null)
             {
                 if (PhotonNetwork.CurrentRoom.Name.Length < 20)
-                    codeText.text = "Room code: " + PhotonNetwork.CurrentRoom.Name;
+                    codeText.text = LanguageManager.RoomCode() + PhotonNetwork.CurrentRoom.Name;
                 else
                     codeText.text = "";
             }

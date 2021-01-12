@@ -74,11 +74,11 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
             connectContainer.SetActive(true);
             if (PhotonNetwork.ConnectUsingSettings())
             {
-                connectText.text = "Connecting to the server";
+                connectText.text = LanguageManager.ConnectServer(true);
             }
             else
             {
-                connectText.text = "Error while connecting to the server";
+                connectText.text = LanguageManager.ConnectServer(false);
             }
         }
     }

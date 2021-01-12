@@ -25,17 +25,17 @@ public class PreLobby : MonoBehaviourPunCallbacks
     private void Start()
     {
         string remainder = "/*";
-        connectedToText.text = "Connected to "+ PhotonNetwork.CloudRegion.Replace(remainder, "") + " server";
+        connectedToText.text = LanguageManager.ConnectedToRegion(PhotonNetwork.CloudRegion.Replace(remainder, ""));
     }
     public void JoinRandom()
     {
         JoinRandomBtn.interactable = false;
         BackBtn.interactable = false;
         ShowCustomBtn.interactable = false;
-            statusText.text = "Connecting...";
+            statusText.text = LanguageManager.Connecting();
         if (!PhotonNetwork.JoinRandomRoom())
         {
-            statusText.text = "Failed to join room.";
+            statusText.text = LanguageManager.JoinRoomFail();
             JoinRandomBtn.interactable = true;
             BackBtn.interactable = true;
             ShowCustomBtn.interactable = true;
@@ -52,7 +52,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public void CreateCustom()
     {
         if (customInputField.text == "") {
-            customText.SetText("Please enter a room name.");
+            customText.SetText(LanguageManager.EnterRoomName());
             return;
         }
         SetCustomButtons(false);
@@ -87,7 +87,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public void JoinCustom()
     {
         if (customInputField.text == "") {
-            customText.SetText("Please enter a room name.");
+            customText.SetText(LanguageManager.EnterRoomName());
             return;
         }
         SetCustomButtons(false);
@@ -104,14 +104,14 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        statusText.text = "There are no rooms. Creating a new room...";
+        statusText.text = LanguageManager.NoNewRooms();
         if (PhotonNetwork.CreateRoom(null, new Photon.Realtime.RoomOptions() { MaxPlayers = maxPlayersInRoom }))
         {
-            statusText.text = ("Room created successfully.");
+            statusText.text = (LanguageManager.RoomCreateSuccess());
         }
         else
         {
-            statusText.text = ("Failed to create room.");
+            statusText.text = (LanguageManager.RoomCreateFailure());
             JoinRandomBtn.interactable = true;
             BackBtn.interactable = true;
             ShowCustomBtn.interactable = true;
@@ -120,7 +120,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        statusText.text = ("Joined room.");
+        statusText.text = (LanguageManager.JoinedRoom());
         JoinRandomBtn.interactable = false;     
         BackBtn.interactable = false;   
         ShowCustomBtn.interactable = false;
@@ -141,7 +141,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(level);
         while (PhotonNetwork.LevelLoadingProgress < 1)
         {
-            connectProgText.text = "Loading Room...\n" + (PhotonNetwork.LevelLoadingProgress*100) + "%";
+            connectProgText.text = LanguageManager.LoadingRoom() + (PhotonNetwork.LevelLoadingProgress*100) + "%";
             yield return new WaitForEndOfFrame();
         }
     }
