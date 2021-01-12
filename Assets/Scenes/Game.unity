@@ -1030,8 +1030,8 @@ MonoBehaviour:
   TB: {fileID: 1822207356}
   AvailableMapTableObj:
   - {fileID: 11400000, guid: 3cceac750dd8b3449ac1ec9819bf3304, type: 2}
-  - {fileID: 11400000, guid: 001aca0b791ca5742a8649f7b1362476, type: 2}
   - {fileID: 11400000, guid: f3dd92142913c6941bbbc2d59393c7dc, type: 2}
+  - {fileID: 11400000, guid: 7bf43c902fe1d5b419dcd7aec8a38e71, type: 2}
   MapImage: {fileID: 1873235518}
   localInterface: {fileID: 1375389855}
   onlineInterface: {fileID: 1621341471}

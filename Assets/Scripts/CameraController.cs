@@ -37,6 +37,10 @@ public class CameraController : MonoBehaviour
     private Quaternion[] cameraRotations = new Quaternion[2];
     private GameObject[] cameraTargets = new GameObject[2];
     private GameObject curTarget;
+    private bool zoomBool;
+    private bool moveBool;
+    private Vector2 v1;
+    private Vector2 v2;
 
 
     private Vector3 previousPosition;
@@ -125,8 +129,9 @@ public class CameraController : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && isOverButtons) isOverButtons = false;
 
         if (!canRotate || isOverButtons) return;
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && Input.touchCount <= 1 )
         {
+            Debug.Log("Esto furula");
             previousPosition = cam.ScreenToViewportPoint(Input.mousePosition);
         }
 
@@ -142,39 +147,44 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButton(0) || Input.touchCount == 1)
+        if (Input.GetMouseButton(0) && Input.touchCount <=1)
         {
-            //Not the best implementation, angle could have been clamped in step 2 instead of fixing it later in step 4
-            direction = previousPosition - cam.ScreenToViewportPoint(Input.mousePosition);
-
-            //Step 1: moves camera to target 
-            cam.transform.position = targetPos/*.transform.position*/;
-
-            //Step 2: camera rotates over x and y axis
-            cam.transform.Rotate(new Vector3(1, 0, 0), direction.y * 180);
-            cam.transform.Rotate(new Vector3(0, 1, 0), -direction.x * 180, Space.World);
-
-            //Step 3: Translates the camera from the target to a certain distance
-            cam.transform.Translate(new Vector3(0, 0, -(distanceFromTarget + localDistance)));
-
-            //Step 4: Transform is fixed between the limits
-            previousPosition = cam.ScreenToViewportPoint(Input.mousePosition);
-            if (cam.transform.eulerAngles.x < bottomAngle || cam.transform.eulerAngles.x > topAngle)
+            if (!moveBool) { previousPosition = cam.ScreenToViewportPoint(Input.mousePosition); moveBool = true; }
+            else 
             {
+                Debug.Log("Esto tambien furula");
+                //Not the best implementation, angle could have been clamped in step 2 instead of fixing it later in step 4
+                direction = previousPosition - cam.ScreenToViewportPoint(Input.mousePosition);
 
-                if (direction.y < 0)
+                //Step 1: moves camera to target 
+                cam.transform.position = targetPos/*.transform.position*/;
+
+                //Step 2: camera rotates over x and y axis
+                cam.transform.Rotate(new Vector3(1, 0, 0), direction.y * 180);
+                cam.transform.Rotate(new Vector3(0, 1, 0), -direction.x * 180, Space.World);
+
+                //Step 3: Translates the camera from the target to a certain distance
+                cam.transform.Translate(new Vector3(0, 0, -(distanceFromTarget + localDistance)));
+
+                //Step 4: Transform is fixed between the limits
+                previousPosition = cam.ScreenToViewportPoint(Input.mousePosition);
+                if (cam.transform.eulerAngles.x < bottomAngle || cam.transform.eulerAngles.x > topAngle)
                 {
-                    FixAngles(bottomAngle);
-                }
-                else if (direction.y > 0)
-                {
-                    FixAngles(topAngle);
+
+                    if (direction.y < 0)
+                    {
+                        FixAngles(bottomAngle);
+                    }
+                    else if (direction.y > 0)
+                    {
+                        FixAngles(topAngle);
+                    }
                 }
             }
         }
 
 
-        if (Input.mouseScrollDelta.y > 0.0f || Input.mouseScrollDelta.y < 0.0f || Input.touchCount == 2)
+        if (Input.mouseScrollDelta.y > 0.0f || Input.mouseScrollDelta.y < 0.0f)
         {
             Debug.Log(Input.mouseScrollDelta.y);
             scrollData = Input.mouseScrollDelta.y * -1;
@@ -183,6 +193,34 @@ public class CameraController : MonoBehaviour
             currentFov = Mathf.Clamp(currentFov, minDistanceFromTarget, maxDistanceFromTarget);
             cam.fieldOfView = currentFov;
         }
+
+        if (Input.touchCount == 2)
+        {
+            if(moveBool) moveBool = false;
+            Touch t0 = Input.GetTouch(0);
+            Touch t1 = Input.GetTouch(1);
+            
+            if (zoomBool)
+            {
+                //Vector2 prevT0 = t0.position - t0.deltaPosition;
+                //Vector2 prevT1 = t1.position - t1.deltaPosition;
+
+                float prevDeltaMag = (v1 - v2).magnitude;
+                float curDeltaMag = (t0.position - t1.position).magnitude;
+
+                float deltaMagnitudeDiff = prevDeltaMag - curDeltaMag;
+
+                cam.fieldOfView += deltaMagnitudeDiff * zoomFactor * 0.05f;
+                cam.fieldOfView = Mathf.Clamp(cam.fieldOfView, minDistanceFromTarget, maxDistanceFromTarget);
+            }
+            else
+            {
+                zoomBool = true;
+            }
+            v1 = t0.position;
+            v2 = t1.position;
+        }
+        else zoomBool = false;
 
         if(curTarget!=null)
             lastTargetPosition = curTarget.transform.position;
