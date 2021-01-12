@@ -64,7 +64,9 @@ public class PreLobby : MonoBehaviourPunCallbacks
         int randomCode = Random.Range(0,10000);
         string newCode = customInputField.text + "-" + string.Format("{0:D2}", randomCode);
         Debug.Log("Attempting to create room " + newCode);
-        PhotonNetwork.CreateRoom(newCode);
+        RoomOptions options = new RoomOptions();
+        options.IsVisible = false;
+        PhotonNetwork.CreateRoom(newCode, options);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)

@@ -70,6 +70,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
     public bool performingMove;
 
+    public GameObject world;
+
     void Start()
     {
         instance = this;
@@ -231,8 +233,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         Instantiate(cellUnit, new Vector3(tableObj.p2GodCell.col, 0, tableObj.p2GodCell.row), Quaternion.identity).Init(TableObj.pieceType.P2GOD, -1, -1, this);
 
         //cam position
-        _camera.transform.position = new Vector3(numCols/2, Mathf.Max(numCols,numRows)*1.5f, numRows/2);
-        if (isOnline && localPlayer == 2) _camera.transform.eulerAngles += new Vector3(0,180,0);
+        /*_camera.transform.position = new Vector3(numCols/2, Mathf.Max(numCols,numRows)*1.5f, numRows/2);
+        if (isOnline && localPlayer == 2) _camera.transform.eulerAngles += new Vector3(0,180,0);*/
+        _camera.GetComponent<CameraController>().ResetTarget();
+        world.transform.position = new Vector3(numCols/2,-28,numRows/2);
     }
 
     public int GetLocalPlayer() 
@@ -1056,8 +1060,6 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         if (barrierBtn != null && barrierBtn.getPiece() == null)
             barrierControl = -1;
 
-        if(!isOnline) _camera.GetComponent<CameraController>().ResetTarget();
-
         foreach (Cell b in barriers)
         {
             if (barrierControl != -1)
@@ -1175,6 +1177,9 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         {
             yield return RevivePieces(_elapsedTime, pi, oldPos, newPos, p1Revives, p1Jail);
         }
+
+        yield return new WaitForSeconds(0.5f);
+        if(!isOnline) _camera.GetComponent<CameraController>().ResetTarget();
 
         
         bool allDead;
@@ -1407,8 +1412,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             if (p == 1)
             {
                 gameOverP1 = true;
-            } else 
-            if (p == 2)
+            } 
+            else if (p == 2)
             {
                 gameOverP2 = true;
             }

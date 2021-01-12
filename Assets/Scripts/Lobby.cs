@@ -13,7 +13,8 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public Button ConnectBtn, MainBtn, OfflineBtn;
     public TMP_Dropdown serverDropdown;
     public string[] regions;
-    public Text connectText;
+    public TMP_Text connectText;
+    public GameObject connectContainer;
 
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
@@ -70,6 +71,7 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             AppSettings settings = PhotonNetwork.PhotonServerSettings.AppSettings;
             settings.FixedRegion = regions[serverDropdown.value];
+            connectContainer.SetActive(true);
             if (PhotonNetwork.ConnectUsingSettings())
             {
                 connectText.text = "Connecting to the server";
