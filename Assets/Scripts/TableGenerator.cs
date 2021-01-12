@@ -1417,10 +1417,12 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             {
                 gameOverP2 = true;
             }
-            if (gameOverP1 && gameOverP2)
+            if ((gameOverP1 && gameOverP2) || cause == 2)
             {
                 PhotonNetwork.LeaveRoom();
                 endScreen.SetActive(true);
+                /*PhotonView photonView = PhotonView.Get(this);
+                photonView.RPC("LeaveRoomRPC", RpcTarget.All);*/
             }
         }
         else
@@ -1437,4 +1439,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             endScreen.SetActive(true);
         }
     }
+    /*[PunRPC]
+    public void LeaveRoomRpc()
+    {
+        PhotonNetwork.LeaveRoom();
+        endScreen.SetActive(true);
+    }*/
 }
