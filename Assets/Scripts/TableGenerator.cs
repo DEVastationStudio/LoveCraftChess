@@ -16,6 +16,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private Button moveConfirmButton;
     [SerializeField] private Camera _camera;
     
+    [SerializeField] private GameObject _minimapContainer;
     [SerializeField] private Image _minimap;
     [SerializeField] private Image _minimapCell;
     private Vector2 _minimapOrigin;
@@ -924,6 +925,11 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
     }
 
+    public void ToggleMinimap()
+    {
+        _minimap.gameObject.SetActive(!_minimap.gameObject.activeSelf);
+    }
+
     public void NextTurn(int startingPlayer = 2) 
     {
         if (initialTurn) 
@@ -934,7 +940,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             {
                 curPlayer = startingPlayer;
                 initialTurn = false;
-                _minimap.gameObject.SetActive(true);
+                _minimapContainer.SetActive(true);
                 confirmButton.gameObject.SetActive(false);
             }
             else
@@ -942,7 +948,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 if (curPlayer == 2)
                 {
                     initialTurn = false;
-                    _minimap.gameObject.SetActive(true);
+                    _minimapContainer.SetActive(true);
                     confirmButton.gameObject.SetActive(false);
                 }
             }
