@@ -22,20 +22,24 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
 
+    public CodeImage[] codeInUI = new CodeImage[5];
+    private int[] code = new int[] { -1, -1, -1, -1, -1 };
+    private int codeCount = 0;
+
     private void Start()
     {
         string remainder = "/*";
-        connectedToText.text = LanguageManager.ConnectedToRegion(PhotonNetwork.CloudRegion.Replace(remainder, ""));
+        connectedToText.text = "Connected to "+ PhotonNetwork.CloudRegion.Replace(remainder, "") + " server";
     }
     public void JoinRandom()
     {
         JoinRandomBtn.interactable = false;
         BackBtn.interactable = false;
         ShowCustomBtn.interactable = false;
-            statusText.text = LanguageManager.Connecting();
+            statusText.text = "Connecting...";
         if (!PhotonNetwork.JoinRandomRoom())
         {
-            statusText.text = LanguageManager.JoinRoomFail();
+            statusText.text = "Failed to join room.";
             JoinRandomBtn.interactable = true;
             BackBtn.interactable = true;
             ShowCustomBtn.interactable = true;
@@ -51,22 +55,53 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public void CreateCustom()
     {
-        if (customInputField.text == "") {
-            customText.SetText(LanguageManager.EnterRoomName());
-            return;
-        }
         SetCustomButtons(false);
         _creatingCustomRoom = true;
         AttemptCustomRoomCreation();
     }
     private void AttemptCustomRoomCreation()
     {
-        int randomCode = Random.Range(0,10000);
-        string newCode = customInputField.text + "-" + string.Format("{0:D2}", randomCode);
+        GenerateRandomCombination();
+        string newCode = code[0].ToString() + "-" + code[1].ToString() +"-"+ code[2].ToString() + "-" + code[3].ToString() + "-" + code[4].ToString();
         Debug.Log("Attempting to create room " + newCode);
-        RoomOptions options = new RoomOptions();
-        options.IsVisible = false;
-        PhotonNetwork.CreateRoom(newCode, options);
+        PhotonNetwork.CreateRoom(newCode);
+    }
+
+    private void GenerateRandomCombination() 
+    {
+        for (int i = 0; i < 5; i++) 
+        {
+            code[i] = Random.Range(1, 6);
+        }
+    }
+    public void ResetCode() 
+    {
+        for (int i = 0; i < codeInUI.Length; i++) 
+        {
+            for (int j = 0; j < codeInUI[i].possibleImages.Length; j++) 
+            {
+                codeInUI[i].ChangeImage(j.ToString(), false);
+            }
+            codeInUI[i].ChangeImage(0.ToString(), true);
+        }
+        for (int i = 0; i < code.Length; i++)
+            code[i] = -1;
+        codeCount = 0;
+    }
+    public void AddCode(int i) 
+    {
+        if (codeCount >= 5) return;
+        codeInUI[codeCount].ChangeImage(0.ToString(), false);
+        code[codeCount] = i;
+        codeInUI[codeCount].ChangeImage(code[codeCount].ToString(),true);
+        codeCount++;
+    }
+    public void DeleteCode()
+    {
+        if (codeCount <= 0) return;
+        codeCount--;
+        codeInUI[codeCount].ChangeImage(code[codeCount].ToString(), false);
+        codeInUI[codeCount].ChangeImage(0.ToString(), true);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -86,32 +121,32 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public void JoinCustom()
     {
-        if (customInputField.text == "") {
-            customText.SetText(LanguageManager.EnterRoomName());
+        if (codeCount<5) {
+            Debug.Log("Code is not complete");
             return;
         }
         SetCustomButtons(false);
-        PhotonNetwork.JoinRoom(customInputField.text);
+        PhotonNetwork.JoinRoom(code[0].ToString() + "-" + code[1].ToString() + "-" + code[2].ToString() + "-" + code[3].ToString() + "-" + code[4].ToString());
     }
 
     public void SetCustomButtons(bool active)
     {
-        createCustomBtn.interactable = active;
-        joinCustomBtn.interactable = active;
-        backCustomBtn.interactable = active;
-        customInputField.interactable = active;
+        //createCustomBtn.interactable = active;
+        //joinCustomBtn.interactable = active;
+        //backCustomBtn.interactable = active;
+        //customInputField.interactable = active;
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        statusText.text = LanguageManager.NoNewRooms();
+        statusText.text = "There are no rooms. Creating a new room...";
         if (PhotonNetwork.CreateRoom(null, new Photon.Realtime.RoomOptions() { MaxPlayers = maxPlayersInRoom }))
         {
-            statusText.text = (LanguageManager.RoomCreateSuccess());
+            statusText.text = ("Room created successfully.");
         }
         else
         {
-            statusText.text = (LanguageManager.RoomCreateFailure());
+            statusText.text = ("Failed to create room.");
             JoinRandomBtn.interactable = true;
             BackBtn.interactable = true;
             ShowCustomBtn.interactable = true;
@@ -120,10 +155,10 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        statusText.text = (LanguageManager.JoinedRoom());
-        JoinRandomBtn.interactable = false;     
-        BackBtn.interactable = false;   
-        ShowCustomBtn.interactable = false;
+        statusText.text = ("Joined room.");
+        //JoinRandomBtn.interactable = false;     
+        //BackBtn.interactable = false;   
+        //ShowCustomBtn.interactable = false;
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
@@ -141,7 +176,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(level);
         while (PhotonNetwork.LevelLoadingProgress < 1)
         {
-            connectProgText.text = LanguageManager.LoadingRoom() + (PhotonNetwork.LevelLoadingProgress*100) + "%";
+            connectProgText.text = "Loading Room...\n" + (PhotonNetwork.LevelLoadingProgress*100) + "%";
             yield return new WaitForEndOfFrame();
         }
     }
