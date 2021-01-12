@@ -77,8 +77,9 @@ public class CameraController : MonoBehaviour
         canTarget = true;
         ChangeTarget(ZeroZeroPos);
         canTarget = false;
-        cam.transform.position = cameraResetPositions[player].transform.position;
-        cam.transform.rotation = cameraResetPositions[player].transform.rotation;
+        //cam.transform.position = cameraResetPositions[player].transform.position;
+        //cam.transform.rotation = cameraResetPositions[player].transform.rotation;
+        StartCoroutine(SmoothCameraMovement(cam.transform.position, cameraResetPositions[player].transform.position, cam.transform.rotation, cameraResetPositions[player].transform.rotation));
         currentFov = ResetFov;
         cam.fieldOfView = currentFov;
         return;
@@ -187,5 +188,18 @@ public class CameraController : MonoBehaviour
         if(curTarget!=null)
             lastTargetPosition = curTarget.transform.position;
 
+    }
+    private IEnumerator SmoothCameraMovement(Vector3 oldPos, Vector3 newPos, Quaternion oldRot, Quaternion newRot)
+    {
+        float elapsedTime = 0.0f;
+        while (elapsedTime < 1)
+        {
+            cam.transform.position = Vector3.Lerp(oldPos, newPos, elapsedTime);
+            cam.transform.rotation = Quaternion.Slerp(oldRot, newRot, elapsedTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        cam.transform.position = newPos;
+        cam.transform.rotation = newRot;
     }
 }
