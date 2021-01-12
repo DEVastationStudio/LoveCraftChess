@@ -22,6 +22,10 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
 
+    public CodeImage[] codeInUI = new CodeImage[5];
+    private int[] code = new int[] { -1, -1, -1, -1, -1 };
+    private int codeCount = 0;
+
     private void Start()
     {
         string remainder = "/*";
@@ -51,20 +55,40 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public void CreateCustom()
     {
-        if (customInputField.text == "") {
-            customText.SetText("Please enter a room name.");
-            return;
-        }
         SetCustomButtons(false);
         _creatingCustomRoom = true;
         AttemptCustomRoomCreation();
     }
     private void AttemptCustomRoomCreation()
     {
-        int randomCode = Random.Range(0,10000);
-        string newCode = customInputField.text + "-" + string.Format("{0:D2}", randomCode);
+        GenerateRandomCombination();
+        string newCode = code[0].ToString() + "-" + code[1].ToString() +"-"+ code[2].ToString() + "-" + code[3].ToString() + "-" + code[4].ToString();
         Debug.Log("Attempting to create room " + newCode);
         PhotonNetwork.CreateRoom(newCode);
+    }
+
+    private void GenerateRandomCombination() 
+    {
+        for (int i = 0; i < 5; i++) 
+        {
+            code[i] = Random.Range(1, 6);
+        }
+    }
+
+    public void AddCode(int i) 
+    {
+        if (codeCount >= 5) return;
+        codeInUI[codeCount].ChangeImage(0.ToString(), false);
+        code[codeCount] = i;
+        codeInUI[codeCount].ChangeImage(code[codeCount].ToString(),true);
+        codeCount++;
+    }
+    public void DeleteCode()
+    {
+        if (codeCount <= 0) return;
+        codeCount--;
+        codeInUI[codeCount].ChangeImage(code[codeCount].ToString(), false);
+        codeInUI[codeCount].ChangeImage(0.ToString(), true);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -84,12 +108,12 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public void JoinCustom()
     {
-        if (customInputField.text == "") {
+        if (codeCount<5) {
             customText.SetText("Please enter a room name.");
             return;
         }
         SetCustomButtons(false);
-        PhotonNetwork.JoinRoom(customInputField.text);
+        PhotonNetwork.JoinRoom(code[0].ToString() + "-" + code[1].ToString() + "-" + code[2].ToString() + "-" + code[3].ToString() + "-" + code[4].ToString());
     }
 
     public void SetCustomButtons(bool active)

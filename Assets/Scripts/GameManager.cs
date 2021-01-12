@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,8 +12,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 {
     public GameObject playerPrefab;
     public TMP_Text codeText;
-    public bool isLobby;
-    
+    public bool isLobby; 
+    public CodeImage[] codeInUI = new CodeImage[5];
+
     public void Start()
     {
         if (PhotonNetwork.IsConnected)
@@ -20,10 +22,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0,0,0), Quaternion.identity, 0);
             if (isLobby && codeText != null)
             {
-                if (PhotonNetwork.CurrentRoom.Name.Length < 20)
-                    codeText.text = "Room code: " + PhotonNetwork.CurrentRoom.Name;
-                else
-                    codeText.text = "";
+                string[] code = PhotonNetwork.CurrentRoom.Name.Split('-');
+                for (int i = 0; i < code.Length; i++) 
+                {
+                    Debug.Log("Piece "+i+": "+code[i]);
+                    codeInUI[i].ChangeImage(code[i], true);
+                }
             }
         }
     }
