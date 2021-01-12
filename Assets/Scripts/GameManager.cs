@@ -37,7 +37,15 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void QuitGameButton()
     {
-        SceneManager.LoadScene("PreLobby");
+        //SceneManager.LoadScene("PreLobby");
+        if (TableGenerator.instance != null && TableGenerator.instance.isOnline)
+        {
+            SceneManager.LoadScene("PreLobby");
+        }
+        else
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     public void LeaveRoom()
