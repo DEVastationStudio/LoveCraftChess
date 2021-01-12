@@ -122,6 +122,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public void JoinCustom()
     {
         if (codeCount<5) {
+            Debug.Log("Code is not complete");
             return;
         }
         SetCustomButtons(false);
