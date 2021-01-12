@@ -6482,8 +6482,8 @@ MonoBehaviour:
   TwoRevive: {fileID: 2100000, guid: 5758fbb9772a9cd4ea1ded791e9efc46, type: 2}
   ThreeRevive: {fileID: 2100000, guid: 31e29ecf99731234098297d96e0dd027, type: 2}
   tableTextures:
-  - {fileID: 2100000, guid: 13fe61b9a61577b48b1d75241a7f2f81, type: 2}
   - {fileID: 2100000, guid: 5aeabd63d7c687642825c7ff091684b3, type: 2}
+  - {fileID: 2100000, guid: 13fe61b9a61577b48b1d75241a7f2f81, type: 2}
   - {fileID: 2100000, guid: 27a3bf67752247946b0c96b9438f0382, type: 2}
   - {fileID: 2100000, guid: fde3b0ddf4819214abce65d19437a4c6, type: 2}
   - {fileID: 2100000, guid: 38e8c4a1f9c66fc40a9e1369daafe7c0, type: 2}
@@ -6496,13 +6496,13 @@ MonoBehaviour:
   - {fileID: 2100000, guid: c0e7253140ad8624fba0eaba57b83a89, type: 2}
   - {fileID: 2100000, guid: e81cf2502a8b58b42b841ab1e5935bd7, type: 2}
   _p1FloorMaterials:
-  - {fileID: 2100000, guid: 9e2134ddcce4f8c4197ab12290d9f8cb, type: 2}
-  - {fileID: 2100000, guid: e81cf2502a8b58b42b841ab1e5935bd7, type: 2}
-  - {fileID: 2100000, guid: 9d0e69e4052f0cb48a57c73a24815752, type: 2}
-  _p2FloorMaterials:
   - {fileID: 2100000, guid: c0e7253140ad8624fba0eaba57b83a89, type: 2}
   - {fileID: 2100000, guid: 137c0980a443eb64c8e9ed9754eeb4d4, type: 2}
   - {fileID: 2100000, guid: a852d809a03aab549a371acc7dd85426, type: 2}
+  _p2FloorMaterials:
+  - {fileID: 2100000, guid: 9e2134ddcce4f8c4197ab12290d9f8cb, type: 2}
+  - {fileID: 2100000, guid: e81cf2502a8b58b42b841ab1e5935bd7, type: 2}
+  - {fileID: 2100000, guid: 9d0e69e4052f0cb48a57c73a24815752, type: 2}
   _barrierFloorMaterial: {fileID: 2100000, guid: 15ce4909a024d174ea094eedce73c84c,
     type: 2}
   _particleSystem: {fileID: 5046335117732828348}
