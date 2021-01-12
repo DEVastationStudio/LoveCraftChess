@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public TMP_Text codeText;
     public bool isLobby;
     
+    public GameObject Quit, Surrender, QuitBtn, SurrenderBtn;
+
     public void Start()
     {
         if (PhotonNetwork.IsConnected)
@@ -25,6 +27,11 @@ public class GameManager : MonoBehaviourPunCallbacks
                 else
                     codeText.text = "";
             }
+            if (SurrenderBtn != null) SurrenderBtn.SetActive(true);
+        }
+        else
+        {
+            if (QuitBtn != null) QuitBtn.SetActive(true);
         }
     }
 
@@ -88,6 +95,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (!isLobby)
         {
             TableGenerator.instance.AbandonVictory();
+        }
+    }
+
+    public void QuitOrSurrender()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            Surrender.SetActive(true);
+        }
+        else
+        {
+            Quit.SetActive(true);
         }
     }
 }

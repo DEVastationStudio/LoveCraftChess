@@ -1353,6 +1353,12 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         SetWinner(localPlayer,2);
     }
 
+    public void Surrender()
+    {
+        int otherPlayer = (localPlayer==1)?2:1;
+        SetWinner(otherPlayer, 2);
+    }
+
     private void SetWinner(int player, int cause)
     {
         gameOver = true;
