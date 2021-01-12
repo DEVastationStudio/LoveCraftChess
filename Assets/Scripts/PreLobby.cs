@@ -74,7 +74,20 @@ public class PreLobby : MonoBehaviourPunCallbacks
             code[i] = Random.Range(1, 6);
         }
     }
-
+    public void ResetCode() 
+    {
+        for (int i = 0; i < codeInUI.Length; i++) 
+        {
+            for (int j = 0; j < codeInUI[i].possibleImages.Length; j++) 
+            {
+                codeInUI[i].ChangeImage(j.ToString(), false);
+            }
+            codeInUI[i].ChangeImage(0.ToString(), true);
+        }
+        for (int i = 0; i < code.Length; i++)
+            code[i] = -1;
+        codeCount = 0;
+    }
     public void AddCode(int i) 
     {
         if (codeCount >= 5) return;
@@ -109,7 +122,6 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public void JoinCustom()
     {
         if (codeCount<5) {
-            customText.SetText("Please enter a room name.");
             return;
         }
         SetCustomButtons(false);
@@ -118,10 +130,10 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public void SetCustomButtons(bool active)
     {
-        createCustomBtn.interactable = active;
-        joinCustomBtn.interactable = active;
-        backCustomBtn.interactable = active;
-        customInputField.interactable = active;
+        //createCustomBtn.interactable = active;
+        //joinCustomBtn.interactable = active;
+        //backCustomBtn.interactable = active;
+        //customInputField.interactable = active;
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -143,9 +155,9 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         statusText.text = ("Joined room.");
-        JoinRandomBtn.interactable = false;     
-        BackBtn.interactable = false;   
-        ShowCustomBtn.interactable = false;
+        //JoinRandomBtn.interactable = false;     
+        //BackBtn.interactable = false;   
+        //ShowCustomBtn.interactable = false;
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
