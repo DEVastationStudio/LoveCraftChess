@@ -20,6 +20,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float minDistanceFromTarget;
     [SerializeField] private float localDistance;
     [SerializeField] private float zoomFactor;
+
+    [SerializeField] private GameObject FixCameraBtn;
+    [SerializeField] private GameObject FreeCameraBtn;
+    [SerializeField] private GameObject FixTargetBtn;
+    [SerializeField] private GameObject ChangeTargetBtn;
+
     public float scrollData;
     public float currentFov;
     public bool canRotate;
@@ -49,7 +55,7 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         cam = Camera.main;
-        targetPos = new Vector3( (TG.tableObj.numRows / 2) - 0.5f, 0.8f, (TG.tableObj.numCols / 2) - 0.5f);
+        //targetPos = new Vector3( (TG.tableObj.numRows / 2) - 0.5f, 0.8f, (TG.tableObj.numCols / 2) - 0.5f);
         ZeroZeroPos = new GameObject();
         ZeroZeroPos.transform.position = new Vector3((TG.tableObj.numRows / 2) - 0.5f, 0.8f, (TG.tableObj.numCols / 2) - 0.5f);
         for (int i = 0; i < 2; i++) 
@@ -72,9 +78,17 @@ public class CameraController : MonoBehaviour
 
     public void CanMoveCamera(bool _canMove) { canRotate = _canMove; }
     public void CanTargetObjects(bool _canTarget) { canTarget = _canTarget; }
-
     public void FreeCamera() { if (curTarget != null) curTarget = null; }
-
+    public void ChangeTurn()
+    {
+        canRotate = false;
+        curTarget = null;
+        canTarget = false;
+        ChangeTargetBtn.SetActive(false);
+        FixCameraBtn.SetActive(false);
+        FixTargetBtn.SetActive(false);
+        FreeCameraBtn.SetActive(true);
+    }
     public void ResetTarget()
     {
         int player = TG.GetLocalPlayer() - 1;
@@ -92,7 +106,6 @@ public class CameraController : MonoBehaviour
     {
         if (!canTarget) return;
         curTarget = _tar;
-        Debug.Log("Target change");
         targetPos = _tar.transform.position;
 
         //Not the best implementation, angle could have been clamped in step 2 instead of fixing it later in step 4
@@ -131,7 +144,6 @@ public class CameraController : MonoBehaviour
         if (!canRotate || isOverButtons) return;
         if (Input.GetMouseButtonDown(0) && Input.touchCount <= 1 )
         {
-            Debug.Log("Esto furula");
             previousPosition = cam.ScreenToViewportPoint(Input.mousePosition);
         }
 
@@ -152,7 +164,6 @@ public class CameraController : MonoBehaviour
             if (!moveBool) { previousPosition = cam.ScreenToViewportPoint(Input.mousePosition); moveBool = true; }
             else 
             {
-                Debug.Log("Esto tambien furula");
                 //Not the best implementation, angle could have been clamped in step 2 instead of fixing it later in step 4
                 direction = previousPosition - cam.ScreenToViewportPoint(Input.mousePosition);
 

@@ -233,6 +233,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         //cam position
         _camera.transform.position = new Vector3(numCols/2, Mathf.Max(numCols,numRows)*1.5f, numRows/2);
         if (isOnline && localPlayer == 2) _camera.transform.eulerAngles += new Vector3(0,180,0);
+        _camera.GetComponent<CameraController>().ResetTarget();
     }
 
     public int GetLocalPlayer() 
@@ -1057,6 +1058,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             barrierControl = -1;
 
         if(!isOnline) _camera.GetComponent<CameraController>().ResetTarget();
+        if (!isOnline) _camera.GetComponent<CameraController>().ChangeTurn();
 
         foreach (Cell b in barriers)
         {
