@@ -7,23 +7,63 @@ public class LanguageManager : MonoBehaviour
 {
     public static bool isSpanish;
     [SerializeField] private Image _image;
+    [SerializeField] private Button _trueBtn;
+    private SpriteState _button;
     [SerializeField] private Sprite _english;
     [SerializeField] private Sprite _spanish;
+    [SerializeField] private Sprite _englishOn;
+    [SerializeField] private Sprite _spanishOn;
+    [SerializeField] private RawImage _rawImage;
+    [SerializeField] private Texture _englishR;
+    [SerializeField] private Texture _spanishR;
     private bool _isSpanish;
+
+    void Start()
+    {
+        isSpanish = (PlayerPrefs.GetInt("Language", 0) == 1);
+    }
 
     void Update()
     {
         if (_isSpanish == isSpanish) return;
         _isSpanish = isSpanish;
-        if (_image == null) return;
-
-        if (isSpanish)
+        PlayerPrefs.SetInt("Language",_isSpanish?1:0);
+        if (_image != null)
         {
-            _image.sprite = _spanish;
+            if (isSpanish)
+            {
+                _image.sprite = _spanish;
+            }
+            else
+            {
+                _image.sprite = _english;
+            }
         }
-        else
+        if (_rawImage != null)
         {
-            _image.sprite = _english;
+            if (isSpanish)
+            {
+                _rawImage.texture = _spanishR;
+            }
+            else
+            {
+                _rawImage.texture = _englishR;
+            }
+        }
+
+
+        if (_trueBtn != null)
+        {
+            var ss = _trueBtn.spriteState;
+            if (isSpanish)
+            {
+                ss.highlightedSprite = _spanishOn;
+            }
+            else
+            {
+                ss.highlightedSprite = _englishOn;
+            }
+            _trueBtn.spriteState = ss;
         }
     }
 
