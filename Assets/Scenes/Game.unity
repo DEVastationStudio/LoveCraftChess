@@ -524,9 +524,9 @@ RectTransform:
   - {fileID: 720059747}
   - {fileID: 1944742876}
   - {fileID: 966420922}
-  - {fileID: 1059790963}
   - {fileID: 1031540829}
   - {fileID: 869319710}
+  - {fileID: 1059790963}
   m_Father: {fileID: 1376008491}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2881,8 +2881,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _image: {fileID: 869319708}
   _trueBtn: {fileID: 0}
-  _english: {fileID: 21300000, guid: f3a8d2ca93192e442b51a74e060eced7, type: 3}
-  _spanish: {fileID: 21300000, guid: 3c116d783dd8dbb45b483ff6db92bf23, type: 3}
+  _english: {fileID: 21300000, guid: 3848f8743dacc254a8b54015b11956c7, type: 3}
+  _spanish: {fileID: 21300000, guid: c5e26cd6aae89c24fae0c3831709cf23, type: 3}
   _englishOn: {fileID: 0}
   _spanishOn: {fileID: 0}
   _rawImage: {fileID: 0}
@@ -2907,7 +2907,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d3a954538468cf449baed75650953716, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3848f8743dacc254a8b54015b11956c7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2937,7 +2937,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 143237639}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4073,7 +4073,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 143237639}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4094,8 +4094,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _image: {fileID: 1031540831}
   _trueBtn: {fileID: 0}
-  _english: {fileID: 21300000, guid: f3a8d2ca93192e442b51a74e060eced7, type: 3}
-  _spanish: {fileID: 21300000, guid: 3c116d783dd8dbb45b483ff6db92bf23, type: 3}
+  _english: {fileID: 21300000, guid: a154eeaf80068454fb1834f7ecade801, type: 3}
+  _spanish: {fileID: 21300000, guid: 0b1f2787dfa9c784a915a33456a55247, type: 3}
   _englishOn: {fileID: 0}
   _spanishOn: {fileID: 0}
   _rawImage: {fileID: 0}
@@ -4120,7 +4120,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d3a954538468cf449baed75650953716, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a154eeaf80068454fb1834f7ecade801, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4435,7 +4435,7 @@ RectTransform:
   m_Children:
   - {fileID: 1492932015}
   m_Father: {fileID: 143237639}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -4460,7 +4460,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -4470,7 +4470,8 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: 21300000, guid: 6918e8d8fbd7a5942b26457cc94b494c,
+      type: 3}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -7222,7 +7223,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.95, y: 0.95}
   m_AnchorMax: {x: 0.95, y: 0.95}
-  m_AnchoredPosition: {x: -275.13037, y: 21.23484}
+  m_AnchoredPosition: {x: -275.13037, y: 21.234863}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1665132886
@@ -8307,7 +8308,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1905805015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13126,6 +13127,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  RoomCodeContainer: {fileID: 0}
 --- !u!23 &4834055247917159339
 MeshRenderer:
   m_ObjectHideFlags: 0
