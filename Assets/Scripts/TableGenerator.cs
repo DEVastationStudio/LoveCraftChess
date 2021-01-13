@@ -25,6 +25,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     #region End Screen
     [SerializeField] private Text endText;
     [SerializeField] private GameObject endScreen;
+    public GameObject winPanel, losePanel, p1Panel, p2Panel;
     #endregion
     [SerializeField] private InGameInterfaceController UIController;
     [SerializeField] private GameObject[,] pieceModels;
@@ -1372,9 +1373,19 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     private void SetWinner(int player, int cause)
     {
         gameOver = true;
-        turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
+        //turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
+        if (isOnline)
+        {
+            if (player == localPlayer) winPanel.SetActive(true);
+            else losePanel.SetActive(true);
+        }
+        else
+        {
+            if (player == 1) p1Panel.SetActive(true);
+            else p2Panel.SetActive(true);
+        }
 
-        endText.text = ((isOnline)?((localPlayer==player)?("YOU WIN"):("YOU LOSE")):((player==1?"BLUE":"RED") + " PLAYER WINS"));
+        //endText.text = ((isOnline)?((localPlayer==player)?("YOU WIN"):("YOU LOSE")):((player==1?"BLUE":"RED") + " PLAYER WINS"));
 
         if (isOnline) photonView.RPC("GameOver", RpcTarget.All, localPlayer, cause);
         else GameOver(localPlayer, cause);
