@@ -31,6 +31,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
     {
         string remainder = "/*";
         connectedToText.text = LanguageManager.ConnectedToRegion(PhotonNetwork.CloudRegion.Replace(remainder, ""));
+        customText.text = LanguageManager.CustomMessage();
     }
     public void JoinRandom()
     {
@@ -127,11 +128,19 @@ public class PreLobby : MonoBehaviourPunCallbacks
     {
         if (codeCount<5)
         {
-            //customText.SetText(LanguageManager.EnterRoomName());
+            StartCoroutine(InvalidCode());
             return;
         }
         SetCustomButtons(false);
-        PhotonNetwork.JoinRoom(code[0].ToString() + "^" + code[1].ToString() + "^" + code[2].ToString() + "^" + code[3].ToString() + "^" + code[4].ToString());
+        if(!PhotonNetwork.JoinRoom(code[0].ToString() + "^" + code[1].ToString() + "^" + code[2].ToString() + "^" + code[3].ToString() + "^" + code[4].ToString()))
+            StartCoroutine(InvalidCode());
+    }
+
+    private IEnumerator InvalidCode() 
+    {
+        customText.text = LanguageManager.CustomInvalidMessage();
+        yield return new WaitForSeconds(1.5f);
+        customText.text = LanguageManager.CustomMessage();
     }
 
     public void SetCustomButtons(bool active)
