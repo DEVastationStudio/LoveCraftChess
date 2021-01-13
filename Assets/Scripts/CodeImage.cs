@@ -9,6 +9,7 @@ public class CodeImage : MonoBehaviour
 
     public void ChangeImage(string i, bool act) 
     {
+        Debug.Log("Se llama a "+i);
         switch (i) 
         {
             case "0":

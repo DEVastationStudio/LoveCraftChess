@@ -55,11 +55,6 @@ public class PreLobby : MonoBehaviourPunCallbacks
 
     public void CreateCustom()
     {
-        if (codeCount<5)
-        {
-            //customText.SetText(LanguageManager.EnterRoomName());
-            return;
-        }
         SetCustomButtons(false);
         _creatingCustomRoom = true;
         AttemptCustomRoomCreation();

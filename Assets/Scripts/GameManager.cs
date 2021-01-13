@@ -23,12 +23,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0,0,0), Quaternion.identity, 0);
-            if (isLobby && codeText != null)
+            if (isLobby)
             {
                 string[] code = PhotonNetwork.CurrentRoom.Name.Split('-');
-                for (int i = 0; i < code.Length; i++) 
+                for (int i = 0; i < code.Length; i++)
                 {
-                    Debug.Log("Piece "+i+": "+code[i]);
+                    Debug.Log("Piece " + i + ": " + code[i]);
                     codeInUI[i].ChangeImage(code[i], true);
                 }
             }
