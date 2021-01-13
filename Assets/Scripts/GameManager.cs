@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject playerPrefab;
     public TMP_Text codeText;
     public bool isLobby; 
+    public GameObject connecting;
+    public TMP_Text connectProgText;
+    public GameObject Quit, Surrender, QuitBtn, SurrenderBtn;
     public CodeImage[] codeInUI = new CodeImage[5];
 
     public void Start()
@@ -29,6 +32,11 @@ public class GameManager : MonoBehaviourPunCallbacks
                     codeInUI[i].ChangeImage(code[i], true);
                 }
             }
+            if (SurrenderBtn != null) SurrenderBtn.SetActive(true);
+        }
+        else
+        {
+            if (QuitBtn != null) QuitBtn.SetActive(true);
         }
     }
 
@@ -41,7 +49,15 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void QuitGameButton()
     {
-        SceneManager.LoadScene("PreLobby");
+        //SceneManager.LoadScene("PreLobby");
+        if (TableGenerator.instance != null && TableGenerator.instance.isOnline)
+        {
+            SceneManager.LoadScene("PreLobby");
+        }
+        else
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     public void LeaveRoom()
@@ -64,11 +80,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            PhotonNetwork.LoadLevel("Lobby");
+            StartCoroutine(LoadLevelCR("Lobby"));
         }
         else
         {
-            PhotonNetwork.LoadLevel("Game");
+            StartCoroutine(LoadLevelCR("Game"));
+        }
+    }
+    public IEnumerator LoadLevelCR(string level)
+    {
+        connecting.SetActive(true);
+        PhotonNetwork.LoadLevel(level);
+        while (PhotonNetwork.LevelLoadingProgress < 1)
+        {
+            connectProgText.text = LanguageManager.LoadingRoom() + (PhotonNetwork.LevelLoadingProgress*100) + "%";
+            yield return new WaitForEndOfFrame();
         }
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -84,6 +110,17 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (!isLobby)
         {
             TableGenerator.instance.AbandonVictory();
+        }
+    }
+    public void QuitOrSurrender()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            Surrender.SetActive(true);
+        }
+        else
+        {
+            Quit.SetActive(true);
         }
     }
 }
