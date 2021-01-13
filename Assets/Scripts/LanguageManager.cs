@@ -196,6 +196,12 @@ public class LanguageManager : MonoBehaviour
     public const string stats_18_en = "Turns taken: ";
     public const string stats_18_es = "Turnos totales: ";
     public static string Stats_18() {return (isSpanish?stats_18_es:stats_18_en);}
+    public const string customMessage_en = "Enter room code";
+    public const string customMessage_es = "Introduce código de sala";
+    public static string CustomMessage() { return (isSpanish ? customMessage_es : customMessage_en); }
+    public const string customInvalidMessage_en = "Invalid room code";
+    public const string customInvalidMessage_es = "Código de sala incorrecto";
+    public static string CustomInvalidMessage() { return (isSpanish ? customInvalidMessage_es : customInvalidMessage_en); }
 
     #endregion
 }
