@@ -7,8 +7,11 @@ public class LanguageManager : MonoBehaviour
 {
     public static bool isSpanish;
     [SerializeField] private Image _image;
+    [SerializeField] private SpriteState _button;
     [SerializeField] private Sprite _english;
     [SerializeField] private Sprite _spanish;
+    [SerializeField] private Sprite _englishOn;
+    [SerializeField] private Sprite _spanishOn;
     private bool _isSpanish;
 
     void Update()
@@ -24,6 +27,17 @@ public class LanguageManager : MonoBehaviour
         else
         {
             _image.sprite = _english;
+        }
+        if (!_button.Equals(null))
+        {
+            if (isSpanish)
+            {
+                _button.highlightedSprite = _spanishOn;
+            }
+            else
+            {
+                _button.highlightedSprite = _englishOn;
+            }
         }
     }
 
