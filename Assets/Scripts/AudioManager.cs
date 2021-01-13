@@ -15,6 +15,7 @@ public class AudioManager : MonoBehaviour
     private bool state = true;
     private int curSong = -1;
     public static AudioManager instance;
+    public UnityEngine.Audio.AudioMixer mixer;
 
     void Awake()
     {
@@ -27,6 +28,14 @@ public class AudioManager : MonoBehaviour
             instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
+    }
+    void Start()
+    {
+        mixer.SetFloat("Audio", ConvertToDecibel(PlayerPrefs.GetFloat("Audio", 1))); 
+        mixer.SetFloat("Sounds", ConvertToDecibel(PlayerPrefs.GetFloat("Sounds", 1))); 
+    }
+    public float ConvertToDecibel(float _value){
+        return Mathf.Log10(Mathf.Max(_value, 0.0001f))*20f;
     }
 
     public void changeTheme(int index)

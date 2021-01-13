@@ -7,17 +7,20 @@ public class StatsDisplayer : MonoBehaviour
 {
     public TMP_Text statsText;
     private bool _spanish;
+    void Start()
+    {
+        UpdateText();
+    }
     void Update()
     {
-        if (_spanish != LanguageManager.isSpanish)
-        {
-            _spanish = LanguageManager.isSpanish;
-        }
-        else
-        {
-            return;
-        }
+        if (_spanish == LanguageManager.isSpanish) return;
+        _spanish = LanguageManager.isSpanish;
 
+        UpdateText();
+    }
+
+    private void UpdateText()
+    {
         statsText.text =  LanguageManager.Stats_1();
         statsText.text += LanguageManager.Stats_2() + PlayerPrefs.GetInt("P1Victories", 0) + "\n";//
         statsText.text += LanguageManager.Stats_3() + PlayerPrefs.GetInt("P2Victories", 0) + "\n";//

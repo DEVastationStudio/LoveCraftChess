@@ -591,7 +591,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -466.83957, y: -398.50714, z: -578.3284, w: -399.69742}
+  m_margin: {x: -558.87836, y: -366.8065, z: -460.54938, w: -331.85522}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -9775,6 +9775,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bbf75d269e8011744b596b3bc0738c07, type: 3}
   soundOn: {fileID: 0}
   soundOff: {fileID: 0}
+  mixer: {fileID: 24100000, guid: 65d3a0b3fce0a674ea5394c79ee74cf0, type: 2}
 --- !u!4 &2135918682
 Transform:
   m_ObjectHideFlags: 0

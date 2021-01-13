@@ -5,7 +5,7 @@ public class volumeSlider : MonoBehaviour {
     public string parameterName;
     private float savedVol;
      
-    void Start(){
+    void Awake(){
         float savedVol = PlayerPrefs.GetFloat(parameterName, slider.maxValue);
         SetVolume(savedVol); 
         slider.value = savedVol;
