@@ -16,6 +16,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private Button moveConfirmButton;
     [SerializeField] private Camera _camera;
     
+    [SerializeField] private GameObject _minimapContainer;
     [SerializeField] private Image _minimap;
     [SerializeField] private Image _minimapCell;
     private Vector2 _minimapOrigin;
@@ -69,6 +70,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public static TableGenerator instance;
 
     public bool performingMove;
+    public GameObject world;
 
     void Start()
     {
@@ -231,8 +233,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         Instantiate(cellUnit, new Vector3(tableObj.p2GodCell.col, 0, tableObj.p2GodCell.row), Quaternion.identity).Init(TableObj.pieceType.P2GOD, -1, -1, this);
 
         //cam position
-        _camera.transform.position = new Vector3(numCols/2, Mathf.Max(numCols,numRows)*1.5f, numRows/2);
-        if (isOnline && localPlayer == 2) _camera.transform.eulerAngles += new Vector3(0,180,0);
+        /*_camera.transform.position = new Vector3(numCols/2, Mathf.Max(numCols,numRows)*1.5f, numRows/2);
+        if (isOnline && localPlayer == 2) _camera.transform.eulerAngles += new Vector3(0,180,0);*/
+        _camera.GetComponent<CameraController>().ResetTarget();
+        world.transform.position = new Vector3(numCols/2,-28,numRows/2);
     }
 
     public int GetLocalPlayer() 
@@ -920,6 +924,12 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         }
     }
 
+    public void ToggleMinimap()
+    {
+        _minimap.gameObject.SetActive(!_minimap.gameObject.activeSelf);
+    }
+
+
     public void NextTurn(int startingPlayer = 2) 
     {
         if (initialTurn) 
@@ -930,7 +940,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             {
                 curPlayer = startingPlayer;
                 initialTurn = false;
-                _minimap.gameObject.SetActive(true);
+                _minimapContainer.SetActive(true);
                 confirmButton.gameObject.SetActive(false);
             }
             else
@@ -938,7 +948,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
                 if (curPlayer == 2)
                 {
                     initialTurn = false;
-                    _minimap.gameObject.SetActive(true);
+                    _minimapContainer.SetActive(true);
                     confirmButton.gameObject.SetActive(false);
                 }
             }
@@ -1056,7 +1066,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         if (barrierBtn != null && barrierBtn.getPiece() == null)
             barrierControl = -1;
 
-        if(!isOnline) _camera.GetComponent<CameraController>().ResetTarget();
+        //if(!isOnline) _camera.GetComponent<CameraController>().ResetTarget();
+        //if (!isOnline) _camera.GetComponent<CameraController>().ChangeTurn();
 
         foreach (Cell b in barriers)
         {
@@ -1175,6 +1186,10 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         {
             yield return RevivePieces(_elapsedTime, pi, oldPos, newPos, p1Revives, p1Jail);
         }
+
+        yield return new WaitForSeconds(0.5f);
+        if(!isOnline) _camera.GetComponent<CameraController>().ResetTarget();
+        if (!isOnline) _camera.GetComponent<CameraController>().ChangeTurn();
 
         
         bool allDead;
@@ -1348,6 +1363,12 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         SetWinner(localPlayer,2);
     }
 
+    public void Surrender()
+    {
+        int otherPlayer = (localPlayer==1)?2:1;
+        SetWinner(otherPlayer, 2);
+    }
+
     private void SetWinner(int player, int cause)
     {
         gameOver = true;
@@ -1407,12 +1428,11 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             if (p == 1)
             {
                 gameOverP1 = true;
-            } else 
-            if (p == 2)
+            } else if (p == 2)
             {
                 gameOverP2 = true;
             }
-            if (gameOverP1 && gameOverP2)
+            if ((gameOverP1 && gameOverP2) || cause == 2)
             {
                 PhotonNetwork.LeaveRoom();
                 endScreen.SetActive(true);
