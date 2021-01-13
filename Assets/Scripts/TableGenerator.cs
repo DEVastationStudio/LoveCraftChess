@@ -74,6 +74,8 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     public bool performingMove;
     public GameObject world;
 
+    public AudioSource sndDown;
+
     void Start()
     {
         AudioManager.instance.changeTheme(1);
@@ -725,6 +727,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             yield return null;
         }
         piece.transform.position = endPos;
+        sndDown.Play();
 
         //Eaten Piece management
         yield return eatPiece(eatsPiece, eatenPiece, elapsedTime, eatenPiecePos, finalEatenPiecePos, false);
