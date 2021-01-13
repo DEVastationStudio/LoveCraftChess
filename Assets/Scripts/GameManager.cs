@@ -17,21 +17,24 @@ public class GameManager : MonoBehaviourPunCallbacks
     public TMP_Text connectProgText;
     public GameObject Quit, Surrender, QuitBtn, SurrenderBtn;
     public CodeImage[] codeInUI = new CodeImage[5];
+    public GameObject RoomCodeContainer;
 
     public void Start()
     {
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0,0,0), Quaternion.identity, 0);
-            if (isLobby)
+
+            string[] code = PhotonNetwork.CurrentRoom.Name.Split('^');
+            if (isLobby && code.Length == 5)
             {
-                string[] code = PhotonNetwork.CurrentRoom.Name.Split('-');
                 for (int i = 0; i < code.Length; i++)
                 {
                     Debug.Log("Piece " + i + ": " + code[i]);
                     codeInUI[i].ChangeImage(code[i], true);
                 }
             }
+            else RoomCodeContainer.SetActive(false);
             if (SurrenderBtn != null) SurrenderBtn.SetActive(true);
         }
         else

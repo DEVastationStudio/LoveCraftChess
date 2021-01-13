@@ -17,7 +17,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
     private bool _creatingCustomRoom;
 
     public GameObject connecting;
-    public Text connectProgText;
+    public TextMeshProUGUI connectProgText;
 
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
@@ -62,7 +62,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
     private void AttemptCustomRoomCreation()
     {
         GenerateRandomCombination();
-        string newCode = code[0].ToString() + "-" + code[1].ToString() +"-"+ code[2].ToString() + "-" + code[3].ToString() + "-" + code[4].ToString();
+        string newCode = code[0].ToString() + "^" + code[1].ToString() +"^"+ code[2].ToString() + "^" + code[3].ToString() + "^" + code[4].ToString();
         Debug.Log("Attempting to create room " + newCode);
         RoomOptions options = new RoomOptions();
         options.IsVisible = false;
@@ -129,7 +129,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
             return;
         }
         SetCustomButtons(false);
-        PhotonNetwork.JoinRoom(code[0].ToString() + "-" + code[1].ToString() + "-" + code[2].ToString() + "-" + code[3].ToString() + "-" + code[4].ToString());
+        PhotonNetwork.JoinRoom(code[0].ToString() + "^" + code[1].ToString() + "^" + code[2].ToString() + "^" + code[3].ToString() + "^" + code[4].ToString());
     }
 
     public void SetCustomButtons(bool active)
