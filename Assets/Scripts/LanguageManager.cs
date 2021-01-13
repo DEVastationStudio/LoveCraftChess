@@ -21,6 +21,43 @@ public class LanguageManager : MonoBehaviour
     void Start()
     {
         isSpanish = (PlayerPrefs.GetInt("Language", 0) == 1);
+        if (_image != null)
+        {
+            if (isSpanish)
+            {
+                _image.sprite = _spanish;
+            }
+            else
+            {
+                _image.sprite = _english;
+            }
+        }
+        if (_rawImage != null)
+        {
+            if (isSpanish)
+            {
+                _rawImage.texture = _spanishR;
+            }
+            else
+            {
+                _rawImage.texture = _englishR;
+            }
+        }
+
+
+        if (_trueBtn != null)
+        {
+            var ss = _trueBtn.spriteState;
+            if (isSpanish)
+            {
+                ss.highlightedSprite = _spanishOn;
+            }
+            else
+            {
+                ss.highlightedSprite = _englishOn;
+            }
+            _trueBtn.spriteState = ss;
+        }
     }
 
     void Update()
