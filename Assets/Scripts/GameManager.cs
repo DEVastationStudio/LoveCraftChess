@@ -48,18 +48,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (isLobby)
         {
             SceneManager.LoadScene("PreLobby");
+            AudioManager.instance.changeTheme(0);
         }
     }
     public void QuitGameButton()
     {
+        
+        AudioManager.instance.changeTheme(0);
         //SceneManager.LoadScene("PreLobby");
         if (TableGenerator.instance != null && TableGenerator.instance.isOnline)
         {
             SceneManager.LoadScene("PreLobby");
+            AudioManager.instance.changeTheme(0);
         }
         else
         {
             SceneManager.LoadScene("Menu");
+            AudioManager.instance.changeTheme(0);
         }
     }
 
@@ -69,10 +74,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.LeaveRoom();
             SceneManager.LoadScene("PreLobby");
+            AudioManager.instance.changeTheme(0);
         }
         else
         {
             SceneManager.LoadScene("Menu");
+            AudioManager.instance.changeTheme(0);
         }
     }
     void LoadGame()

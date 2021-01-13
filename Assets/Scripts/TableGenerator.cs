@@ -30,6 +30,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
     [SerializeField] private InGameInterfaceController UIController;
     [SerializeField] private GameObject[,] pieceModels;
     public static int localPlayer;
+    private bool _intenseMusic;
 
     public Cell[,] cells;
     public List<Cell> p1Start;
@@ -75,6 +76,7 @@ public class TableGenerator : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        AudioManager.instance.changeTheme(1);
         instance = this;
         isOnline = PhotonNetwork.IsConnected;
         if (isOnline) 
@@ -969,6 +971,11 @@ public class TableGenerator : MonoBehaviourPunCallbacks
             PitControl = -1;
 
         StartCoroutine(NextTurnAnimations());
+        if (p1Pieces.Count <= 4 || p2Pieces.Count <= 4 && !_intenseMusic)
+        {
+            _intenseMusic = true;
+            AudioManager.instance.changeTheme(2);
+        }
 
     }
 
@@ -1376,13 +1383,20 @@ public class TableGenerator : MonoBehaviourPunCallbacks
         //turnText.text = (player==1?"BLUE":"RED") + " PLAYER WINS";
         if (isOnline)
         {
-            if (player == localPlayer) winPanel.SetActive(true);
-            else losePanel.SetActive(true);
+            if (player == localPlayer) {
+                winPanel.SetActive(true);
+                AudioManager.instance.changeTheme(3);
+            }
+            else {
+                losePanel.SetActive(true);
+                AudioManager.instance.changeTheme(4);
+            }
         }
         else
         {
             if (player == 1) p1Panel.SetActive(true);
             else p2Panel.SetActive(true);
+            AudioManager.instance.changeTheme(3);
         }
 
         //endText.text = ((isOnline)?((localPlayer==player)?("YOU WIN"):("YOU LOSE")):((player==1?"BLUE":"RED") + " PLAYER WINS"));

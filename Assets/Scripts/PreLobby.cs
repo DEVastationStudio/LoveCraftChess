@@ -192,6 +192,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         SceneManager.LoadScene("Menu");
+        AudioManager.instance.changeTheme(0);
     }
 
 }
