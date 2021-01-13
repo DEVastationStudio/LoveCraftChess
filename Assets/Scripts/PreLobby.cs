@@ -11,6 +11,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
 {
     public Button JoinRandomBtn, BackBtn, ShowCustomBtn;
     public TMP_Text connectedToText, statusText, customText;
+    public GameObject statusBox;
     public TMP_InputField customInputField;
     public GameObject customPanel;
     public Button createCustomBtn, joinCustomBtn, backCustomBtn;
@@ -36,6 +37,7 @@ public class PreLobby : MonoBehaviourPunCallbacks
         JoinRandomBtn.interactable = false;
         BackBtn.interactable = false;
         ShowCustomBtn.interactable = false;
+        statusBox.SetActive(true);
             statusText.text = LanguageManager.Connecting();
         if (!PhotonNetwork.JoinRandomRoom())
         {

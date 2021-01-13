@@ -31,7 +31,7 @@ public class AudioManager : MonoBehaviour
     }
     void Start()
     {
-        mixer.SetFloat("Audio", ConvertToDecibel(PlayerPrefs.GetFloat("Audio", 1))); 
+        mixer.SetFloat("Audio", ConvertToDecibel(PlayerPrefs.GetFloat("Audio", 0.5f))); 
         mixer.SetFloat("Sounds", ConvertToDecibel(PlayerPrefs.GetFloat("Sounds", 1))); 
     }
     public float ConvertToDecibel(float _value){
