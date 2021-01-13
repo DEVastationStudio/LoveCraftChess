@@ -1888,6 +1888,7 @@ GameObject:
   - component: {fileID: 769965991}
   - component: {fileID: 769965990}
   - component: {fileID: 769965989}
+  - component: {fileID: 769965992}
   m_Layer: 5
   m_Name: CreateCustom
   m_TagString: Untagged
@@ -2006,6 +2007,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 769965987}
   m_CullTransparentMesh: 0
+--- !u!114 &769965992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 769965987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6475a03b5ef5515499c15146c0e81027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 769965990}
+  _trueBtn: {fileID: 769965989}
+  _english: {fileID: 21300000, guid: 3c408a5203f83234fbb3ddac15d3385d, type: 3}
+  _spanish: {fileID: 21300000, guid: 7e3d57d7d94738243af021b2e376797f, type: 3}
+  _englishOn: {fileID: 21300000, guid: 6e24d5906adde7045a8bf3fabb585950, type: 3}
+  _spanishOn: {fileID: 21300000, guid: 94dbe43a70b3d4f479b9b2af18537331, type: 3}
+  _rawImage: {fileID: 0}
+  _englishR: {fileID: 0}
+  _spanishR: {fileID: 0}
 --- !u!1 &869845114
 GameObject:
   m_ObjectHideFlags: 0
@@ -2018,6 +2040,7 @@ GameObject:
   - component: {fileID: 869845118}
   - component: {fileID: 869845117}
   - component: {fileID: 869845116}
+  - component: {fileID: 869845119}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -2147,6 +2170,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 869845114}
   m_CullTransparentMesh: 0
+--- !u!114 &869845119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 869845114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6475a03b5ef5515499c15146c0e81027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 869845117}
+  _trueBtn: {fileID: 869845116}
+  _english: {fileID: 21300000, guid: 4297bee31010d0d4493d55d48b13df09, type: 3}
+  _spanish: {fileID: 21300000, guid: a4faca158b6c17f4787d2b389c5aa705, type: 3}
+  _englishOn: {fileID: 21300000, guid: f16cfa326f09d0445bb0a76bb886c629, type: 3}
+  _spanishOn: {fileID: 21300000, guid: b917ebd67d9791a43b060dc0c54c4096, type: 3}
+  _rawImage: {fileID: 0}
+  _englishR: {fileID: 0}
+  _spanishR: {fileID: 0}
 --- !u!1 &947722647
 GameObject:
   m_ObjectHideFlags: 0
@@ -2379,6 +2423,7 @@ GameObject:
   - component: {fileID: 1029984305}
   - component: {fileID: 1029984304}
   - component: {fileID: 1029984303}
+  - component: {fileID: 1029984306}
   m_Layer: 5
   m_Name: JoinCustom (1)
   m_TagString: Untagged
@@ -2508,6 +2553,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1029984301}
   m_CullTransparentMesh: 0
+--- !u!114 &1029984306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1029984301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6475a03b5ef5515499c15146c0e81027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 1029984304}
+  _trueBtn: {fileID: 1029984303}
+  _english: {fileID: 21300000, guid: 24c9b42214c072447890db10b3c4e9a7, type: 3}
+  _spanish: {fileID: 21300000, guid: b5ccc46fd01e0da4b9c6e361d5271f7a, type: 3}
+  _englishOn: {fileID: 21300000, guid: 1c77ee045fce57d43b22f27b95b20ea6, type: 3}
+  _spanishOn: {fileID: 21300000, guid: d89b5f0ae699dd647aa2fbb9dc8d886c, type: 3}
+  _rawImage: {fileID: 0}
+  _englishR: {fileID: 0}
+  _spanishR: {fileID: 0}
 --- !u!1 &1085207833
 GameObject:
   m_ObjectHideFlags: 0
@@ -2598,6 +2664,7 @@ GameObject:
   - component: {fileID: 1155123217}
   - component: {fileID: 1155123216}
   - component: {fileID: 1155123215}
+  - component: {fileID: 1155123218}
   m_Layer: 5
   m_Name: JoinCustom
   m_TagString: Untagged
@@ -2716,6 +2783,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1155123213}
   m_CullTransparentMesh: 0
+--- !u!114 &1155123218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155123213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6475a03b5ef5515499c15146c0e81027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 1155123216}
+  _trueBtn: {fileID: 1155123215}
+  _english: {fileID: 21300000, guid: 24c9b42214c072447890db10b3c4e9a7, type: 3}
+  _spanish: {fileID: 21300000, guid: b5ccc46fd01e0da4b9c6e361d5271f7a, type: 3}
+  _englishOn: {fileID: 21300000, guid: 1c77ee045fce57d43b22f27b95b20ea6, type: 3}
+  _spanishOn: {fileID: 21300000, guid: d89b5f0ae699dd647aa2fbb9dc8d886c, type: 3}
+  _rawImage: {fileID: 0}
+  _englishR: {fileID: 0}
+  _spanishR: {fileID: 0}
 --- !u!1 &1176164296
 GameObject:
   m_ObjectHideFlags: 0
@@ -4205,6 +4293,7 @@ GameObject:
   - component: {fileID: 2105786891}
   - component: {fileID: 2105786890}
   - component: {fileID: 2105786889}
+  - component: {fileID: 2105786892}
   m_Layer: 5
   m_Name: Random Matchmaking
   m_TagString: Untagged
@@ -4334,3 +4423,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2105786887}
   m_CullTransparentMesh: 0
+--- !u!114 &2105786892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105786887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6475a03b5ef5515499c15146c0e81027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 2105786890}
+  _trueBtn: {fileID: 2105786889}
+  _english: {fileID: 21300000, guid: b7bd9825a6e18c54ab52cb5d4529bf20, type: 3}
+  _spanish: {fileID: 21300000, guid: c4389637814a8b04ea6db2e8c2a1a87e, type: 3}
+  _englishOn: {fileID: 21300000, guid: fa9d2642813b3d546945b57defd2292b, type: 3}
+  _spanishOn: {fileID: 21300000, guid: 6cf202413e36c714d9ee4d3c92d4708e, type: 3}
+  _rawImage: {fileID: 0}
+  _englishR: {fileID: 0}
+  _spanishR: {fileID: 0}

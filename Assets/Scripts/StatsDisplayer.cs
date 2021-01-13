@@ -6,8 +6,18 @@ using TMPro;
 public class StatsDisplayer : MonoBehaviour
 {
     public TMP_Text statsText;
-    void Start()
+    private bool _spanish;
+    void Update()
     {
+        if (_spanish != LanguageManager.isSpanish)
+        {
+            _spanish = LanguageManager.isSpanish;
+        }
+        else
+        {
+            return;
+        }
+
         statsText.text =  LanguageManager.Stats_1();
         statsText.text += LanguageManager.Stats_2() + PlayerPrefs.GetInt("P1Victories", 0) + "\n";//
         statsText.text += LanguageManager.Stats_3() + PlayerPrefs.GetInt("P2Victories", 0) + "\n";//
