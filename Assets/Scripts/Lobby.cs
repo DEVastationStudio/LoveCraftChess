@@ -13,7 +13,8 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public Button ConnectBtn, MainBtn, OfflineBtn;
     public TMP_Dropdown serverDropdown;
     public string[] regions;
-    public Text connectText;
+    public TMP_Text connectText;
+    public GameObject connectContainer;
 
     public byte maxPlayersInRoom = 2;
     public byte minPlayersInRoom = 2;
@@ -22,7 +23,8 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
     //public Text PlayerCounter;
 
     private bool isConnecting;
-
+    public GameObject connecting;
+    public TMP_Text connectProgText;
 
     void Start()
     {
@@ -70,13 +72,14 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             AppSettings settings = PhotonNetwork.PhotonServerSettings.AppSettings;
             settings.FixedRegion = regions[serverDropdown.value];
+            connectContainer.SetActive(true);
             if (PhotonNetwork.ConnectUsingSettings())
             {
-                connectText.text = "Connecting to the server";
+                connectText.text = LanguageManager.ConnectServer(true);
             }
             else
             {
-                connectText.text = "Error while connecting to the server";
+                connectText.text = LanguageManager.ConnectServer(false);
             }
         }
     }
@@ -103,7 +106,17 @@ public class Lobby : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void JoinLocalGame()
     {
-        SceneManager.LoadScene("Game");
+        StartCoroutine(LoadSceneCR("Game"));
+    }
+    public IEnumerator LoadSceneCR(string level)
+    {
+        connecting.SetActive(true);
+        AsyncOperation async = SceneManager.LoadSceneAsync(level);
+        while (!async.isDone)
+        {
+            connectProgText.text = LanguageManager.LoadingRoom() + (async.progress*100) + "%";
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     /*public void FixedUpdate()
